@@ -2,6 +2,7 @@ package ru.lexa.books_rewiews.service.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.lexa.books_rewiews.exception.BookNotFoundException;
 import ru.lexa.books_rewiews.model.Review;
 import ru.lexa.books_rewiews.repository.ReviewRepository;
 import ru.lexa.books_rewiews.service.BookService;
