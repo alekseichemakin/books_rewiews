@@ -1,4 +1,4 @@
-package ru.lexa.books_rewiews.model;
+package ru.lexa.books_reviews.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class Book {
     @OneToMany(mappedBy = "book_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Review> review;
 
-//    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     @NotNull
     private String name;
     private String description;

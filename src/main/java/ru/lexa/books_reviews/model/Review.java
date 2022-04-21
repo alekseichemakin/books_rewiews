@@ -1,4 +1,4 @@
-package ru.lexa.books_rewiews.model;
+package ru.lexa.books_reviews.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

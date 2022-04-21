@@ -1,4 +1,4 @@
-package ru.lexa.books_rewiews.exception;
+package ru.lexa.books_reviews.exception;
 
 public class BookNotFoundException extends RuntimeException {
     public BookNotFoundException() {
