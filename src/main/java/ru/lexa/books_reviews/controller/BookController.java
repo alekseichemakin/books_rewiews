@@ -43,6 +43,7 @@ public class BookController {
 	@ApiOperation(value = "удалить книгу")
 	@DeleteMapping("/{id}")
 	public String deleteSurvey(@PathVariable Long id) {
+		bookService.delete(id);
 		return String.format("книга с идентификором %d была удалена", id);
 	}
 
