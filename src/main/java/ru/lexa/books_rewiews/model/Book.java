@@ -22,7 +22,7 @@ public class Book {
     private Collection<Review> review;
 
 //    @Column(unique = true, nullable = false)
-//    @NotNull
+    @NotNull
     private String name;
     private String description;
     private String author;
