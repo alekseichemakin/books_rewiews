@@ -3,6 +3,8 @@ package ru.lexa.books_reviews.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +14,7 @@ import java.util.Collection;
 @Getter
 @Setter
 @NoArgsConstructor
+@Audited
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -57,6 +57,7 @@ public class ReviewServiceImpl implements ReviewService {
             throw new ReviewNotFoundException();
         updReview.setRating(review.getRating());
         updReview.setText(review.getText());
+        reviewRepository.save(updReview);
         return updReview;
     }
 

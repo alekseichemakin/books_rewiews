@@ -52,6 +52,7 @@ public class BookServiceImpl implements BookService {
         updBook.setName(book.getName());
         updBook.setAuthor(book.getAuthor());
         updBook.setDescription(book.getDescription());
+        bookRepository.save(updBook);
         return updBook;
     }
 
