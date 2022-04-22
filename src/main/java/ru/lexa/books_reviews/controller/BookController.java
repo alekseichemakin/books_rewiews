@@ -9,6 +9,7 @@ import ru.lexa.books_reviews.service.BookService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")
@@ -58,4 +59,11 @@ public class BookController {
 	public double getAverage(@PathVariable Long id) {
 		return bookService.averageRating(id);
 	}
+
+	@ApiOperation(value = "получить книги по тексту отзыва")
+	@GetMapping("/reviews/{text}")
+	public List<Book> getBooksByRevText(@PathVariable String text) {
+		return bookService.findByReviewText(text);
+	}
+
 }

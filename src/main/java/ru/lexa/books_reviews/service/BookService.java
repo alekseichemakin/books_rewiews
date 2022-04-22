@@ -17,4 +17,12 @@ public interface BookService {
     void delete(long id);
 
     double averageRating(long id);
+
+    List<Book> findByName(String name);
+
+    List<Book> findByAuthor(String author);
+
+    List<Book> findByDescription(String description);
+
+    List<Book> findByReviewText(String text);
 }

@@ -10,7 +10,6 @@ import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.service.BookService;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -66,4 +65,26 @@ public class BookServiceImpl implements BookService {
             return 0;
         return book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
     }
+
+    @Override
+    public List<Book> findByName(String name) {
+        return bookRepository.findBooksByNameContainingIgnoreCase(name);
+    }
+
+    @Override
+    public List<Book> findByAuthor(String author) {
+        return bookRepository.findBooksByAuthorContainingIgnoreCase(author);
+    }
+
+    @Override
+    public List<Book> findByDescription(String description) {
+        return bookRepository.findBooksByDescriptionContainingIgnoreCase(description);
+    }
+
+    @Override
+    public List<Book> findByReviewText(String text) {
+        return bookRepository.findBooksByReviewText(text);
+    }
+
+
 }

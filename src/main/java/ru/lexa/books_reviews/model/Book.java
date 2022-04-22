@@ -3,8 +3,7 @@ package ru.lexa.books_reviews.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
