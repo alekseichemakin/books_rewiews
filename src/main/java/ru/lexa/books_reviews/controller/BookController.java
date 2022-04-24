@@ -57,14 +57,14 @@ public class BookController {
 		return String.format("книга с идентификором %d была удалена", id);
 	}
 
-	@ApiOperation(value = "получить отзывы")
+	@ApiOperation(value = "получить отзывы к книге")
 	@GetMapping("/{id}/reviews")
 	public Collection<Review> getReviews(@PathVariable Long id) {
 		return bookService.read(id).getReview();
 	}
 
 	@ApiOperation(value = "получить среднюю оценку")
-	@GetMapping("/{id}/average")
+	@GetMapping("/{id}/averageRating")
 	public double getAverage(@PathVariable Long id) {
 		return bookService.averageRating(id);
 	}

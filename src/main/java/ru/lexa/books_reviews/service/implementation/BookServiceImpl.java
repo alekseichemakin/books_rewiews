@@ -68,10 +68,6 @@ public class BookServiceImpl implements BookService {
         return book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
     }
 
-    public List<Book> findByReviewText(String text) {
-        return bookRepository.findBooksByReviewText(text);
-    }
-
     @Override
     public List<Book> readFilter(Map<String, String> params) {
         List<Book> books = bookRepository.findAll();
@@ -97,5 +93,7 @@ public class BookServiceImpl implements BookService {
         return books;
     }
 
-
+    public List<Book> findByReviewText(String text) {
+        return bookRepository.findBooksByReviewText(text);
+    }
 }

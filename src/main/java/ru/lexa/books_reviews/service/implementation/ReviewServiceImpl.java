@@ -60,6 +60,4 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.save(updReview);
         return updReview;
     }
-
-
 }
