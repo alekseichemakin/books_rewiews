@@ -4,6 +4,7 @@ package ru.lexa.books_reviews.service;
 import ru.lexa.books_reviews.model.Book;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BookService {
     Book create(Book book);
@@ -18,11 +19,5 @@ public interface BookService {
 
     double averageRating(long id);
 
-    List<Book> findByName(String name);
-
-    List<Book> findByAuthor(String author);
-
-    List<Book> findByDescription(String description);
-
-    List<Book> findByReviewText(String text);
+    List<Book> readFilter(Map<String, String> params);
 }

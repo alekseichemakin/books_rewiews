@@ -12,10 +12,7 @@ import java.util.List;
 public interface BookRepository extends CrudRepository<Book, Long> {
     @Override
     List<Book> findAll();
-    List<Book> findBooksByAuthorContainingIgnoreCase(String author);
-    List<Book> findBooksByNameContainingIgnoreCase(String name);
-    List<Book> findBooksByDescriptionContainingIgnoreCase(String description);
 
-    @Query(value = "select Book from Book, Review where Book.id = Review.book_id and Review.text like '%str%'")
-    List<Book> findBooksByReviewText(@Param("t") String text);
+    @Query(value = "select b from Book b, Review r where b.id = r.book_id and r.text like %:param%")
+    List<Book> findBooksByReviewText(@Param("param") String text);
 }

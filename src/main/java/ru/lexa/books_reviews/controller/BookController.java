@@ -9,6 +9,7 @@ import ru.lexa.books_reviews.service.BookService;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -23,10 +24,18 @@ public class BookController {
 		return bookService.create(book);
 	}
 
-	@ApiOperation(value = "получить все книги")
+	@ApiOperation(value = "получить книги")
 	@GetMapping
-	public Collection<Book> getAll() {
-		return bookService.readAll();
+	public Collection<Book> getAll(@RequestParam(required = false) String author,
+								   @RequestParam(required = false) String description,
+								   @RequestParam(required = false) String name,
+								   @RequestParam(required = false) String reviewText) {
+		HashMap<String, String> params = new HashMap<>();
+		params.put("author", author);
+		params.put("description", description);
+		params.put("name", name);
+		params.put("reviewText", reviewText);
+		return bookService.readFilter(params);
 	}
 
 	@ApiOperation(value = "получить книгу")
@@ -59,11 +68,4 @@ public class BookController {
 	public double getAverage(@PathVariable Long id) {
 		return bookService.averageRating(id);
 	}
-
-	@ApiOperation(value = "получить книги по тексту отзыва")
-	@GetMapping("/reviews/{text}")
-	public List<Book> getBooksByRevText(@PathVariable String text) {
-		return bookService.findByReviewText(text);
-	}
-
 }
