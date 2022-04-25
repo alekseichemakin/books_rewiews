@@ -37,7 +37,7 @@ public class ReviewController {
 
 	@ApiOperation(value = "изменить отзыв")
 	@PutMapping
-	public Review updateReview(@RequestBody Review review) {
+	public Review updateReview(@Valid @RequestBody Review review) {
 		return reviewService.update(review);
 	}
 

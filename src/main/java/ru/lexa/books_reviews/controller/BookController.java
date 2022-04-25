@@ -46,7 +46,7 @@ public class BookController {
 
 	@ApiOperation(value = "изменить книгу")
 	@PutMapping
-	public Book updateAuthor(@RequestBody Book book) {
+	public Book updateBook(@Valid @RequestBody Book book) {
 		return bookService.update(book);
 	}
 
