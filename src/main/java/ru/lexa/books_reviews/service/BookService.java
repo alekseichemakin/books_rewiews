@@ -9,8 +9,6 @@ import java.util.Map;
 public interface BookService {
     Book create(Book book);
 
-    List<Book> readAll();
-
     Book read(long id);
 
     Book update(Book book);

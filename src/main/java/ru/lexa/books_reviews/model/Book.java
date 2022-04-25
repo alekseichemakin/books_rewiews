@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.envers.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
@@ -24,8 +25,9 @@ public class Book {
     private Collection<Review> review;
 
     @Column(unique = true, nullable = false)
-    @NotNull
+    @NotEmpty(message = "Имя не должно быть пустым")
     private String name;
     private String description;
+    @NotEmpty(message = "Автор не должен быть пустым")
     private String author;
 }

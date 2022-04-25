@@ -24,11 +24,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> readAll() {
-        return bookRepository.findAll();
-    }
-
-    @Override
     public Book read(long id) {
         Book book = bookRepository.findById(id).orElse(null);
         if (book == null)
