@@ -13,6 +13,6 @@ public interface BookRepository extends CrudRepository<Book, Long> {
     @Override
     List<Book> findAll();
 
-    @Query(value = "select b from Book b, Review r where b.id = r.book_id and r.text like %:param%")
+    @Query(value = "select b from Book b, Review r where b.id = r.book.id and r.text like %:param%")
     List<Book> findBooksByReviewText(@Param("param") String text);
 }

@@ -4,6 +4,7 @@ package ru.lexa.books_reviews.service.implementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
+import ru.lexa.books_reviews.exception.ReviewNotFoundException;
 import ru.lexa.books_reviews.model.Book;
 import ru.lexa.books_reviews.model.Review;
 import ru.lexa.books_reviews.repository.BookRepository;
@@ -25,26 +26,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book read(long id) {
-        Book book = bookRepository.findById(id).orElse(null);
-        if (book == null)
-            throw new BookNotFoundException();
-        return book;
+        return bookRepository.findById(id)
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @Override
     public void delete(long id) {
-        Book book = bookRepository.findById(id).orElse(null);
-        if (book == null)
-            throw new BookNotFoundException();
+        Book book = bookRepository.findById(id)
+                .orElseThrow(BookNotFoundException::new);
         bookRepository.delete(book);
     }
 
     @Override
     public Book update(Book book) {
-        Book updBook = bookRepository.findById(book.getId()).orElse(null);
-
-        if (updBook == null)
-            throw new BookNotFoundException();
+        Book updBook = bookRepository.findById(book.getId())
+                .orElseThrow(BookNotFoundException::new);
         updBook.setName(book.getName());
         updBook.setAuthor(book.getAuthor());
         updBook.setDescription(book.getDescription());

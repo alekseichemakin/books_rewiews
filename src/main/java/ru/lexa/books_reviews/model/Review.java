@@ -25,6 +25,8 @@ public class Review {
     @Min(1)
     @Max(10)
     private int rating;
-    @Column(nullable = false)
-    private long book_id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id", nullable = false)
+    private Book book;
 }

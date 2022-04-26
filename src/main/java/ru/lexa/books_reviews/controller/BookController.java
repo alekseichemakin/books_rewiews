@@ -10,7 +10,6 @@ import ru.lexa.books_reviews.service.BookService;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/books")

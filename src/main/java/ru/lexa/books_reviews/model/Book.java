@@ -21,7 +21,8 @@ public class Book {
     @Column(name = "id")
     private Long id;
 
-    @OneToMany(mappedBy = "book_id", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Review> review;
 
     @Column(unique = true, nullable = false)
