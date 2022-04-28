@@ -16,20 +16,24 @@ public class ReviewMappingServiceImpl implements ReviewMappingService {
     @Override
     public ReviewDTO mapToReviewDto(Review entity) {
         ReviewDTO dto = new ReviewDTO();
-        dto.setRating(entity.getRating());
-        dto.setText(entity.getText());
-        dto.setBook_id(entity.getBook().getId());
-        dto.setId(entity.getId());
+        if (entity != null) {
+            dto.setRating(entity.getRating());
+            dto.setText(entity.getText());
+            dto.setBook_id(entity.getBook().getId());
+            dto.setId(entity.getId());
+        }
         return dto;
     }
 
     @Override
     public Review mapToReviewEntity(ReviewDTO dto) {
         Review review = new Review();
-        review.setBook(bookService.read(dto.getBook_id()));
-        review.setRating(dto.getRating());
-        review.setText(dto.getText());
-        review.setId(dto.getId());
+        if (dto != null) {
+            review.setBook(bookService.read(dto.getBook_id()));
+            review.setRating(dto.getRating());
+            review.setText(dto.getText());
+            review.setId(dto.getId());
+        }
         return review;
     }
 }

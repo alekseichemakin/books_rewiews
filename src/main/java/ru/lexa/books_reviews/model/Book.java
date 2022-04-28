@@ -1,19 +1,14 @@
 package ru.lexa.books_reviews.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import org.hibernate.envers.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @Audited
 public class Book {
     @Id

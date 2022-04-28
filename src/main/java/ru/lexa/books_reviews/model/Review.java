@@ -1,5 +1,6 @@
 package ru.lexa.books_reviews.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +11,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @Audited
 public class Review {
     @Id

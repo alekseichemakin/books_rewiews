@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.service;
 
 
+import ru.lexa.books_reviews.dto.BookFilterDTO;
 import ru.lexa.books_reviews.model.Book;
 
 import java.util.List;
@@ -17,5 +18,5 @@ public interface BookService {
 
     double averageRating(long id);
 
-    List<Book> readFilter(Map<String, String> params);
+    List<Book> readAll(BookFilterDTO filter);
 }

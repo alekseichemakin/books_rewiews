@@ -2,8 +2,7 @@ package ru.lexa.books_reviews.service.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.lexa.books_reviews.exception.BookNotFoundException;
-import ru.lexa.books_reviews.exception.ReviewNotFoundException;
+import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.model.Review;
 import ru.lexa.books_reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.service.BookService;
@@ -21,8 +20,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review create(Review review) {
-        if (bookService.read(review.getBook().getId()) == null)
-            throw new BookNotFoundException();
+        if (bookService.read(review.getBook().getId()) == null) {
+            throw new InputErrorException("Нет книги с данным id");
+        }
         return reviewRepository.save(review);
     }
 
@@ -34,23 +34,22 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public Review read(long id) {
         return reviewRepository.findById(id)
-                .orElseThrow(ReviewNotFoundException::new);
+                .orElseThrow(() -> new InputErrorException("Нет отзыва с данным id"));
     }
 
     @Override
     public void delete(long id) {
         Review review = reviewRepository.findById(id)
-                .orElseThrow(ReviewNotFoundException::new);
+                .orElseThrow(() -> new InputErrorException("Нет отзыва с данным id"));
         reviewRepository.delete(review);
     }
 
     @Override
     public Review update(@Valid Review review) {
         Review updReview = reviewRepository.findById(review.getId())
-                .orElseThrow(ReviewNotFoundException::new);
+                .orElseThrow(() -> new InputErrorException("Нет отзыва с данным id"));
         updReview.setRating(review.getRating());
-        updReview.setText(review.getText());
-        reviewRepository.save(updReview);
-        return updReview;
+        updReview.setText(review.getText() == null ? updReview.getText() : review.getText());
+        return reviewRepository.save(updReview);
     }
 }
