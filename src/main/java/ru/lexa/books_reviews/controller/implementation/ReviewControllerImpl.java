@@ -1,4 +1,4 @@
-package ru.lexa.books_reviews.controller;
+package ru.lexa.books_reviews.controller.implementation;
 
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import ru.lexa.books_reviews.controller.ReviewController;
 import ru.lexa.books_reviews.dto.ReviewDTO;
 import ru.lexa.books_reviews.service.ReviewMappingService;
 import ru.lexa.books_reviews.service.ReviewService;

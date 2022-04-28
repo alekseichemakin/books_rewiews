@@ -5,13 +5,13 @@ import ru.lexa.books_reviews.dto.ReviewDTO;
 import java.util.Collection;
 
 public interface ReviewController {
-    public ReviewDTO createReview(ReviewDTO dto);
+    ReviewDTO createReview(ReviewDTO dto);
 
-    public Collection<ReviewDTO> readAll();
+    Collection<ReviewDTO> readAll();
 
-    public ReviewDTO readReview(long id);
+    ReviewDTO readReview(long id);
 
-    public ReviewDTO updateReview(ReviewDTO dto, long id);
+    ReviewDTO updateReview(ReviewDTO dto, long id);
 
-    public void deleteReview(long id);
+    void deleteReview(long id);
 }
