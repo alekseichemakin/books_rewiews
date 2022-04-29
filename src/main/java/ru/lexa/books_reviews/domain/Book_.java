@@ -1,7 +1,7 @@
-package ru.lexa.books_reviews.model.metaModel;
+package ru.lexa.books_reviews.domain;
 
-import ru.lexa.books_reviews.model.Book;
-import ru.lexa.books_reviews.model.Review;
+import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Review;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.CollectionAttribute;

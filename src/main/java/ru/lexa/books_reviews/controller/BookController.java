@@ -1,7 +1,7 @@
 package ru.lexa.books_reviews.controller;
 
-import ru.lexa.books_reviews.dto.BookDTO;
-import ru.lexa.books_reviews.dto.ReviewDTO;
+import ru.lexa.books_reviews.controller.dto.BookDTO;
+import ru.lexa.books_reviews.controller.dto.ReviewDTO;
 
 import java.util.Collection;
 
