@@ -1,14 +1,14 @@
 package ru.lexa.books_reviews.service.implementation;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.lexa.books_reviews.dto.BookFilterDTO;
+import ru.lexa.books_reviews.controller.dto.BookFilterDTO;
 import ru.lexa.books_reviews.exception.InputErrorException;
-import ru.lexa.books_reviews.model.Book;
-import ru.lexa.books_reviews.model.Review;
+import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.specification.BookSpecification;
 import ru.lexa.books_reviews.service.BookService;
@@ -16,8 +16,9 @@ import ru.lexa.books_reviews.service.BookService;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class BookServiceImpl implements BookService {
-    @Autowired
+
     private BookRepository bookRepository;
 
     @Override

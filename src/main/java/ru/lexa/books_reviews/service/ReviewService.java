@@ -1,6 +1,6 @@
 package ru.lexa.books_reviews.service;
 
-import ru.lexa.books_reviews.model.Review;
+import ru.lexa.books_reviews.repository.entity.Review;
 
 import java.util.List;
 

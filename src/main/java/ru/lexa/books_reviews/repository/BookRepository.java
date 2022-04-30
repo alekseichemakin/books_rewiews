@@ -1,11 +1,8 @@
 package ru.lexa.books_reviews.repository;
 
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.history.RevisionRepository;
-import org.springframework.data.repository.query.Param;
-import ru.lexa.books_reviews.model.Book;
+import ru.lexa.books_reviews.repository.entity.Book;
 
 import java.util.List;
 

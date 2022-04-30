@@ -1,8 +1,8 @@
 package ru.lexa.books_reviews.service.implementation;
 
 import org.springframework.stereotype.Service;
-import ru.lexa.books_reviews.dto.BookDTO;
-import ru.lexa.books_reviews.model.Book;
+import ru.lexa.books_reviews.controller.dto.BookDTO;
+import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.service.BookMappingService;
 
 @Service

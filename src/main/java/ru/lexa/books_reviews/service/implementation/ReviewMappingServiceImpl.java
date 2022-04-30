@@ -2,8 +2,8 @@ package ru.lexa.books_reviews.service.implementation;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.lexa.books_reviews.dto.ReviewDTO;
-import ru.lexa.books_reviews.model.Review;
+import ru.lexa.books_reviews.controller.dto.ReviewDTO;
+import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.ReviewMappingService;
 
