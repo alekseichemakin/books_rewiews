@@ -12,9 +12,9 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.lexa.books_reviews.dto.BookDTO;
-import ru.lexa.books_reviews.model.Book;
+import ru.lexa.books_reviews.controller.dto.BookDTO;
 import ru.lexa.books_reviews.repository.BookRepository;
+import ru.lexa.books_reviews.repository.entity.Book;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
