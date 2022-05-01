@@ -2,15 +2,8 @@ package ru.lexa.books_reviews.controller.implementation;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.BookController;
 import ru.lexa.books_reviews.controller.dto.BookDTO;
 import ru.lexa.books_reviews.controller.dto.BookFilterDTO;
@@ -36,12 +29,13 @@ public class BookControllerImpl implements BookController {
 
 	@ApiOperation(value = "Добавить новую книгу.")
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	@Override
 	public BookDTO createBook(@Valid @RequestBody BookDTO dto) {
 		return bookMappingService.mapToBookDto(bookService.create(bookMappingService.mapToBookEntity(dto)));
 	}
 
-	@ApiOperation(value = "Получить книги.")
+	@ApiOperation(value = "Получить все книги.")
 	@GetMapping
 	@Override
 	public Collection<BookDTO> readAll(@RequestParam(required = false) String author,
@@ -49,7 +43,7 @@ public class BookControllerImpl implements BookController {
 	                                   @RequestParam(required = false) String name,
 	                                   @RequestParam(required = false) String reviewText) {
 		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText);
-		return bookService.readAll(filter).stream().map(book -> bookMappingService.mapToBookDto(book)).collect(Collectors.toList());
+		return bookService.readAll(filter).stream().map(bookMappingService::mapToBookDto).collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "Получить книгу.")
@@ -79,7 +73,7 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public Collection<ReviewDTO> getReviews(@PathVariable long id) {
 		return bookService.read(id).getReview().stream()
-				.map(review -> reviewMappingService.mapToReviewDto(review))
+				.map(reviewMappingService::mapToReviewDto)
 				.collect(Collectors.toList());
 	}
 
