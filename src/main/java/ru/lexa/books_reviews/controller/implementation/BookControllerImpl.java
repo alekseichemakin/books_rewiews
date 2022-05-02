@@ -31,7 +31,7 @@ public class BookControllerImpl implements BookController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	@Override
-	public BookDTO createBook(@Valid @RequestBody BookDTO dto) {
+	public BookDTO createBook(@RequestBody BookDTO dto) {
 		return bookMappingService.mapToBookDto(bookService.create(bookMappingService.mapToBookEntity(dto)));
 	}
 

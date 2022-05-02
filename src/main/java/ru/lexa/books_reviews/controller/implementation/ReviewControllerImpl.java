@@ -2,15 +2,9 @@ package ru.lexa.books_reviews.controller.implementation;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.ReviewController;
 import ru.lexa.books_reviews.controller.dto.ReviewDTO;
 import ru.lexa.books_reviews.service.ReviewMappingService;
@@ -21,7 +15,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/reviews/")
+@RequestMapping("/api/reviews")
 @Validated
 @AllArgsConstructor
 public class ReviewControllerImpl implements ReviewController {
@@ -32,8 +26,9 @@ public class ReviewControllerImpl implements ReviewController {
 
 	@ApiOperation(value = "Добавить новый отзыв.")
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	@Override
-	public ReviewDTO createReview(@Valid @RequestBody ReviewDTO dto) {
+	public ReviewDTO createReview(@RequestBody ReviewDTO dto) {
 		return reviewMappingService.mapToReviewDto(reviewService.create(reviewMappingService.mapToReviewEntity(dto)));
 	}
 
@@ -47,16 +42,16 @@ public class ReviewControllerImpl implements ReviewController {
 	}
 
 	@ApiOperation(value = "Получить отзыв.")
-	@GetMapping("{id}")
+	@GetMapping("/{id}")
 	@Override
 	public ReviewDTO readReview(@PathVariable long id) {
 		return reviewMappingService.mapToReviewDto(reviewService.read(id));
 	}
 
 	@ApiOperation(value = "Изменить отзыв.")
-	@PutMapping("{id}")
+	@PutMapping("/{id}")
 	@Override
-	public ReviewDTO updateReview(@Valid @RequestBody ReviewDTO dto, @PathVariable long id) {
+	public ReviewDTO updateReview(@RequestBody ReviewDTO dto, @PathVariable long id) {
 		dto.setId(id);
 		return reviewMappingService.mapToReviewDto(reviewService.update(reviewMappingService.mapToReviewEntity(dto)));
 	}

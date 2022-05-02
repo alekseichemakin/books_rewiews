@@ -3,11 +3,12 @@ package ru.lexa.books_reviews.controller;
 import ru.lexa.books_reviews.controller.dto.BookDTO;
 import ru.lexa.books_reviews.controller.dto.ReviewDTO;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 public interface BookController {
 
-    BookDTO createBook(BookDTO dto);
+    BookDTO createBook(@Valid BookDTO dto);
 
     Collection<BookDTO> readAll(String author, String description, String name, String reviewText);
 
