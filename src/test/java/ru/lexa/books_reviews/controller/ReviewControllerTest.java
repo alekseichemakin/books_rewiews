@@ -7,14 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.lexa.books_reviews.controller.dto.BookDTO;
 import ru.lexa.books_reviews.controller.dto.ReviewDTO;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.ReviewRepository;
@@ -201,11 +199,30 @@ public class ReviewControllerTest {
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        newReview.put("name", "test");
+        newReview.put("rating", 11);
 
         given()
-                .contentType(ContentType.JSON).body(newBook.toString())
-                .when().put("/api/books/" + id)
+                .contentType(ContentType.JSON).body(newReview.toString())
+                .when().put("/api/reviews/" + id)
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void whenDelete_thenStatus200() {
+        Book book1 = createTestBook("test", "test", "test");
+        long id = createTestReview(book1, 3, "text").getId();
+
+        given().pathParam("id", id).log().body().contentType("application/json")
+                .when().delete("/api/reviews/{id}")
+                .then().log().body()
+                .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void whenDelete_thenStatus400() {
+        given().pathParam("id", 400).log().body().contentType("application/json")
+                .when().delete("/api/books/{id}")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
