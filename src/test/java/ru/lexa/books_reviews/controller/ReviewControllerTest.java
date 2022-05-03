@@ -3,6 +3,8 @@ package ru.lexa.books_reviews.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +22,8 @@ import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Review;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.equalTo;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,7 +45,7 @@ public class ReviewControllerTest {
     @Autowired
     private ReviewRepository reviewRepository;
 
-    @AfterEach
+    @Before
     public void resetDb() {
         bookRepository.deleteAll();
         reviewRepository.deleteAll();
@@ -61,6 +65,149 @@ public class ReviewControllerTest {
                 .when().post("/api/reviews")
                 .then().log().body()
                 .statusCode(HttpStatus.CREATED.value());
+
+        ReviewDTO reviewDTO2 = new ReviewDTO();
+
+        reviewDTO2.setRating(8);
+        reviewDTO2.setText("text");
+        reviewDTO2.setBook_id(id);
+
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewDTO2)
+                .when().post("/api/reviews")
+                .then().log().body()
+                .statusCode(HttpStatus.CREATED.value());
+
+        when().get("/api/books/" + id + "/reviews")
+                .then().log().body()
+                .statusCode(HttpStatus.OK.value())
+                .body("$.size()", equalTo(2))
+                .body("get(0).rating", equalTo(5));
+    }
+
+    @Test
+    public void whenCreateReviewWithWrongRatingAndBookId_thenStatus400() {
+        long id = createTestBook("test", "test", "test").getId();
+        ReviewDTO reviewDTO = new ReviewDTO();
+
+        reviewDTO.setRating(0);//should be 1-10
+        reviewDTO.setText("text");
+        reviewDTO.setBook_id(id);
+
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewDTO)
+                .when().post("/api/reviews")
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        reviewDTO.setRating(11);//should be 1-10
+
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewDTO)
+                .when().post("/api/reviews")
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        reviewDTO.setBook_id(777);
+        reviewDTO.setRating(5);
+
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewDTO)
+                .when().post("/api/reviews")
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void whenGetReviews_thenStatus200() {
+        Book book1 = createTestBook("test", "test", "test");
+        Book book2 = createTestBook("test2", "test2", "test2");
+
+        createTestReview(book1, 3, "text");
+        createTestReview(book1, 4, "extt");
+        createTestReview(book2, 5, "xett");
+        createTestReview(book2, 6, "txet");
+        createTestReview(book2, 7, "ttex");
+
+        given()
+                .contentType(ContentType.JSON)
+                .when().get("/api/reviews")
+                .then().assertThat().log().all().statusCode(HttpStatus.OK.value())
+                .body("$.size()", equalTo(5));
+    }
+
+    @Test
+    public void whenGetReview_thenStatus200() {
+        Book book1 = createTestBook("test", "test", "test");
+
+        long id = createTestReview(book1, 3, "text").getId();
+
+        given()
+                .contentType(ContentType.JSON)
+                .when().get("/api/reviews/" + id)
+                .then().assertThat().log().all().statusCode(HttpStatus.OK.value())
+                .body("rating", equalTo(3));
+    }
+
+    @Test
+    public void whenGetReview_thenStatus400() {
+        given()
+                .contentType(ContentType.JSON)
+                .when().get("/api/reviews/" + 400)
+                .then().assertThat().log().all().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void whenUpdateReview_thenStatus200() throws JSONException {
+
+        Book book1 = createTestBook("test", "test", "test");
+        long id = createTestReview(book1, 3, "text").getId();
+
+        JSONObject newReview = new JSONObject();
+        newReview.put("rating", 8);
+        newReview.put("book_id", book1.getId());
+        newReview.put("text", "newText");
+
+        given()
+                .contentType(ContentType.JSON).body(newReview.toString())
+                .when().put("/api/reviews/" + id)
+                .then().log().body()
+                .statusCode(HttpStatus.OK.value())
+                .body("rating", equalTo(8))
+                .body("text", equalTo("newText"));
+    }
+
+    @Test
+    public void whenUpdateBook_thenStatus400() throws JSONException {
+        Book book1 = createTestBook("test", "test", "test");
+        long id = createTestReview(book1, 3, "text").getId();
+
+        JSONObject newReview = new JSONObject();
+        newReview.put("rating", 8);
+        newReview.put("book_id", book1.getId());
+        newReview.put("text", "newText");
+
+        given()
+                .contentType(ContentType.JSON).body(newReview.toString())
+                .when().put("/api/reviews/" + 4)
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        newReview.put("rating", 0);
+
+        given()
+                .contentType(ContentType.JSON).body(newReview.toString())
+                .when().put("/api/reviews/" + id)
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        newReview.put("name", "test");
+
+        given()
+                .contentType(ContentType.JSON).body(newBook.toString())
+                .when().put("/api/books/" + id)
+                .then().log().body()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     private Book createTestBook(String name, String author, String description) {
