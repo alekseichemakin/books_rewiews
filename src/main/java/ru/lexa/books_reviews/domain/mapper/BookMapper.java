@@ -1,0 +1,11 @@
+package ru.lexa.books_reviews.domain.mapper;
+
+import org.mapstruct.Mapper;
+import ru.lexa.books_reviews.controller.dto.BookDTO;
+import ru.lexa.books_reviews.repository.entity.Book;
+
+@Mapper(componentModel = "spring")
+public interface BookMapper {
+	Book dtoToBook(BookDTO dto);
+	BookDTO bookToDto(Book book);
+}

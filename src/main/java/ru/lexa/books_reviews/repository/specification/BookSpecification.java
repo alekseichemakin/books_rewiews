@@ -2,9 +2,9 @@ package ru.lexa.books_reviews.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Book_;
 import ru.lexa.books_reviews.repository.entity.Review;
-import ru.lexa.books_reviews.domain.Book_;
-import ru.lexa.books_reviews.domain.Review_;
+import ru.lexa.books_reviews.repository.entity.Review_;
 
 import javax.persistence.criteria.Join;
 
