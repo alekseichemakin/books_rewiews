@@ -170,7 +170,7 @@ public class BookControllerTest {
                 .body("$.size()", Matchers.equalTo(1))
                 .body("get(0).name", equalTo("Ulysses"));
 
-        when().get("/api/books?author=Fyodor&name=Crime")
+        when().get("/api/books?author=Fyodor&description=It is a murder story")
                 .then().log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("$.size()", Matchers.equalTo(1))

@@ -71,10 +71,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> readAll(BookFilterDTO filter) {
         Specification<Book> spec = Specification
-                .where(BookSpecification.likeName(filter.getName()))
-                .and(BookSpecification.likeAuthor(filter.getAuthor()))
-                .and(BookSpecification.likeDescription(filter.getDescription()))
-                .and(BookSpecification.likeReviewText(filter.getReviewText()));
+		        .where(BookSpecification.likeName(filter.getName()))
+		        .and(BookSpecification.likeAuthor(filter.getAuthor()))
+		        .and(BookSpecification.likeDescription(filter.getDescription()))
+		        .and(BookSpecification.likeReviewText(filter.getReviewText()));
         return bookRepository.findAll(spec);
     }
 }
