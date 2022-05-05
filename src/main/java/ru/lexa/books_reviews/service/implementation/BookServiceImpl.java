@@ -44,7 +44,8 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book update(Book book) {
+    public Book update(Book book, long id) {
+        book.setId(id);
         Book updBook = bookRepository.findById(book.getId())
                 .orElseThrow(() -> new InputErrorException("Нет книги с данным id"));
         updBook.setName(book.getName() == null ? updBook.getName() : book.getName());
