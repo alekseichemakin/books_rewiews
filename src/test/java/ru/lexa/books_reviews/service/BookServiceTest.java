@@ -77,7 +77,6 @@ public class BookServiceTest {
 		when(bookRepository.findAll(Mockito.any(Specification.class))).thenReturn(books);
 
 		List<Book> booksResponse = bookService.readAll(new BookFilterDTO());
-
 		assertEquals(3, booksResponse.size());
 	}
 
@@ -95,7 +94,6 @@ public class BookServiceTest {
 		when(bookRepository.findById(1L)).thenReturn(Optional.of(saveBook));
 
 		double rating = bookService.averageRating(1);
-
 		assertEquals(6, rating, 0.1);
 	}
 }
