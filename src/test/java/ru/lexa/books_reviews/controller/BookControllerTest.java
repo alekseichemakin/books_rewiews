@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -192,12 +191,12 @@ public class BookControllerTest {
         Book book5 = createTestBook("The Brothers Karamazov", "Fyodor Dostoyevsky", "Dostoevsky's last and greatest novel, The Karamazov Brothers, is both a brilliantly told crime story and a passionate philosophical debate.");
         Book book6 = createTestBook("Crime and Punishment", "Fyodor Dostoyevsky", "It is a murder story, told from a murder;s point of view, that implicates even the most innocent reader in its enormities.");
 
-        Review review1 = createTestReview(book1, 3, "best book, i like that");
-        Review review2 = createTestReview(book2, 2, "i like that book");
-        Review review3 = createTestReview(book3, 4, "book book book");
-        Review review4 = createTestReview(book4, 5, "like this book");
-        Review review5 = createTestReview(book5, 7, "comment");
-        Review review6 = createTestReview(book6, 8, "wonderful");
+        createTestReview(book1, 3, "best book, i like that");
+        createTestReview(book2, 2, "i like that book");
+        createTestReview(book3, 4, "book book book");
+        createTestReview(book4, 5, "like this book");
+        createTestReview(book5, 7, "comment");
+        createTestReview(book6, 8, "wonderful");
 
         when().get("/api/books?reviewText=test")
                 .then().log().body()
@@ -218,63 +217,48 @@ public class BookControllerTest {
 
     @Test
     public void whenUpdateBook_thenStatus200() throws JSONException {
+        Book book = createTestBook("In Search of Lost Time", "Marcel Proust", "description");
 
-        long id = createTestBook("In Search of Lost Time", "Marcel Proust", "description").getId();
-
-        JSONObject newBook = new JSONObject();
-
-        newBook.put("author", "John");
-        newBook.put("name", "Book");
-
-        given()
-                .contentType(ContentType.JSON).body(newBook.toString())
-                .when().put("/api/books/" + id)
+        book.setName("Book");
+        book.setAuthor("John");
+        given().log().body()
+                .contentType(ContentType.JSON).body(book)
+                .when().put("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.OK.value())
                 .body("name", equalTo("Book"))
                 .body("author", equalTo("John"));
-
-        JSONObject updDesc = new JSONObject();
-        updDesc.put("description", "test");
-
-        given()
-                .contentType(ContentType.JSON).body(updDesc.toString())
-                .when().put("/api/books/" + id)
-                .then().log().body()
-                .statusCode(HttpStatus.OK.value())
-                .body("name", equalTo("Book"))
-                .body("author", equalTo("John"))
-                .body("description", equalTo("test"));
     }
 
     @Test
     public void whenUpdateBook_thenStatus400() throws JSONException {
-        long id = createTestBook("In Search of Lost Time", "Marcel Proust", "description").getId();
-        createTestBook("test", "test", "");
-        JSONObject newBook = new JSONObject();
+        Book book = createTestBook("In Search of Lost Time", "Marcel Proust", "description");
+        createTestBook("test", "test", "test");
 
-        newBook.put("author", "John");
-        newBook.put("name", "Book");
+        Book book1 = new Book();
+        book1.setId(400L);
+        book1.setName("abc");
+        book1.setAuthor("abc");
 
-        given()
-                .contentType(ContentType.JSON).body(newBook.toString())
-                .when().put("/api/books/" + 4)
+        given().log().body()
+                .contentType(ContentType.JSON).body(book1)
+                .when().put("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        newBook.put("name", "");
+        book.setName("");
 
-        given()
-                .contentType(ContentType.JSON).body(newBook.toString())
-                .when().put("/api/books/" + id)
+        given().log().body()
+                .contentType(ContentType.JSON).body(book)
+                .when().put("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        newBook.put("name", "test");
+        book.setName("test");
 
-        given()
-                .contentType(ContentType.JSON).body(newBook.toString())
-                .when().put("/api/books/" + id)
+        given().log().body()
+                .contentType(ContentType.JSON).body(book)
+                .when().put("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }

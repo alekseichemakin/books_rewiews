@@ -38,8 +38,8 @@ public class ReviewControllerImpl implements ReviewController {
 	}
 
 	@Override
-	public ReviewResponseDTO updateReview(ReviewDTO dto, long id) {
-		return reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto), id));
+	public ReviewResponseDTO updateReview(ReviewResponseDTO dto) {
+		return reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto)));
 	}
 
 	@Override

@@ -27,8 +27,8 @@ public interface ReviewController {
 	ReviewResponseDTO readReview(@PathVariable long id);
 
 	@ApiOperation(value = "Изменить отзыв.")
-	@PutMapping("/{id}")
-	ReviewResponseDTO updateReview(@RequestBody @Valid ReviewDTO dto, @PathVariable long id);
+	@PutMapping
+	ReviewResponseDTO updateReview(@RequestBody @Valid ReviewResponseDTO dto);
 
 	@ApiOperation(value = "Удалить отзыв.")
 	@DeleteMapping("/{id}")

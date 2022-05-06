@@ -14,6 +14,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.lexa.books_reviews.controller.dto.ReviewDTO;
+import ru.lexa.books_reviews.controller.dto.ReviewResponseDTO;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.repository.entity.Book;
@@ -159,51 +160,52 @@ public class ReviewControllerTest {
     public void whenUpdateReview_thenStatus200() throws JSONException {
 
         Book book1 = createTestBook("test", "test", "test");
-        long id = createTestReview(book1, 3, "text").getId();
+        Review review = createTestReview(book1, 3, "text");
 
-        JSONObject newReview = new JSONObject();
-        newReview.put("rating", 8);
-        newReview.put("book_id", book1.getId());
-        newReview.put("text", "newText");
+        ReviewResponseDTO reviewResponseDTO = new ReviewResponseDTO();
+        reviewResponseDTO.setId(review.getId());
+        reviewResponseDTO.setRating(7);
+        reviewResponseDTO.setText("test");
+        reviewResponseDTO.setBook_id(book1.getId());
 
-        given()
-                .contentType(ContentType.JSON).body(newReview.toString())
-                .when().put("/api/reviews/" + id)
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewResponseDTO)
+                .when().put("/api/reviews")
                 .then().log().body()
                 .statusCode(HttpStatus.OK.value())
-                .body("rating", equalTo(8))
-                .body("text", equalTo("newText"));
+                .body("text", equalTo("test"))
+                .body("rating", equalTo(7));
     }
 
     @Test
     public void whenUpdateBook_thenStatus400() throws JSONException {
         Book book1 = createTestBook("test", "test", "test");
-        long id = createTestReview(book1, 3, "text").getId();
+        Review review = createTestReview(book1, 3, "text");
 
-        JSONObject newReview = new JSONObject();
-        newReview.put("rating", 8);
-        newReview.put("book_id", book1.getId());
-        newReview.put("text", "newText");
+        ReviewResponseDTO reviewResponseDTO = new ReviewResponseDTO();
+        reviewResponseDTO.setId(400);
+        reviewResponseDTO.setRating(7);
+        reviewResponseDTO.setText("test");
+        reviewResponseDTO.setBook_id(book1.getId());
 
-        given()
-                .contentType(ContentType.JSON).body(newReview.toString())
-                .when().put("/api/reviews/" + 4)
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewResponseDTO)
+                .when().put("/api/reviews")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        newReview.put("rating", 0);
-
-        given()
-                .contentType(ContentType.JSON).body(newReview.toString())
-                .when().put("/api/reviews/" + id)
+        reviewResponseDTO.setId(review.getId());
+        reviewResponseDTO.setRating(0);
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewResponseDTO)
+                .when().put("/api/reviews")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        newReview.put("rating", 11);
-
-        given()
-                .contentType(ContentType.JSON).body(newReview.toString())
-                .when().put("/api/reviews/" + id)
+        reviewResponseDTO.setRating(11);
+        given().log().body()
+                .contentType(ContentType.JSON).body(reviewResponseDTO)
+                .when().put("/api/reviews")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }

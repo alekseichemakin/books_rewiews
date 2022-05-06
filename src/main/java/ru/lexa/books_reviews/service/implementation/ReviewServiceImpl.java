@@ -45,12 +45,9 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public Review update(@Valid Review review, long id) {
-		review.setId(id);
-		Review updReview = reviewRepository.findById(review.getId())
+	public Review update(@Valid Review review) {
+		reviewRepository.findById(review.getId())
 				.orElseThrow(() -> new InputErrorException("Нет отзыва с данным id."));
-		updReview.setRating(review.getRating());
-		updReview.setText(review.getText() == null ? updReview.getText() : review.getText());
-		return reviewRepository.save(updReview);
+		return reviewRepository.save(review);
 	}
 }

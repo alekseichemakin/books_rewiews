@@ -6,7 +6,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.dto.BookDTO;
 import ru.lexa.books_reviews.controller.dto.BookResponseDTO;
-import ru.lexa.books_reviews.controller.dto.ReviewDTO;
 import ru.lexa.books_reviews.controller.dto.ReviewResponseDTO;
 
 import javax.validation.Valid;
@@ -34,8 +33,8 @@ public interface BookController {
 	BookResponseDTO readBook(@PathVariable  long id);
 
 	@ApiOperation(value = "Изменить книгу.")
-	@PutMapping("/{id}")
-	BookResponseDTO updateBook(@RequestBody BookDTO dto, @PathVariable long id);
+	@PutMapping
+	BookResponseDTO updateBook(@RequestBody BookResponseDTO dto);
 
 	@ApiOperation(value = "Удалить книгу.")
 	@DeleteMapping("/{id}")

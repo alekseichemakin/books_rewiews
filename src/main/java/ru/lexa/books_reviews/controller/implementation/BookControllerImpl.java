@@ -36,8 +36,8 @@ public class BookControllerImpl implements BookController {
 	}
 
 	@Override
-	public BookResponseDTO updateBook(BookDTO dto, long id) {
-		return bookMapper.bookToDto(bookService.update(bookMapper.dtoToBook(dto), id));
+	public BookResponseDTO updateBook(BookResponseDTO dto) {
+		return bookMapper.bookToDto(bookService.update(bookMapper.dtoToBook(dto)));
 	}
 
 	@Override

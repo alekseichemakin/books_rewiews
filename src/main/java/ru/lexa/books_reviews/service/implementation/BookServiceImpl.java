@@ -44,15 +44,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book update(Book book, long id) {
-        book.setId(id);
-        Book updBook = bookRepository.findById(book.getId())
-                .orElseThrow(() -> new InputErrorException("Нет книги с данным id"));
-        updBook.setName(book.getName() == null ? updBook.getName() : book.getName());
-        updBook.setAuthor(book.getAuthor() == null ? updBook.getAuthor() : book.getAuthor());
-        updBook.setDescription(book.getDescription() == null ? updBook.getDescription() : book.getDescription());
+    public Book update(Book book) {
+        book.setReview(bookRepository.findById(book.getId())
+                .orElseThrow(() -> new InputErrorException("Нет книги с данным id"))
+                .getReview());
         try {
-            return bookRepository.save(updBook);
+            return bookRepository.save(book);
         } catch (DataIntegrityViolationException e) {
             throw new InputErrorException("Неверное имя");
         }

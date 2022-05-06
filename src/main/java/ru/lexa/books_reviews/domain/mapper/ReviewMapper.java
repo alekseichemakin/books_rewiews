@@ -14,6 +14,9 @@ public abstract class ReviewMapper {
 	BookService bookService;
 
 	@Mapping(target = "book", expression = "java(bookService.read(dto.getBook_id()))")
+	public abstract Review dtoToReview(ReviewResponseDTO dto);
+
+	@Mapping(target = "book", expression = "java(bookService.read(dto.getBook_id()))")
 	public abstract Review dtoToReview(ReviewDTO dto);
 
 	@Mapping(target = "book_id", expression = "java(review.getBook().getId())")
