@@ -11,6 +11,9 @@ import ru.lexa.books_reviews.service.ReviewService;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * Реализация сервиса {@link ru.lexa.books_reviews.service.ReviewService}
+ */
 @Service
 @AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
