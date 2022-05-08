@@ -6,7 +6,16 @@ import ru.lexa.books_reviews.repository.entity.Book;
 
 import java.util.List;
 
+/**
+ * Класс работающий с таблицей book
+ */
 public interface BookRepository extends CrudRepository<Book, Long>, JpaSpecificationExecutor<Book> {
-    @Override
-    List<Book> findAll();
+
+	/**
+	 * Возвращает список всех имеющихся книг
+	 *
+	 * @return список книг
+	 */
+	@Override
+	List<Book> findAll();
 }

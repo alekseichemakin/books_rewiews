@@ -10,6 +10,9 @@ import ru.lexa.books_reviews.controller.dto.ReviewResponseDTO;
 import javax.validation.Valid;
 import java.util.Collection;
 
+/**
+ * Контроллер принимающий запросы для отзывов
+ */
 @RequestMapping("/api/reviews")
 @Validated
 public interface ReviewController {

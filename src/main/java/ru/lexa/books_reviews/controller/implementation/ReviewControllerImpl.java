@@ -11,6 +11,9 @@ import ru.lexa.books_reviews.service.ReviewService;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Реализация контроллера {@link ru.lexa.books_reviews.controller.ReviewController}
+ */
 @RestController
 @AllArgsConstructor
 public class ReviewControllerImpl implements ReviewController {
@@ -18,7 +21,6 @@ public class ReviewControllerImpl implements ReviewController {
 	private ReviewService reviewService;
 
 	private ReviewMapper reviewMapper;
-
 
 	@Override
 	public ReviewResponseDTO createReview(ReviewDTO dto) {

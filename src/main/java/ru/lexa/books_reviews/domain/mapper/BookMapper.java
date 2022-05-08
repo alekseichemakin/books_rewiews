@@ -5,11 +5,33 @@ import ru.lexa.books_reviews.controller.dto.BookDTO;
 import ru.lexa.books_reviews.controller.dto.BookResponseDTO;
 import ru.lexa.books_reviews.repository.entity.Book;
 
+/**
+ * Маппер книг
+ */
 @Mapper(componentModel = "spring")
 public interface BookMapper {
+
+	/**
+	 * Преобразовывает dto книги в сущность книги
+	 *
+	 * @param dto - dto книги
+	 * @return - сущность книги
+	 */
 	Book dtoToBook(BookResponseDTO dto);
 
+	/**
+	 * Преобразовывает dto книги в сущность книги
+	 *
+	 * @param dto - dto книги
+	 * @return - сущность книги
+	 */
 	Book dtoToBook(BookDTO dto);
 
+	/**
+	 * Преобразовывает сущность книги в dto книги
+	 *
+	 * @param book - сущность книги
+	 * @return - dto книги
+	 */
 	BookResponseDTO bookToDto(Book book);
 }

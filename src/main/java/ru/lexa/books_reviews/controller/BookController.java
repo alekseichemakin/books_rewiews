@@ -12,6 +12,9 @@ import javax.validation.Valid;
 import java.util.Collection;
 
 
+/**
+ * Контроллер принимающий запросы для книг
+ */
 @RequestMapping("/api/books")
 @Validated
 public interface BookController {
@@ -24,13 +27,13 @@ public interface BookController {
 	@ApiOperation(value = "Получить все книги.")
 	@GetMapping
 	Collection<BookResponseDTO> readAll(@RequestParam(required = false) String author,
-	                            @RequestParam(required = false) String description,
-	                            @RequestParam(required = false) String name,
-	                            @RequestParam(required = false) String reviewText);
+	                                    @RequestParam(required = false) String description,
+	                                    @RequestParam(required = false) String name,
+	                                    @RequestParam(required = false) String reviewText);
 
 	@ApiOperation(value = "Получить книгу.")
 	@GetMapping("/{id}")
-	BookResponseDTO readBook(@PathVariable  long id);
+	BookResponseDTO readBook(@PathVariable long id);
 
 	@ApiOperation(value = "Изменить книгу.")
 	@PutMapping

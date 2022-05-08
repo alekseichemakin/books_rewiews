@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * DTO книги {@link ru.lexa.books_reviews.repository.entity.Book}
+ */
 @Data
 public class BookDTO {
 	@ApiModelProperty(value = "Название книги.", example = "Book Name")

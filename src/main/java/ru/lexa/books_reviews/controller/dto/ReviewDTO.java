@@ -3,6 +3,9 @@ package ru.lexa.books_reviews.controller.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * DTO книги {@link ru.lexa.books_reviews.repository.entity.Review}
+ */
 @Data
 public class ReviewDTO {
 	@ApiModelProperty(value = "Текст отзыва.", example = "Review Text")

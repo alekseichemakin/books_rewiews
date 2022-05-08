@@ -8,6 +8,9 @@ import ru.lexa.books_reviews.repository.entity.Review_;
 
 import javax.persistence.criteria.Join;
 
+/**
+ * Спецификация для поиска книг в БД
+ */
 public class BookSpecification {
 	public static Specification<Book> likeName(String name) {
 		if (name == null)

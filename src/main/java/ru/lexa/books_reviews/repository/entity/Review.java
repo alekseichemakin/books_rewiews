@@ -14,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+/**
+ * Сущность отзыва
+ */
 @Entity
 @Data
 @Audited
@@ -23,12 +26,21 @@ public class Review {
 	@Column(name = "id")
 	private Long id;
 
+	/**
+	 * Текст отзыва
+	 */
 	private String text;
 
+	/**
+	 * Рейтинг книги
+	 */
 	@Min(1)
 	@Max(10)
 	private int rating;
 
+	/**
+	 * Книга к которой принадледит отзыв
+	 */
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "book_id", nullable = false)
 	private Book book;

@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
 
+/**
+ *  Обработчик исключений
+ */
 @ControllerAdvice
 public class ExceptionHandlers {
 
