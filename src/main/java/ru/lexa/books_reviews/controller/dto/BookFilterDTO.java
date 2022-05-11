@@ -5,11 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * DTO для получения фльтров запроса
+ * DTO для получения фильтров запроса
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//TODO добавить анноташек
 public class BookFilterDTO {
 	private String name;
 
@@ -18,4 +19,6 @@ public class BookFilterDTO {
 	private String author;
 
 	private String reviewText;
+
+	//TODO добавить минимальный рейтинг, участвующий в выборке
 }

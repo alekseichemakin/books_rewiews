@@ -15,5 +15,6 @@ public class ReviewDTO {
 	private int rating;
 
 	@ApiModelProperty(value = "Id книги", example = "0")
+	//TODO rename
 	private long book_id;
 }

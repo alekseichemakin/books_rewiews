@@ -34,6 +34,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    //TODO вынести в общий Exception  - InputErrorException("Нет книги с данным id")
     public Book read(long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new InputErrorException("Нет книги с данным id"));
@@ -65,6 +66,12 @@ public class BookServiceImpl implements BookService {
 
         if (book.getReview() == null || book.getReview().size() == 0)
             return 0;
+        //TODO check
+        try {
+            Thread.sleep(5000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
     }
 

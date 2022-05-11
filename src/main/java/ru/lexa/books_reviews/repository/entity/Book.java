@@ -3,14 +3,7 @@ package ru.lexa.books_reviews.repository.entity;
 import lombok.Data;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
 
@@ -27,7 +20,7 @@ public class Book {
 	private Long id;
 
 	/**
-	 * Список отзывов к книгу
+	 * Список отзывов к книге
 	 */
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL, orphanRemoval = true)
@@ -48,6 +41,13 @@ public class Book {
 	/**
 	 * Автор книги
 	 */
+	@ManyToOne
+	@JoinColumn(name = "author_id")
 	@NotEmpty(message = "Автор не должен быть пустым")
-	private String author;
+	//TODO вынести в отдельную сущность + контроллеры (поиск авторов, получение автора по книге, получение книг по автору)
+	private Author author;
+
+	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<Film> films;
 }

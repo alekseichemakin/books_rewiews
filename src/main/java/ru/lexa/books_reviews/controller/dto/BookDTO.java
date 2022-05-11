@@ -1,8 +1,8 @@
 package ru.lexa.books_reviews.controller.dto;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import ru.lexa.books_reviews.repository.entity.Author;
 
 /**
  * DTO книги {@link ru.lexa.books_reviews.repository.entity.Book}
@@ -16,5 +16,8 @@ public class BookDTO {
 	private String description;
 
 	@ApiModelProperty(value = "Автор книги.", example = "Book Author")
-	private String author;
+	private Author author;
+
+	//TODO добавить среднюю оценку по отзывам
+	//TODO добавить количество отзывов
 }
