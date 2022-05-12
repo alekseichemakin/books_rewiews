@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.lexa.books_reviews.controller.dto.BookFilterDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Review;
@@ -26,6 +26,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book create(Book book) {
+        System.out.println(book.getName());
+        System.out.println(book.getDescription());
+        System.out.println(book.getAuthor().getName());
         try {
             return bookRepository.save(book);
         } catch (DataIntegrityViolationException e) {

@@ -2,8 +2,8 @@ package ru.lexa.books_reviews.domain.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.lexa.books_reviews.controller.dto.BookDTO;
-import ru.lexa.books_reviews.controller.dto.BookRequestDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -24,6 +24,7 @@ public interface BookMapper {
 	 * @return - сущность книги
 	 */
 	@Mapping(target = "id", source = "dto.id")
+	@Mapping(target = "name", source = "dto.name")
 	Book dtoToBook(BookDTO dto, Author author, Collection<Review> review, Collection<Film> films);
 
 	/**
@@ -32,7 +33,9 @@ public interface BookMapper {
 	 * @param dto - dto книги
 	 * @return - сущность книги
 	 */
-
+	@Mapping(target = "name", source = "dto.name")
+	@Mapping(target = "author", source = "author")
+	@Mapping(target = "id", ignore = true)
 	Book dtoToBook(BookRequestDTO dto, Author author, Collection<Review> review, Collection<Film> films);
 
 	/**

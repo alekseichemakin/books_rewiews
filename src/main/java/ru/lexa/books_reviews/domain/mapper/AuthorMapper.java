@@ -2,8 +2,8 @@ package ru.lexa.books_reviews.domain.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.lexa.books_reviews.controller.dto.AuthorDTO;
-import ru.lexa.books_reviews.controller.dto.AuthorRequestDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;

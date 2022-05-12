@@ -1,10 +1,13 @@
-package ru.lexa.books_reviews.controller.dto;
+package ru.lexa.books_reviews.controller.dto.review;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * DTO книги {@link ru.lexa.books_reviews.repository.entity.Review}
+ */
 @Data
-public class BookReviewRequestDTO {
+public class ReviewDTO {
 	@ApiModelProperty(value = "Текст отзыва.", example = "Review Text")
 	private String text;
 
@@ -12,5 +15,6 @@ public class BookReviewRequestDTO {
 	private int rating;
 
 	@ApiModelProperty(value = "Id книги", example = "0")
-	private long bookId;
+	//TODO rename
+	private long book_id;
 }

@@ -41,14 +41,14 @@ public class Review {
 	/**
 	 * Книга к которой принадледит отзыв
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "book_id")
 	private Book book;
 
 	/**
 	 * Фильм к которой принадледит отзыв
 	 */
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "film_id")
 	private Film film;
 }

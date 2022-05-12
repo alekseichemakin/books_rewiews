@@ -3,8 +3,8 @@ package ru.lexa.books_reviews.controller.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.ReviewController;
-import ru.lexa.books_reviews.controller.dto.ReviewDTO;
-import ru.lexa.books_reviews.controller.dto.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
 import ru.lexa.books_reviews.domain.mapper.ReviewMapper;
 import ru.lexa.books_reviews.service.ReviewService;
 

@@ -29,11 +29,11 @@ public class Film {
 	private Author author;
 
 	/**
-	 * Список отзывов к книге
+	 * Список отзывов к фильму
 	 */
-//	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
-//			cascade = CascadeType.ALL, orphanRemoval = true)
-//	private Collection<Review> review;
+	@OneToMany(mappedBy = "film", fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL, orphanRemoval = true)
+	private Collection<Review> review;
 
 	private Date dateRelease;
 

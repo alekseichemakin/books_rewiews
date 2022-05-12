@@ -1,4 +1,4 @@
-package ru.lexa.books_reviews.controller.dto;
+package ru.lexa.books_reviews.controller.dto.author;
 
 import lombok.Data;
 

@@ -3,7 +3,10 @@ package ru.lexa.books_reviews.controller.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookController;
-import ru.lexa.books_reviews.controller.dto.*;
+import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.ReviewMapper;
 import ru.lexa.books_reviews.repository.entity.Author;
@@ -32,6 +35,7 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public BookDTO createBook(BookRequestDTO dto) {
 		Author author = authorService.read(dto.getAuthorId());
+		System.out.println(author.getName());
 		return bookMapper.bookToDto(bookService.create(bookMapper.dtoToBook(dto, author, null, null)));
 	}
 

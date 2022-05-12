@@ -43,7 +43,7 @@ public class Book {
 	 */
 	@ManyToOne
 	@JoinColumn(name = "author_id")
-	@NotEmpty(message = "Автор не должен быть пустым")
+//	@NotEmpty(message = "Автор не должен быть пустым")
 	//TODO вынести в отдельную сущность + контроллеры (поиск авторов, получение автора по книге, получение книг по автору)
 	private Author author;
 

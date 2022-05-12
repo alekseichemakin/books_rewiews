@@ -4,8 +4,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.lexa.books_reviews.controller.dto.ReviewDTO;
-import ru.lexa.books_reviews.controller.dto.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
 
 import javax.validation.Valid;
 import java.util.Collection;

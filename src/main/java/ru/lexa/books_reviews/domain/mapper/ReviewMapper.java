@@ -3,8 +3,8 @@ package ru.lexa.books_reviews.domain.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.lexa.books_reviews.controller.dto.ReviewDTO;
-import ru.lexa.books_reviews.controller.dto.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.BookService;
 

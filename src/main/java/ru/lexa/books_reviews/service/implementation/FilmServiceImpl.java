@@ -1,5 +1,7 @@
 package ru.lexa.books_reviews.service.implementation;
 
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.repository.FilmRepository;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -7,6 +9,8 @@ import ru.lexa.books_reviews.service.FilmService;
 
 import java.util.List;
 
+@Service
+@AllArgsConstructor
 public class FilmServiceImpl implements FilmService {
 
 	private FilmRepository filmRepository;

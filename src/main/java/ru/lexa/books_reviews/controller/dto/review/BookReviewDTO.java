@@ -1,6 +1,5 @@
-package ru.lexa.books_reviews.controller.dto;
+package ru.lexa.books_reviews.controller.dto.review;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
