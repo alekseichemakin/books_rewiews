@@ -6,6 +6,10 @@ import ru.lexa.books_reviews.controller.BookController;
 import ru.lexa.books_reviews.controller.dto.*;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.ReviewMapper;
+import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Film;
+import ru.lexa.books_reviews.repository.entity.Review;
+import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
 import java.util.Collection;
@@ -20,27 +24,34 @@ public class BookControllerImpl implements BookController {
 	private final BookService bookService;
 
 	private ReviewMapper reviewMapper;
+
 	private BookMapper bookMapper;
 
+	private AuthorService authorService;
+
 	@Override
-	public BookResponseDTO createBook(BookDTO dto) {
-		return bookMapper.bookToDto(bookService.create(bookMapper.dtoToBook(dto)));
+	public BookDTO createBook(BookRequestDTO dto) {
+		Author author = authorService.read(dto.getAuthorId());
+		return bookMapper.bookToDto(bookService.create(bookMapper.dtoToBook(dto, author, null, null)));
 	}
 
 	@Override
-	public Collection<BookResponseDTO> readAll(String author, String description, String name, String reviewText) {
+	public Collection<BookDTO> readAll(String author, String description, String name, String reviewText) {
 		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText);
 		return bookService.readAll(filter).stream().map(bookMapper::bookToDto).collect(Collectors.toList());
 	}
 
 	@Override
-	public BookResponseDTO readBook(long id) {
+	public BookDTO readBook(long id) {
 		return bookMapper.bookToDto(bookService.read(id));
 	}
 
 	@Override
-	public BookResponseDTO updateBook(BookResponseDTO dto) {
-		return bookMapper.bookToDto(bookService.update(bookMapper.dtoToBook(dto)));
+	public BookDTO updateBook(BookDTO dto) {
+		Author author = authorService.read(dto.getAuthorId());
+		Collection<Review> reviews = bookService.read(dto.getId()).getReview();
+		Collection<Film> films = bookService.read(dto.getId()).getFilms();
+		return bookMapper.bookToDto(bookService.update(bookMapper.dtoToBook(dto, author, reviews, films)));
 	}
 
 	@Override

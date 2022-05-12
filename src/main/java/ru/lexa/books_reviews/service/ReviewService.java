@@ -46,4 +46,8 @@ public interface ReviewService {
      * @throws InputErrorException, если нет отзыва с данным ID
      */
     void delete(long id);
+
+    List<Review> readAllBooksReviews();
+
+    List<Review> readAllFilmsReviews();
 }

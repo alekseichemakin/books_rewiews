@@ -53,4 +53,14 @@ public class ReviewServiceImpl implements ReviewService {
 				.orElseThrow(() -> new InputErrorException("Нет отзыва с данным id."));
 		return reviewRepository.save(review);
 	}
+
+	@Override
+	public List<Review> readAllBooksReviews() {
+		return reviewRepository.findAllBooksReviews();
+	}
+
+	@Override
+	public List<Review> readAllFilmsReviews() {
+		return reviewRepository.findAllFilmsReviews();
+	}
 }

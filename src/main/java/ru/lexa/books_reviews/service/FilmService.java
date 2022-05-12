@@ -1,8 +1,6 @@
 package ru.lexa.books_reviews.service;
 
-import ru.lexa.books_reviews.controller.dto.BookFilterDTO;
 import ru.lexa.books_reviews.exception.InputErrorException;
-import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 
 import java.util.List;

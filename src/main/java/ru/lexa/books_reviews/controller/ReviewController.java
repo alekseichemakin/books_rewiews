@@ -13,8 +13,8 @@ import java.util.Collection;
 /**
  * Контроллер принимающий запросы для отзывов
  */
-@RequestMapping("/api/reviews")
 @Validated
+@RequestMapping("/api/reviews")
 public interface ReviewController {
 	@ApiOperation(value = "Добавить новый отзыв.")
 	@PostMapping

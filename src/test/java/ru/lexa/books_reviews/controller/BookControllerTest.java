@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.lexa.books_reviews.controller.dto.BookDTO;
+import ru.lexa.books_reviews.controller.dto.BookRequestDTO;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.repository.entity.Book;
@@ -51,7 +51,7 @@ public class BookControllerTest {
 
     @Test
     public void whenCreateBook_thenStatus201() {
-        BookDTO book = new BookDTO();
+        BookRequestDTO book = new BookRequestDTO();
         book.setName("test");
         book.setAuthor("test");
         given().log().body()
@@ -63,28 +63,28 @@ public class BookControllerTest {
 
     @Test
     public void whenCreateBookWithEmptyNameAndAuthor_thenStatus400() {
-        BookDTO bookDTO = new BookDTO();
+        BookRequestDTO bookRequestDTO = new BookRequestDTO();
 
-        bookDTO.setAuthor("test");
-        bookDTO.setName("");
+        bookRequestDTO.setAuthor("test");
+        bookRequestDTO.setName("");
         given().log().body()
-                .contentType(ContentType.JSON).body(bookDTO)
+                .contentType(ContentType.JSON).body(bookRequestDTO)
                 .when().post("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        bookDTO.setAuthor("");
-        bookDTO.setName("test");
+        bookRequestDTO.setAuthor("");
+        bookRequestDTO.setName("test");
         given().log().body()
-                .contentType(ContentType.JSON).body(bookDTO)
+                .contentType(ContentType.JSON).body(bookRequestDTO)
                 .when().post("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
 
-        bookDTO.setAuthor(null);
-        bookDTO.setName(null);
+        bookRequestDTO.setAuthor(null);
+        bookRequestDTO.setName(null);
         given().log().body()
-                .contentType(ContentType.JSON).body(bookDTO)
+                .contentType(ContentType.JSON).body(bookRequestDTO)
                 .when().post("/api/books")
                 .then().log().body()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -93,7 +93,7 @@ public class BookControllerTest {
     @Test
     public void whenCreateBookWithDuplicateName_thenStatus400() {
         createTestBook("test", "test", "test");
-        BookDTO book = new BookDTO();
+        BookRequestDTO book = new BookRequestDTO();
         book.setName("test");
         book.setAuthor("test");
         given().log().body()

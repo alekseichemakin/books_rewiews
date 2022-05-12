@@ -42,4 +42,7 @@ public abstract class ReviewMapper {
 	 */
 	@Mapping(target = "book_id", expression = "java(review.getBook().getId())")
 	public abstract ReviewResponseDTO reviewToDto(Review review);
+
+
+
 }
