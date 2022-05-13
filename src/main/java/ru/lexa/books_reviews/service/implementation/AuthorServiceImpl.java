@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.service.implementation;
 
 import lombok.AllArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.repository.AuthorRepository;
@@ -17,7 +18,11 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public Author create(Author author) {
-		return authorRepository.save(author);
+		try {
+			return authorRepository.save(author);
+		} catch (DataIntegrityViolationException e) {
+			throw new InputErrorException("Неверное имя");
+		}
 	}
 
 	@Override
@@ -28,12 +33,18 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public Author update(Author author) {
-		return authorRepository.save(author);
+		author.setBooks(read(author.getId()).getBooks());
+		author.setFilms(read(author.getId()).getFilms());
+		try {
+			return authorRepository.save(author);
+		} catch (DataIntegrityViolationException e) {
+			throw new InputErrorException("Неверное имя");
+		}
 	}
 
 	@Override
 	public void delete(long id) {
-		authorRepository.deleteById(id);
+		authorRepository.delete(read(id));
 	}
 
 	@Override

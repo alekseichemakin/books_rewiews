@@ -7,8 +7,6 @@ import java.sql.Date;
 public class FilmRequestDTO {
 	private String name;
 
-	private long authorId;
-
 	private long bookId;
 
 	private Date dateRelease;

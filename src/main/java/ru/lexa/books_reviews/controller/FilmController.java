@@ -1,0 +1,50 @@
+package ru.lexa.books_reviews.controller;
+
+import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
+import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
+import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
+
+import java.util.Collection;
+
+@RequestMapping("/api/films")
+@Validated
+public interface FilmController {
+	@ApiOperation(value = "Добавить новый фильм.")
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	FilmDTO createFilm(@RequestBody FilmRequestDTO dto);
+
+	@ApiOperation(value = "Получить все фильмы.")
+	@GetMapping
+	Collection<FilmDTO> readAll();
+
+	@ApiOperation(value = "Получить фильм.")
+	@GetMapping("/{id}")
+	FilmDTO readFilm(@PathVariable long id);
+
+	@ApiOperation(value = "Изменить фильм.")
+	@PutMapping
+	FilmDTO updateFilm(@RequestBody FilmDTO dto);
+
+	@ApiOperation(value = "Удалить фильм.")
+	@DeleteMapping("/{id}")
+	void deleteFilm(@PathVariable long id);
+
+	@ApiOperation(value = "Получить отзывы к фильму.")
+	@GetMapping("/{id}/reviews")
+	Collection<ReviewResponseDTO> getReviews(@PathVariable long id);
+
+	@ApiOperation(value = "Получить автора фильма.")
+	@GetMapping("/{id}/author")
+	AuthorDTO getAuthor(@PathVariable long id);
+
+	@ApiOperation(value = "Получить экранизированную книгу.")
+	@GetMapping("/{id}/book")
+	BookResponseDTO readBook(@PathVariable long id);
+}

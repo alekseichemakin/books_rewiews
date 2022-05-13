@@ -8,12 +8,16 @@ import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.specification.BookSpecification;
 import ru.lexa.books_reviews.service.BookService;
+import ru.lexa.books_reviews.service.FilmService;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса {@link ru.lexa.books_reviews.service.BookService}
@@ -24,11 +28,10 @@ public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
 
+    private FilmService filmService;
+
     @Override
     public Book create(Book book) {
-        System.out.println(book.getName());
-        System.out.println(book.getDescription());
-        System.out.println(book.getAuthor().getName());
         try {
             return bookRepository.save(book);
         } catch (DataIntegrityViolationException e) {
@@ -55,6 +58,10 @@ public class BookServiceImpl implements BookService {
         book.setReview(bookRepository.findById(book.getId())
                 .orElseThrow(() -> new InputErrorException("Нет книги с данным id"))
                 .getReview());
+        Collection<Film> films = book.getFilms();
+        films.forEach(film -> film.setAuthor(book.getAuthor()));
+        films = films.stream().map(filmService::update).collect(Collectors.toList());
+        book.setFilms(films);
         try {
             return bookRepository.save(book);
         } catch (DataIntegrityViolationException e) {

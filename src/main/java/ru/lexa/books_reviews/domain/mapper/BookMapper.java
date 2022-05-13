@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -25,6 +26,9 @@ public interface BookMapper {
 	 */
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
+	@Mapping(target = "author", source = "author")
+	@Mapping(target = "review", source = "review")
+	@Mapping(target = "films", source = "films")
 	Book dtoToBook(BookDTO dto, Author author, Collection<Review> review, Collection<Film> films);
 
 	/**
@@ -35,6 +39,8 @@ public interface BookMapper {
 	 */
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "author", source = "author")
+	@Mapping(target = "review", source = "review")
+	@Mapping(target = "films", source = "films")
 	@Mapping(target = "id", ignore = true)
 	Book dtoToBook(BookRequestDTO dto, Author author, Collection<Review> review, Collection<Film> films);
 
@@ -45,5 +51,5 @@ public interface BookMapper {
 	 * @return - dto книги
 	 */
 	@Mapping(target = "authorId", source = "book.author.id")
-	BookDTO bookToDto(Book book);
+	BookResponseDTO bookToDto(Book book, int reviewCount, double averageRating);
 }

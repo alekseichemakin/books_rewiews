@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 
 import java.util.Collection;
@@ -35,9 +36,9 @@ public interface AuthorController {
 
 	@ApiOperation(value = "Получить книги автора.")
 	@GetMapping("/{id}/books")
-	Collection<BookDTO> getBooks(@PathVariable long id);
+	Collection<BookResponseDTO> readBooks(@PathVariable long id);
 
 	@ApiOperation(value = "Получить фильмы автора.")
 	@GetMapping("/{id}/films")
-	Collection<FilmDTO> getFilms(@PathVariable long id);
+	Collection<FilmDTO> readFilms(@PathVariable long id);
 }

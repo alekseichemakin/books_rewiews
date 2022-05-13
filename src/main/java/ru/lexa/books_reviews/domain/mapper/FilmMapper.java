@@ -10,18 +10,20 @@ import ru.lexa.books_reviews.repository.entity.Film;
 
 @Mapper(componentModel = "spring")
 public interface FilmMapper {
-	@Mapping(target = "authorId", source = "author.id")
 	@Mapping(target = "bookId", source = "book.id")
 	FilmDTO filmToDto(Film film);
-
 
 	@Mapping(target = "dateRelease", source = "dto.dateRelease")
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
+	@Mapping(target = "author", source = "author")
+	@Mapping(target = "book", source = "book")
 	Film dtoToFilm(FilmDTO dto, Author author, Book book);
 
 	@Mapping(target = "dateRelease", source = "dto.dateRelease")
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "id", ignore = true)
+	@Mapping(target = "author", source = "author")
+	@Mapping(target = "book", source = "book")
 	Film dtoToFilm(FilmRequestDTO dto, Author author, Book book);
 }

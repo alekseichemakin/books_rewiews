@@ -2,7 +2,6 @@ package ru.lexa.books_reviews.controller.dto.book;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import ru.lexa.books_reviews.repository.entity.Author;
 
 /**
  * DTO книги {@link ru.lexa.books_reviews.repository.entity.Book}

@@ -6,14 +6,15 @@ import ru.lexa.books_reviews.controller.AuthorController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.FilmMapper;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
-import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.AuthorService;
+import ru.lexa.books_reviews.service.BookService;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -29,6 +30,8 @@ public class AuthorControllerImpl implements AuthorController {
 	private BookMapper bookMapper;
 
 	private FilmMapper filmMapper;
+
+	private BookService bookService;
 
 	@Override
 	public AuthorDTO createAuthor(AuthorRequestDTO dto) {
@@ -58,16 +61,22 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
-	public Collection<BookDTO> getBooks(long id) {
+	public Collection<BookResponseDTO> readBooks(long id) {
 		return authorService.read(id).getBooks().stream()
-				.map(bookMapper::bookToDto)
+				.map(this::mapHelper)
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public Collection<FilmDTO> getFilms(long id) {
+	public Collection<FilmDTO> readFilms(long id) {
 		return authorService.read(id).getFilms().stream()
 				.map(filmMapper::filmToDto)
 				.collect(Collectors.toList());
+	}
+
+	private BookResponseDTO mapHelper(Book book) {
+		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
+		double averageRating = bookService.averageRating(book.getId());
+		return bookMapper.bookToDto(book, reviewCount, averageRating);
 	}
 }

@@ -5,9 +5,11 @@ import ru.lexa.books_reviews.repository.entity.Author;
 
 import java.util.List;
 
+//TODO add comments
 public interface AuthorService {
 	/**
 	 * Создает книгу с заданными параметрми
+	 *
 	 * @param book - книга для создания
 	 * @return созданную книгу
 	 * @throws InputErrorException, если книга с данным именнем существует
@@ -16,6 +18,7 @@ public interface AuthorService {
 
 	/**
 	 * Возвращает книгу по ID
+	 *
 	 * @param id - ID книги
 	 * @return - объект книги с заданным ID
 	 * @throws InputErrorException, если нет книги с данным ID
@@ -25,6 +28,7 @@ public interface AuthorService {
 	/**
 	 * Обновляет книгу с заданным ID,
 	 * в соответствии с переданной книгой
+	 *
 	 * @param book - книга в соответсвии с которой нужно обновить данные
 	 * @return - объект обновленной книги
 	 * @throws InputErrorException, если нет книги с данным ID или книга с данным именем уже существует
@@ -33,6 +37,7 @@ public interface AuthorService {
 
 	/**
 	 * Удаляет книгу с заданным ID
+	 *
 	 * @param id - id книги, которого нужно удалить
 	 * @throws InputErrorException, если нет книги с данным ID
 	 */

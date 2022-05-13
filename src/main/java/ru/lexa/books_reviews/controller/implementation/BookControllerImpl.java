@@ -3,13 +3,17 @@ package ru.lexa.books_reviews.controller.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookController;
+import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
+import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.ReviewMapper;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.AuthorService;
@@ -32,30 +36,36 @@ public class BookControllerImpl implements BookController {
 
 	private AuthorService authorService;
 
+	private AuthorMapper authorMapper;
+
 	@Override
-	public BookDTO createBook(BookRequestDTO dto) {
+	public BookResponseDTO createBook(BookRequestDTO dto) {
 		Author author = authorService.read(dto.getAuthorId());
-		System.out.println(author.getName());
-		return bookMapper.bookToDto(bookService.create(bookMapper.dtoToBook(dto, author, null, null)));
+		Book book = bookService.create(bookMapper.dtoToBook(dto, author, null, null));
+		return mapHelper(book);
 	}
 
 	@Override
-	public Collection<BookDTO> readAll(String author, String description, String name, String reviewText) {
+	public Collection<BookResponseDTO> readAll(String author, String description, String name, String reviewText) {
 		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText);
-		return bookService.readAll(filter).stream().map(bookMapper::bookToDto).collect(Collectors.toList());
+		return bookService.readAll(filter).stream()
+				.map(this::mapHelper)
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public BookDTO readBook(long id) {
-		return bookMapper.bookToDto(bookService.read(id));
+	public BookResponseDTO readBook(long id) {
+		return mapHelper(bookService.read(id));
 	}
 
 	@Override
-	public BookDTO updateBook(BookDTO dto) {
+	public BookResponseDTO updateBook(BookDTO dto) {
 		Author author = authorService.read(dto.getAuthorId());
 		Collection<Review> reviews = bookService.read(dto.getId()).getReview();
 		Collection<Film> films = bookService.read(dto.getId()).getFilms();
-		return bookMapper.bookToDto(bookService.update(bookMapper.dtoToBook(dto, author, reviews, films)));
+		Book book = bookMapper.dtoToBook(dto, author, reviews, films);
+		book = bookService.update(book);
+		return mapHelper(book);
 	}
 
 	@Override
@@ -73,5 +83,16 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public double getAverage(long id) {
 		return bookService.averageRating(id);
+	}
+
+	@Override
+	public AuthorDTO getAuthor(long id) {
+		return authorMapper.authorToDto(bookService.read(id).getAuthor());
+	}
+
+	private BookResponseDTO mapHelper(Book book) {
+		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
+		double averageRating = bookService.averageRating(book.getId());
+		return bookMapper.bookToDto(book, reviewCount, averageRating);
 	}
 }
