@@ -6,7 +6,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
+import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
@@ -35,7 +37,7 @@ public class BookServiceImpl implements BookService {
         try {
             return bookRepository.save(book);
         } catch (DataIntegrityViolationException e) {
-            throw new InputErrorException("Неверное имя");
+            throw new NameErrorException();
         }
     }
 
@@ -43,20 +45,20 @@ public class BookServiceImpl implements BookService {
     //TODO вынести в общий Exception  - InputErrorException("Нет книги с данным id")
     public Book read(long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new InputErrorException("Нет книги с данным id"));
+                .orElseThrow(BookNotFoundException::new);
     }
 
     @Override
     public void delete(long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new InputErrorException("Нет книги с данным id"));
+                .orElseThrow(BookNotFoundException::new);
         bookRepository.delete(book);
     }
 
     @Override
     public Book update(Book book) {
         book.setReview(bookRepository.findById(book.getId())
-                .orElseThrow(() -> new InputErrorException("Нет книги с данным id"))
+                .orElseThrow(BookNotFoundException::new)
                 .getReview());
         Collection<Film> films = book.getFilms();
         films.forEach(film -> film.setAuthor(book.getAuthor()));
@@ -65,14 +67,14 @@ public class BookServiceImpl implements BookService {
         try {
             return bookRepository.save(book);
         } catch (DataIntegrityViolationException e) {
-            throw new InputErrorException("Неверное имя");
+            throw new NameErrorException();
         }
     }
 
     @Override
     public double averageRating(long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new InputErrorException("Нет книги с данным id"));
+                .orElseThrow(BookNotFoundException::new);
 
         if (book.getReview() == null || book.getReview().size() == 0)
             return 0;

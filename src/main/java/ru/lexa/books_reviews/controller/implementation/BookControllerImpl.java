@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
-import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
-import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
+import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
-import ru.lexa.books_reviews.domain.mapper.ReviewMapper;
+import ru.lexa.books_reviews.domain.mapper.BookReviewMapper;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class BookControllerImpl implements BookController {
 	private final BookService bookService;
 
-	private ReviewMapper reviewMapper;
+	private BookReviewMapper reviewMapper;
 
 	private BookMapper bookMapper;
 
@@ -74,7 +74,7 @@ public class BookControllerImpl implements BookController {
 	}
 
 	@Override
-	public Collection<ReviewResponseDTO> getReviews(long id) {
+	public Collection<BookReviewDTO> getReviews(long id) {
 		return bookService.read(id).getReview().stream()
 				.map(reviewMapper::reviewToDto)
 				.collect(Collectors.toList());

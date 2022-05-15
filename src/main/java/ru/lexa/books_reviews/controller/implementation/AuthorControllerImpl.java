@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.AuthorController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
-import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.domain.mapper.AuthorMapper;

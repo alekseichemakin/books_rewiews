@@ -3,7 +3,8 @@ package ru.lexa.books_reviews.service.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import ru.lexa.books_reviews.exception.InputErrorException;
+import ru.lexa.books_reviews.exception.FilmNotFoundException;
+import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.FilmRepository;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.service.FilmService;
@@ -21,14 +22,14 @@ public class FilmServiceImpl implements FilmService {
 		try {
 			return filmRepository.save(film);
 		} catch (DataIntegrityViolationException e) {
-			throw new InputErrorException("Неверное имя");
+			throw new NameErrorException();
 		}
 	}
 
 	@Override
 	public Film read(long id) {
 		return filmRepository.findById(id)
-				.orElseThrow(() -> new InputErrorException("Нет фильиа с данным id"));
+				.orElseThrow(FilmNotFoundException::new);
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class FilmServiceImpl implements FilmService {
 		try {
 			return filmRepository.save(film);
 		} catch (DataIntegrityViolationException e) {
-			throw new InputErrorException("Неверное имя");
+			throw new NameErrorException();
 		}
 	}
 

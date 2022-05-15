@@ -8,7 +8,7 @@ import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
-import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
 
 import java.util.Collection;
 
@@ -38,7 +38,7 @@ public interface FilmController {
 
 	@ApiOperation(value = "Получить отзывы к фильму.")
 	@GetMapping("/{id}/reviews")
-	Collection<ReviewResponseDTO> getReviews(@PathVariable long id);
+	Collection<FilmReviewDTO> getReviews(@PathVariable long id);
 
 	@ApiOperation(value = "Получить автора фильма.")
 	@GetMapping("/{id}/author")

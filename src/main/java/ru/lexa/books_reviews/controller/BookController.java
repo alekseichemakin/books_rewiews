@@ -8,7 +8,7 @@ import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
-import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -47,7 +47,7 @@ public interface BookController {
 
 	@ApiOperation(value = "Получить отзывы к книге.")
 	@GetMapping("/{id}/reviews")
-	Collection<ReviewResponseDTO> getReviews(@PathVariable long id);
+	Collection<BookReviewDTO> getReviews(@PathVariable long id);
 
 	@ApiOperation(value = "Получить среднюю оценку.")
 	@GetMapping("/{id}/averageRating")

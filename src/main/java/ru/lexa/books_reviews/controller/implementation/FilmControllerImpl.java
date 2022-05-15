@@ -7,11 +7,11 @@ import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
-import ru.lexa.books_reviews.controller.dto.review.ReviewResponseDTO;
+import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
 import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.FilmMapper;
-import ru.lexa.books_reviews.domain.mapper.ReviewMapper;
+import ru.lexa.books_reviews.domain.mapper.FilmReviewMapper;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
@@ -29,7 +29,7 @@ public class FilmControllerImpl implements FilmController {
 
 	private BookService bookService;
 
-	private ReviewMapper reviewMapper;
+	private FilmReviewMapper reviewMapper;
 
 	private AuthorMapper authorMapper;
 
@@ -65,7 +65,7 @@ public class FilmControllerImpl implements FilmController {
 	}
 
 	@Override
-	public Collection<ReviewResponseDTO> getReviews(long id) {
+	public Collection<FilmReviewDTO> getReviews(long id) {
 		return filmService.read(id).getReview().stream()
 				.map(reviewMapper::reviewToDto)
 				.collect(Collectors.toList());
