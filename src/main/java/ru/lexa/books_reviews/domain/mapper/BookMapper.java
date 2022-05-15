@@ -24,6 +24,7 @@ public interface BookMapper {
 	 * @param dto - dto книги
 	 * @return - сущность книги
 	 */
+	@Mapping(target = "averageRating", ignore = true)
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "author", source = "author")
@@ -37,6 +38,7 @@ public interface BookMapper {
 	 * @param dto - dto книги
 	 * @return - сущность книги
 	 */
+	@Mapping(target = "averageRating", ignore = true)
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "author", source = "author")
 	@Mapping(target = "review", source = "review")
@@ -51,5 +53,5 @@ public interface BookMapper {
 	 * @return - dto книги
 	 */
 	@Mapping(target = "authorId", source = "book.author.id")
-	BookResponseDTO bookToDto(Book book, int reviewCount, double averageRating);
+	BookResponseDTO bookToDto(Book book, int reviewCount);
 }

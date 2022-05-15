@@ -46,8 +46,8 @@ public class BookControllerImpl implements BookController {
 	}
 
 	@Override
-	public Collection<BookResponseDTO> readAll(String author, String description, String name, String reviewText) {
-		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText);
+	public Collection<BookResponseDTO> readAll(String author, String description, String name, String reviewText, Double maxRating) {
+		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText, maxRating);
 		return bookService.readAll(filter).stream()
 				.map(this::mapHelper)
 				.collect(Collectors.toList());
@@ -92,7 +92,6 @@ public class BookControllerImpl implements BookController {
 
 	private BookResponseDTO mapHelper(Book book) {
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
-		double averageRating = bookService.averageRating(book.getId());
-		return bookMapper.bookToDto(book, reviewCount, averageRating);
+		return bookMapper.bookToDto(book, reviewCount);
 	}
 }

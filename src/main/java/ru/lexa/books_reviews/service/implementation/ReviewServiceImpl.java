@@ -22,6 +22,7 @@ import java.util.List;
 public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewRepository reviewRepository;
+
 	private BookService bookService;
 
 	private FilmService filmService;

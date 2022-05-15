@@ -27,7 +27,9 @@ public class BookReviewControllerImpl implements BookReviewController {
 	@Override
 	public BookReviewDTO createReview(BookReviewRequestDTO dto) {
 		Book book = bookService.read(dto.getBookId());
-		return reviewMapper.reviewToDto(reviewService.create(reviewMapper.dtoToReview(dto, book)));
+		BookReviewDTO returnDto = reviewMapper.reviewToDto(reviewService.create(reviewMapper.dtoToReview(dto, book)));
+		bookService.averageRating(dto.getBookId());
+		return returnDto;
 	}
 
 	@Override
@@ -45,11 +47,15 @@ public class BookReviewControllerImpl implements BookReviewController {
 	@Override
 	public BookReviewDTO updateReview(BookReviewDTO dto) {
 		Book book = bookService.read(dto.getBookId());
-		return reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto, book)));
+		BookReviewDTO returnDto = reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto, book)));
+		bookService.averageRating(dto.getBookId());
+		return returnDto;
 	}
 
 	@Override
 	public void deleteReview(long id) {
+		long bookId = reviewService.read(id).getBook().getId();
 		reviewService.delete(id);
+		bookService.averageRating(bookId);
 	}
 }

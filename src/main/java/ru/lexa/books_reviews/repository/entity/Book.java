@@ -1,6 +1,8 @@
 package ru.lexa.books_reviews.repository.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -49,4 +51,6 @@ public class Book {
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<Film> films;
+
+	private double averageRating = 0;
 }

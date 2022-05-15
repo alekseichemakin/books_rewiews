@@ -75,7 +75,6 @@ public class AuthorControllerImpl implements AuthorController {
 
 	private BookResponseDTO mapHelper(Book book) {
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
-		double averageRating = bookService.averageRating(book.getId());
-		return bookMapper.bookToDto(book, reviewCount, averageRating);
+		return bookMapper.bookToDto(book, reviewCount);
 	}
 }

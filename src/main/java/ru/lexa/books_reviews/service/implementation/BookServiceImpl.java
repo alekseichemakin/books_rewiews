@@ -42,7 +42,6 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    //TODO вынести в общий Exception  - InputErrorException("Нет книги с данным id")
     public Book read(long id) {
         return bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
@@ -75,16 +74,19 @@ public class BookServiceImpl implements BookService {
     public double averageRating(long id) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(BookNotFoundException::new);
-
-        if (book.getReview() == null || book.getReview().size() == 0)
-            return 0;
-        //TODO check
-        try {
-            Thread.sleep(5000L);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        double rating = 0;
+        if (book.getReview() != null && book.getReview().size() > 0) {
+            rating = book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
         }
-        return book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
+        //TODO check
+//        try {
+//            Thread.sleep(5000L);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        book.setAverageRating(rating);
+        bookRepository.save(book);
+        return rating;
     }
 
     @Override
@@ -93,7 +95,8 @@ public class BookServiceImpl implements BookService {
 		        .where(BookSpecification.likeName(filter.getName()))
 		        .and(BookSpecification.likeAuthor(filter.getAuthor()))
 		        .and(BookSpecification.likeDescription(filter.getDescription()))
-		        .and(BookSpecification.likeReviewText(filter.getReviewText()));
+		        .and(BookSpecification.likeReviewText(filter.getReviewText()))
+                .and(BookSpecification.lesThenRating(filter.getLessThenRating()));
         return bookRepository.findAll(spec);
     }
 }

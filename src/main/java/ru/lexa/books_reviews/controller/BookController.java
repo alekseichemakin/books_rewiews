@@ -29,9 +29,10 @@ public interface BookController {
 	@ApiOperation(value = "Получить все книги.")
 	@GetMapping
 	Collection<BookResponseDTO> readAll(@RequestParam(required = false) String author,
-	                            @RequestParam(required = false) String description,
-	                            @RequestParam(required = false) String name,
-	                            @RequestParam(required = false) String reviewText);
+	                                    @RequestParam(required = false) String description,
+	                                    @RequestParam(required = false) String name,
+	                                    @RequestParam(required = false) String reviewText,
+	                                    @RequestParam(required = false) Double maxRating);
 
 	@ApiOperation(value = "Получить книгу.")
 	@GetMapping("/{id}")

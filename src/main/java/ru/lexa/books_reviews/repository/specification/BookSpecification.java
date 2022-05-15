@@ -38,4 +38,10 @@ public class BookSpecification {
 			return cb.like(rev.get(Review_.TEXT), "%" + text + "%");
 		};
 	}
+
+	public static Specification<Book> lesThenRating(Double maxRating) {
+		if (maxRating == null)
+			return null;
+		return (root, query, cb) -> cb.lessThan(root.get(Book_.AVERAGE_RATING), maxRating);
+	}
 }

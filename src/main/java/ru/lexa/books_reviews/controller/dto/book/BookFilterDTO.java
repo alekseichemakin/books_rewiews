@@ -20,5 +20,6 @@ public class BookFilterDTO {
 
 	private String reviewText;
 
+	private Double lessThenRating;
 	//TODO добавить минимальный рейтинг, участвующий в выборке
 }
