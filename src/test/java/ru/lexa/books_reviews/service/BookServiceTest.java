@@ -11,6 +11,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.jpa.domain.Specification;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.repository.BookRepository;
+import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.implementation.BookServiceImpl;
@@ -40,28 +41,32 @@ public class BookServiceTest {
 	@Test
 	public void whenSaveBook_ReturnBook() {
 		Book saveBook = new Book();
+		Author author = new Author();
 		when(bookRepository.save(Mockito.any(Book.class))).thenAnswer(i -> i.getArguments()[0]);
 
+		author.setName("test");
 		saveBook.setName("test");
-		saveBook.setAuthor("test");
+		saveBook.setAuthor(author);
 		Book book = bookService.create(saveBook);
 
 		assertEquals("test", book.getName());
-		assertEquals("test", book.getAuthor());
+		assertEquals("test", book.getAuthor().getName());
 	}
 
 	@Test
 	public void whenReadBook_ReturnBook() {
 		Book saveBook = new Book();
+		Author author = new Author();
 		saveBook.setId(1L);
 		saveBook.setName("test");
-		saveBook.setAuthor("test");
+		author.setName("test");
+		saveBook.setAuthor(author);
 		when(bookRepository.findById(1L)).thenReturn(Optional.of(saveBook));
 
 		Book book = bookService.read(1);
 
 		assertEquals("test", book.getName());
-		assertEquals("test", book.getAuthor());
+		assertEquals("test", book.getAuthor().getName());
 	}
 
 	@Test
