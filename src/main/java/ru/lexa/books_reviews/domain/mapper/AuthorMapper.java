@@ -10,12 +10,38 @@ import ru.lexa.books_reviews.repository.entity.Film;
 
 import java.util.Collection;
 
+/**
+ * Маппер автора
+ */
 @Mapper(componentModel = "spring")
 public interface AuthorMapper {
+	/**
+	 * Преобразовывает dto автора в сущность автора
+	 *
+	 * @param dto   - dto автора
+	 * @param books - книги автора
+	 * @param films - фильмы автора
+	 * @return - сущность автора
+	 */
 	@Mapping(target = "id", source = "dto.id")
 	Author dtoToAuthor(AuthorDTO dto, Collection<Book> books, Collection<Film> films);
 
+	/**
+	 * Преобразовывает dto автора в сущность автора
+	 *
+	 * @param dto   - dto автора
+	 * @param books - книги автора
+	 * @param films - фильмы автора
+	 * @return - сущность автора
+	 */
+	@Mapping(target = "id", ignore = true)
 	Author dtoToAuthor(AuthorRequestDTO dto, Collection<Book> books, Collection<Film> films);
 
+	/**
+	 * Преобразовывает сущность автора в dto автора
+	 *
+	 * @param author - сущность автора
+	 * @return - dto автора
+	 */
 	AuthorDTO authorToDto(Author author);
 }

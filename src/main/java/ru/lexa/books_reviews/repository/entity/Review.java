@@ -25,7 +25,7 @@ public class Review {
 	private String text;
 
 	/**
-	 * Рейтинг книги
+	 * Рейтинг
 	 */
 	@Min(1)
 	@Max(10)

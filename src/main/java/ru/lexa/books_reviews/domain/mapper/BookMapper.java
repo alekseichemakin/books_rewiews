@@ -22,6 +22,9 @@ public interface BookMapper {
 	 * Преобразовывает dto книги в сущность книги
 	 *
 	 * @param dto - dto книги
+	 * @param author - автор книги
+	 * @param review - отзывы книги
+	 * @param films - экранизаци книги
 	 * @return - сущность книги
 	 */
 	@Mapping(target = "averageRating", ignore = true)
@@ -36,6 +39,9 @@ public interface BookMapper {
 	 * Преобразовывает dto книги в сущность книги
 	 *
 	 * @param dto - dto книги
+	 * @param author - автор книги
+	 * @param review - отзывы книги
+	 * @param films - экранизаци книги
 	 * @return - сущность книги
 	 */
 	@Mapping(target = "averageRating", ignore = true)
@@ -50,6 +56,7 @@ public interface BookMapper {
 	 * Преобразовывает сущность книги в dto книги
 	 *
 	 * @param book - сущность книги
+	 * @param reviewCount - колличество отзывов
 	 * @return - dto книги
 	 */
 	@Mapping(target = "authorId", source = "book.author.id")

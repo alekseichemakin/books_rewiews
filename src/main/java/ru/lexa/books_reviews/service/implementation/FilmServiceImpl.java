@@ -11,6 +11,9 @@ import ru.lexa.books_reviews.service.FilmService;
 
 import java.util.List;
 
+/**
+ * Реализация сервиса {@link ru.lexa.books_reviews.service.FilmService}
+ */
 @Service
 @AllArgsConstructor
 public class FilmServiceImpl implements FilmService {

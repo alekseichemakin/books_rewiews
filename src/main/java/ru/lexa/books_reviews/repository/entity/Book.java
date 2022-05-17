@@ -1,8 +1,6 @@
 package ru.lexa.books_reviews.repository.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.Generated;
-import org.hibernate.annotations.GenerationTime;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -48,9 +46,15 @@ public class Book {
 	//TODO вынести в отдельную сущность + контроллеры (поиск авторов, получение автора по книге, получение книг по автору)
 	private Author author;
 
+	/**
+	 * Экранизации книги
+	 */
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<Film> films;
 
+	/**
+	 * Средний рейтинг
+	 */
 	private double averageRating = 0;
 }

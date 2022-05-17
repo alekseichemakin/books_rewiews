@@ -18,9 +18,19 @@ public interface ReviewRepository extends CrudRepository<Review, Long> {
     @Override
     List<Review> findAll();
 
+    /**
+     * Возвращает список отзывов для книги
+     *
+     * @return список отзывов
+     */
     @Query(value = "SELECT r FROM Review r WHERE r.book is not null ")
     List<Review> findAllBooksReviews();
 
+    /**
+     * Возвращает список отзывов для фильмоф
+     *
+     * @return список отзывов
+     */
     @Query(value = "SELECT r FROM Review r WHERE r.film is not null")
     List<Review> findAllFilmsReviews();
 }

@@ -11,6 +11,9 @@ import ru.lexa.books_reviews.service.AuthorService;
 
 import java.util.List;
 
+/**
+ * Реализация сервиса {@link ru.lexa.books_reviews.service.AuthorService}
+ */
 @Service
 @AllArgsConstructor
 public class AuthorServiceImpl implements AuthorService {

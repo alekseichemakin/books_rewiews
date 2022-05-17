@@ -8,6 +8,9 @@ import javax.validation.constraints.NotEmpty;
 import java.sql.Date;
 import java.util.Collection;
 
+/**
+ * Сущность фильма
+ */
 @Entity
 @Data
 @Audited
@@ -24,6 +27,9 @@ public class Film {
 	@NotEmpty(message = "Имя не должно быть пустым")
 	private String name;
 
+	/**
+	 * Автор экранизированной книги
+	 */
 	@ManyToOne
 	@JoinColumn(name = "author_id")
 	private Author author;
@@ -35,8 +41,14 @@ public class Film {
 			cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<Review> review;
 
+	/**
+	 * Дата экранизации
+	 */
 	private Date dateRelease;
 
+	/**
+	 * Экранизированная книга
+	 */
 	@ManyToOne
 	@JoinColumn(name = "book_id")
 	private Book book;
