@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * DTO книги {@link ru.lexa.books_reviews.repository.entity.Book}
+ * DTO запроса книги {@link ru.lexa.books_reviews.repository.entity.Book}
  */
 @Data
 public class BookRequestDTO {
@@ -16,7 +16,4 @@ public class BookRequestDTO {
 
 	@ApiModelProperty(value = "ID автора книги.", example = "0")
 	private long authorId;
-
-	//TODO добавить среднюю оценку по отзывам
-	//TODO добавить количество отзывов
 }

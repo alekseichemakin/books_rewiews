@@ -8,7 +8,10 @@ import ru.lexa.books_reviews.controller.dto.review.FilmReviewRequestDTO;
 
 import java.util.Collection;
 
-@RequestMapping("/api/film/reviews")
+/**
+ * Контроллер принимающий запросы для отзывов фильмов
+ */
+@RequestMapping("/api/films/reviews")
 public interface FilmReviewController {
 	@ApiOperation(value = "Добавить новый отзыв к фильму.")
 	@PostMapping

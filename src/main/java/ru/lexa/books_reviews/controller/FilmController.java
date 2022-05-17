@@ -12,6 +12,9 @@ import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
 
 import java.util.Collection;
 
+/**
+ * Контроллер принимающий запросы для фильмов
+ */
 @RequestMapping("/api/films")
 @Validated
 public interface FilmController {

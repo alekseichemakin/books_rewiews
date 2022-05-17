@@ -5,12 +5,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
-import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 
 import java.util.Collection;
 
+/**
+ * Контроллер принимающий запросы для автора
+ */
 @RequestMapping("/api/authors")
 public interface AuthorController {
 	@ApiOperation(value = "Добавить нового автора.")

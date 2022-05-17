@@ -1,13 +1,11 @@
 package ru.lexa.books_reviews.service;
 
 import ru.lexa.books_reviews.exception.AuthorNotFoundException;
-import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.entity.Author;
 
 import java.util.List;
 
-//TODO add comments
 /**
  * Сервис обрабатывающий запорсы с контроллера {@link ru.lexa.books_reviews.controller.AuthorController}
  */

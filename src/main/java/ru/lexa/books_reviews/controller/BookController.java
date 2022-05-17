@@ -13,7 +13,6 @@ import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import javax.validation.Valid;
 import java.util.Collection;
 
-
 /**
  * Контроллер принимающий запросы для книг
  */

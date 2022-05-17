@@ -19,6 +19,9 @@ import ru.lexa.books_reviews.service.FilmService;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Реализация контроллера {@link ru.lexa.books_reviews.controller.FilmController}
+ */
 @AllArgsConstructor
 @RestController
 public class FilmControllerImpl implements FilmController {

@@ -8,7 +8,10 @@ import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
 
 import java.util.Collection;
 
-@RequestMapping("/api/book/reviews")
+/**
+ * Контроллер принимающий запросы для отзывов книг
+ */
+@RequestMapping("/api/books/reviews")
 public interface BookReviewController {
 	@ApiOperation(value = "Добавить новый отзыв к книге.")
 	@PostMapping

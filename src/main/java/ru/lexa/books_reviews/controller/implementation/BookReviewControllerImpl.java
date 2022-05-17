@@ -14,6 +14,9 @@ import ru.lexa.books_reviews.service.ReviewService;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * Реализация контроллера {@link ru.lexa.books_reviews.controller.BookReviewController}
+ */
 @AllArgsConstructor
 @RestController
 public class BookReviewControllerImpl implements BookReviewController {
