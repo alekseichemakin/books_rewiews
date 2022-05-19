@@ -30,10 +30,10 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public Review create(Review review) {
 		if (review.getBook() != null && bookService.read(review.getBook().getId()) == null) {
-			throw new BookNotFoundException();
+			throw new BookNotFoundException(review.getBook().getId());
 		}
 		if (review.getFilm() != null && filmService.read(review.getFilm().getId()) == null) {
-			throw new FilmNotFoundException();
+			throw new FilmNotFoundException(review.getFilm().getId());
 		}
 		return reviewRepository.save(review);
 	}
@@ -46,20 +46,20 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public Review read(long id) {
 		return reviewRepository.findById(id)
-				.orElseThrow(ReviewNotFoundException::new);
+				.orElseThrow(() -> {throw new ReviewNotFoundException(id);});
 	}
 
 	@Override
 	public void delete(long id) {
 		Review review = reviewRepository.findById(id)
-				.orElseThrow(ReviewNotFoundException::new);
+				.orElseThrow(() -> {throw new ReviewNotFoundException(id);});
 		reviewRepository.delete(review);
 	}
 
 	@Override
 	public Review update(@Valid Review review) {
 		reviewRepository.findById(review.getId())
-				.orElseThrow(ReviewNotFoundException::new);
+				.orElseThrow(() -> {throw new ReviewNotFoundException(review.getId());});
 		return reviewRepository.save(review);
 	}
 

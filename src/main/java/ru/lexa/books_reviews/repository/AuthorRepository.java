@@ -1,5 +1,6 @@
 package ru.lexa.books_reviews.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 

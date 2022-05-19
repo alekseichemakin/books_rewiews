@@ -39,6 +39,7 @@ public class BookControllerImpl implements BookController {
 	private AuthorMapper authorMapper;
 
 	@Override
+	//TODO read @Transactional
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		Author author = authorService.read(dto.getAuthorId());
 		Book book = bookService.create(bookMapper.dtoToBook(dto, author, null, null));
@@ -92,6 +93,7 @@ public class BookControllerImpl implements BookController {
 
 	private BookResponseDTO mapHelper(Book book) {
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
-		return bookMapper.bookToDto(book, reviewCount);
+		double avgRating = bookService.averageRating(book.getId());
+		return bookMapper.bookToDto(book, reviewCount, avgRating);
 	}
 }

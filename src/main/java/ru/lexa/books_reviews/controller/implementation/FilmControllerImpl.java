@@ -83,6 +83,7 @@ public class FilmControllerImpl implements FilmController {
 	public BookResponseDTO readBook(long id) {
 		Book book = filmService.read(id).getBook();
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
-		return bookMapper.bookToDto(book, reviewCount);
+		double avgRating = bookService.averageRating(book.getId());
+		return bookMapper.bookToDto(book, reviewCount, avgRating);
 	}
 }

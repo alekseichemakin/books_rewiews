@@ -3,6 +3,7 @@ package ru.lexa.books_reviews.service.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.FilmRepository;
@@ -32,7 +33,7 @@ public class FilmServiceImpl implements FilmService {
 	@Override
 	public Film read(long id) {
 		return filmRepository.findById(id)
-				.orElseThrow(FilmNotFoundException::new);
+				.orElseThrow(() -> {throw new FilmNotFoundException(id);});
 	}
 
 	@Override

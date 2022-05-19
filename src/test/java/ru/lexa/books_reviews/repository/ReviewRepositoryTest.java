@@ -33,6 +33,7 @@ public class ReviewRepositoryTest {
 //	private FilmRepository filmRepository;
 
 	@Test
+	//TODO сделать предзаполнение через SQL
 	public void whenFindBookReviews_thenReturnReviews() {
 		// given
 		Book book = new Book();

@@ -13,6 +13,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Audited
+//TODO сделать возможность нескольких авторов у книги
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,9 +52,4 @@ public class Book {
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<Film> films;
-
-	/**
-	 * Средний рейтинг
-	 */
-	private double averageRating = 0;
 }

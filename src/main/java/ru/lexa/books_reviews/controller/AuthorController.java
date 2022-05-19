@@ -15,6 +15,7 @@ import java.util.Collection;
  */
 @RequestMapping("/api/authors")
 public interface AuthorController {
+
 	@ApiOperation(value = "Добавить нового автора.")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -43,4 +44,6 @@ public interface AuthorController {
 	@ApiOperation(value = "Получить фильмы автора.")
 	@GetMapping("/{id}/films")
 	Collection<FilmDTO> readFilms(@PathVariable long id);
+
+	//TODO добавить поиск авторов (например по средним оценкам всех книг , фильмов)
 }

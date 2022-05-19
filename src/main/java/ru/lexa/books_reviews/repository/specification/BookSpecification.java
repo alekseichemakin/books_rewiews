@@ -7,6 +7,8 @@ import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.repository.entity.Review_;
 
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 /**
  * Спецификация для поиска книг в БД
@@ -51,12 +53,23 @@ public class BookSpecification {
 		};
 	}
 
+	//TODO improve
 	/**
 	 * @return спецификацию для поиска по ретйтингу, меньше переданному
 	 */
 	public static Specification<Book> lesThenRating(Double maxRating) {
 		if (maxRating == null)
 			return null;
-		return (root, query, cb) -> cb.lessThan(root.get(Book_.AVERAGE_RATING), maxRating);
+		return (root, query, cb) -> {
+			return null;
+		};
 	}
+//	select b
+//	from (SELECT b, avg(r.rating) rat
+//	FROM review r,
+//	book b
+//	WHERE b.id = r.book_id
+//	GROUP BY b)
+//	as result
+//	where rat > 5;
 }

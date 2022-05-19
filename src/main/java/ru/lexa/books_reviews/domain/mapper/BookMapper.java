@@ -27,7 +27,7 @@ public interface BookMapper {
 	 * @param films - экранизаци книги
 	 * @return - сущность книги
 	 */
-	@Mapping(target = "averageRating", ignore = true)
+
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "author", source = "author")
@@ -44,7 +44,7 @@ public interface BookMapper {
 	 * @param films - экранизаци книги
 	 * @return - сущность книги
 	 */
-	@Mapping(target = "averageRating", ignore = true)
+
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "author", source = "author")
 	@Mapping(target = "review", source = "review")
@@ -52,6 +52,7 @@ public interface BookMapper {
 	@Mapping(target = "id", ignore = true)
 	Book dtoToBook(BookRequestDTO dto, Author author, Collection<Review> review, Collection<Film> films);
 
+	//TODO add comments
 	/**
 	 * Преобразовывает сущность книги в dto книги
 	 *
@@ -59,6 +60,7 @@ public interface BookMapper {
 	 * @param reviewCount - колличество отзывов
 	 * @return - dto книги
 	 */
+	@Mapping(target = "averageRating", source = "avgRating")
 	@Mapping(target = "authorId", source = "book.author.id")
-	BookResponseDTO bookToDto(Book book, int reviewCount);
+	BookResponseDTO bookToDto(Book book, int reviewCount, double avgRating);
 }

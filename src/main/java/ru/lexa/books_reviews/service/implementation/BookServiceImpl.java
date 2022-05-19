@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
+import ru.lexa.books_reviews.exception.ReviewNotFoundException;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -43,20 +44,20 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Book read(long id) {
 		return bookRepository.findById(id)
-				.orElseThrow(BookNotFoundException::new);
+				.orElseThrow(() -> {throw new BookNotFoundException(id);});
 	}
 
 	@Override
 	public void delete(long id) {
 		Book book = bookRepository.findById(id)
-				.orElseThrow(BookNotFoundException::new);
+				.orElseThrow(() -> {throw new BookNotFoundException(id);});
 		bookRepository.delete(book);
 	}
 
 	@Override
 	public Book update(Book book) {
 		book.setReview(bookRepository.findById(book.getId())
-				.orElseThrow(BookNotFoundException::new)
+				.orElseThrow(() -> {throw new BookNotFoundException(book.getId());})
 				.getReview());
 		Collection<Film> films = book.getFilms();
 		films.forEach(film -> film.setAuthor(book.getAuthor()));
@@ -71,21 +72,9 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public double averageRating(long id) {
-		Book book = bookRepository.findById(id)
-				.orElseThrow(BookNotFoundException::new);
-		double rating = 0;
-		if (book.getReview() != null && book.getReview().size() > 0) {
-			rating = book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
-		}
-		//TODO check
-//        try {
-//            Thread.sleep(5000L);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-		book.setAverageRating(rating);
-		bookRepository.save(book);
-		return rating;
+		Book book = read(id);
+		return book.getReview() == null || book.getReview().size() == 0 ?
+				0 : book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
 	}
 
 	@Override

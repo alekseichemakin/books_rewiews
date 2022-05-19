@@ -41,6 +41,7 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
+	//TODO добавить Pageable в параметры поиска
 	public Collection<AuthorDTO> readAll() {
 		return authorService.readAll().stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
@@ -51,6 +52,7 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
+	//TODO посмотреть какие запросы выполняются. Предложить варианты оптимизации
 	public AuthorDTO updateBook(AuthorDTO dto) {
 		Collection<Book> books = authorService.read(dto.getId()).getBooks();
 		Collection<Film> films = authorService.read(dto.getId()).getFilms();
@@ -63,7 +65,9 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
+	//TODO ret Добиться появления Exception
 	public Collection<BookResponseDTO> readBooks(long id) {
+//TODO		authorService.read(id).getBooks().toString(); stackOverFlow
 		return authorService.read(id).getBooks().stream()
 				.map(this::mapHelper)
 				.collect(Collectors.toList());
@@ -78,6 +82,7 @@ public class AuthorControllerImpl implements AuthorController {
 
 	private BookResponseDTO mapHelper(Book book) {
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
-		return bookMapper.bookToDto(book, reviewCount);
+		double avgRating = bookService.averageRating(book.getId());
+		return bookMapper.bookToDto(book, reviewCount, avgRating);
 	}
 }
