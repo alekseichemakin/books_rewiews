@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Сущность книги
@@ -42,9 +43,13 @@ public class Book {
 	/**
 	 * Автор книги
 	 */
-	@ManyToOne
-	@JoinColumn(name = "author_id")
-	private Author author;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "book_author",
+			joinColumns = @JoinColumn(name = "book_id"),
+			inverseJoinColumns = @JoinColumn(name = "author_id"))
+//	@ManyToOne
+//	@JoinColumn(name = "author_id")
+	private Collection<Author> authors;
 
 	/**
 	 * Экранизации книги

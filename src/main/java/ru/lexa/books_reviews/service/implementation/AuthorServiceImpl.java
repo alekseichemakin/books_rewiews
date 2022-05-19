@@ -32,7 +32,7 @@ public class AuthorServiceImpl implements AuthorService {
 	@Override
 	public Author read(long id) {
 		return authorRepository.findById(id)
-				.orElseThrow(AuthorNotFoundException::new);
+				.orElseThrow(() -> {throw new AuthorNotFoundException(id);});
 	}
 
 	@Override

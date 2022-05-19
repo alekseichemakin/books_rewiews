@@ -13,6 +13,6 @@ public class FilmRequestDTO {
 	@ApiModelProperty(value = "Id экранизированной книги.", example = "0")
 	private long bookId;
 
-	@ApiModelProperty(value = "Дата экранизации фильма.", example = "01-01-2022")
+	@ApiModelProperty(value = "Дата экранизации фильма.")
 	private Date dateRelease;
 }

@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Date;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Сущность фильма
@@ -30,9 +31,14 @@ public class Film {
 	/**
 	 * Автор экранизированной книги
 	 */
-	@ManyToOne
-	@JoinColumn(name = "author_id")
-	private Author author;
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "film_author",
+			joinColumns = @JoinColumn(name = "film_id"),
+			inverseJoinColumns = @JoinColumn(name = "author_id"))
+//	@ManyToOne
+//	@JoinColumn(name = "author_id")
+	private Set<Author> authors;
+
 
 	/**
 	 * Список отзывов к фильму

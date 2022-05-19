@@ -29,7 +29,8 @@ public class BookSpecification {
 	public static Specification<Book> likeAuthor(String author) {
 		if (author == null)
 			return null;
-		return (root, query, cb) -> cb.like(root.get(Book_.author.getName()), "%" + author + "%");
+//		return (root, query, cb) -> cb.like(root.get(Book_.author.getName()), "%" + author + "%");
+		return null;
 	}
 
 	/**

@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
 				.orElseThrow(() -> {throw new BookNotFoundException(book.getId());})
 				.getReview());
 		Collection<Film> films = book.getFilms();
-		films.forEach(film -> film.setAuthor(book.getAuthor()));
+//		films.forEach(film -> film.setAuthor(book.getAuthor()));
 		films = films.stream().map(filmService::update).collect(Collectors.toList());
 		book.setFilms(films);
 		try {
@@ -81,7 +81,7 @@ public class BookServiceImpl implements BookService {
 	public List<Book> readAll(BookFilterDTO filter) {
 		Specification<Book> spec = Specification
 				.where(BookSpecification.likeName(filter.getName()))
-				.and(BookSpecification.likeAuthor(filter.getAuthor()))
+//				.and(BookSpecification.likeAuthor(filter.getAuthor()))
 				.and(BookSpecification.likeDescription(filter.getDescription()))
 				.and(BookSpecification.likeReviewText(filter.getReviewText()))
 				.and(BookSpecification.lesThenRating(filter.getLessThenRating()));

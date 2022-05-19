@@ -6,6 +6,7 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -30,14 +31,20 @@ public class Author {
 	/**
 	 * Книги написанные автором
 	 */
-	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
-			cascade = CascadeType.ALL, orphanRemoval = true)
+	@ManyToMany(mappedBy = "authors")
+	//	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
+//			cascade = CascadeType.ALL, orphanRemoval = true)
 	private Collection<Book> books;
 
 	/**
 	 * Фильмы экранизированные по книгам данного автора
 	 */
-	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
-			cascade = CascadeType.ALL, orphanRemoval = true)
+//	@OneToMany(mappedBy = "author", fetch = FetchType.LAZY,
+//			cascade = CascadeType.ALL, orphanRemoval = true)
+//	@ManyToMany(fetch = FetchType.LAZY)
+//	@JoinTable(name = "author_film",
+//			joinColumns = @JoinColumn(name = "author_id"),
+//			inverseJoinColumns = @JoinColumn(name = "film_id"))
+	@ManyToMany(mappedBy = "authors")
 	private Collection<Film> films;
 }

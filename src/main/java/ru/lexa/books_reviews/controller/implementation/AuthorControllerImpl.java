@@ -15,7 +15,9 @@ import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -83,6 +85,8 @@ public class AuthorControllerImpl implements AuthorController {
 	private BookResponseDTO mapHelper(Book book) {
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
 		double avgRating = bookService.averageRating(book.getId());
-		return bookMapper.bookToDto(book, reviewCount, avgRating);
+		List<Long> authorIds = new ArrayList<>();
+		book.getAuthors().forEach(author -> authorIds.add(author.getId()));
+		return bookMapper.bookToDto(book, reviewCount, avgRating, authorIds);
 	}
 }

@@ -8,6 +8,9 @@ import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * Маппер фильмов
  */
@@ -33,9 +36,9 @@ public interface FilmMapper {
 	@Mapping(target = "dateRelease", source = "dto.dateRelease")
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
-	@Mapping(target = "author", source = "author")
+	@Mapping(target = "authors", source = "authors")
 	@Mapping(target = "book", source = "book")
-	Film dtoToFilm(FilmDTO dto, Author author, Book book);
+	Film dtoToFilm(FilmDTO dto, Collection<Author> authors, Book book);
 
 	/**
 	 * Преобразовывает dto фильма в сущность фильма
@@ -48,7 +51,7 @@ public interface FilmMapper {
 	@Mapping(target = "dateRelease", source = "dto.dateRelease")
 	@Mapping(target = "name", source = "dto.name")
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "author", source = "author")
+	@Mapping(target = "authors", source = "authors")
 	@Mapping(target = "book", source = "book")
-	Film dtoToFilm(FilmRequestDTO dto, Author author, Book book);
+	Film dtoToFilm(FilmRequestDTO dto, Collection<Author> authors, Book book);
 }

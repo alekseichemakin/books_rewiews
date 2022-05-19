@@ -12,11 +12,12 @@ import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.FilmMapper;
 import ru.lexa.books_reviews.domain.mapper.FilmReviewMapper;
+import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,7 +42,7 @@ public class FilmControllerImpl implements FilmController {
 	@Override
 	public FilmDTO createFilm(FilmRequestDTO dto) {
 		Book book = bookService.read(dto.getBookId());
-		return filmMapper.filmToDto(filmService.create(filmMapper.dtoToFilm(dto, book.getAuthor(), book)));
+		return filmMapper.filmToDto(filmService.create(filmMapper.dtoToFilm(dto, book.getAuthors(), book)));
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class FilmControllerImpl implements FilmController {
 	@Override
 	public FilmDTO updateFilm(FilmDTO dto) {
 		Book book = bookService.read(dto.getBookId());
-		return filmMapper.filmToDto(filmService.update(filmMapper.dtoToFilm(dto, book.getAuthor(), book)));
+		return filmMapper.filmToDto(filmService.update(filmMapper.dtoToFilm(dto, book.getAuthors(), book)));
 	}
 
 	@Override
@@ -75,8 +76,10 @@ public class FilmControllerImpl implements FilmController {
 	}
 
 	@Override
-	public AuthorDTO getAuthor(long id) {
-		return authorMapper.authorToDto(filmService.read(id).getAuthor());
+	public Collection<AuthorDTO> getAuthors(long id) {
+		return filmService.read(id).getAuthors().stream()
+				.map(authorMapper::authorToDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -84,6 +87,8 @@ public class FilmControllerImpl implements FilmController {
 		Book book = filmService.read(id).getBook();
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
 		double avgRating = bookService.averageRating(book.getId());
-		return bookMapper.bookToDto(book, reviewCount, avgRating);
+		List<Long> authorIds = new ArrayList<>();
+		book.getAuthors().forEach(author -> authorIds.add(author.getId()));
+		return bookMapper.bookToDto(book, reviewCount, avgRating, authorIds);
 	}
 }

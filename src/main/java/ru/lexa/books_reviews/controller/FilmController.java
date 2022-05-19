@@ -44,8 +44,8 @@ public interface FilmController {
 	Collection<FilmReviewDTO> getReviews(@PathVariable long id);
 
 	@ApiOperation(value = "Получить автора фильма.")
-	@GetMapping("/{id}/author")
-	AuthorDTO getAuthor(@PathVariable long id);
+	@GetMapping("/{id}/authors")
+	Collection<AuthorDTO> getAuthors(@PathVariable long id);
 
 	@ApiOperation(value = "Получить экранизированную книгу.")
 	@GetMapping("/{id}/book")

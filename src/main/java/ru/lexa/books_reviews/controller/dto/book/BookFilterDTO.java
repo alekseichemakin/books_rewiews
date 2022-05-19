@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * DTO для получения фильтров запроса
  */
@@ -18,8 +20,9 @@ public class BookFilterDTO {
 	@ApiModelProperty(value = "Описание книги.", example = "Book Description")
 	private String description;
 
+	//TODO improve desription
 	@ApiModelProperty(value = "Имя втора книги.", example = "Book Author")
-	private String author;
+	private List<String> authors;
 
 	@ApiModelProperty(value = "Текст отзыва к книге.", example = "Book Review Text")
 	private String reviewText;

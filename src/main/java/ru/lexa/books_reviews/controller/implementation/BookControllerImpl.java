@@ -19,7 +19,7 @@ import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,14 +41,18 @@ public class BookControllerImpl implements BookController {
 	@Override
 	//TODO read @Transactional
 	public BookResponseDTO createBook(BookRequestDTO dto) {
-		Author author = authorService.read(dto.getAuthorId());
-		Book book = bookService.create(bookMapper.dtoToBook(dto, author, null, null));
+		Collection<Author> authors = new ArrayList<>();
+		for (Long id:dto.getAuthorIds()) {
+			authors.add(authorService.read(id));
+		}
+		authors.forEach(author -> System.out.println(author.getId()));
+		Book book = bookService.create(bookMapper.dtoToBook(dto, authors, null, null));
 		return mapHelper(book);
 	}
 
 	@Override
 	public Collection<BookResponseDTO> readAll(String author, String description, String name, String reviewText, Double maxRating) {
-		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText, maxRating);
+		BookFilterDTO filter = new BookFilterDTO(name, description, null, reviewText, maxRating);
 		return bookService.readAll(filter).stream()
 				.map(this::mapHelper)
 				.collect(Collectors.toList());
@@ -61,10 +65,13 @@ public class BookControllerImpl implements BookController {
 
 	@Override
 	public BookResponseDTO updateBook(BookDTO dto) {
-		Author author = authorService.read(dto.getAuthorId());
+		Set<Author> authors = new HashSet<>();
+		for (Long id:dto.getAuthorIds()) {
+			authors.add(authorService.read(id));
+		}
 		Collection<Review> reviews = bookService.read(dto.getId()).getReview();
 		Collection<Film> films = bookService.read(dto.getId()).getFilms();
-		Book book = bookMapper.dtoToBook(dto, author, reviews, films);
+		Book book = bookMapper.dtoToBook(dto, authors, reviews, films);
 		book = bookService.update(book);
 		return mapHelper(book);
 	}
@@ -87,13 +94,17 @@ public class BookControllerImpl implements BookController {
 	}
 
 	@Override
-	public AuthorDTO getAuthor(long id) {
-		return authorMapper.authorToDto(bookService.read(id).getAuthor());
+	public Collection<AuthorDTO> getAuthors(long id) {
+		return bookService.read(id).getAuthors().stream()
+				.map(authorMapper::authorToDto)
+				.collect(Collectors.toList());
 	}
 
 	private BookResponseDTO mapHelper(Book book) {
 		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
 		double avgRating = bookService.averageRating(book.getId());
-		return bookMapper.bookToDto(book, reviewCount, avgRating);
+		List<Long> authorIds = new ArrayList<>();
+		book.getAuthors().forEach(author -> authorIds.add(author.getId()));
+		return bookMapper.bookToDto(book, reviewCount, avgRating, authorIds);
 	}
 }

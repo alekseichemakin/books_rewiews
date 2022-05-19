@@ -10,4 +10,5 @@ import lombok.Data;
 public class AuthorDTO extends AuthorRequestDTO {
 	@ApiModelProperty(value = "Id автора.")
 	private long id;
+	//TODO add books,films IDs
 }

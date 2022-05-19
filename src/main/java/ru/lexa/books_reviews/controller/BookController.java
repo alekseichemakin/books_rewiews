@@ -53,7 +53,8 @@ public interface BookController {
 	@GetMapping("/{id}/averageRating")
 	double getAverage(@PathVariable long id);
 
+	//TODO improve desc
 	@ApiOperation(value = "Получить автора книги.")
-	@GetMapping("/{id}/author")
-	AuthorDTO getAuthor(@PathVariable long id);
+	@GetMapping("/{id}/authors")
+	Collection<AuthorDTO> getAuthors(@PathVariable long id);
 }
