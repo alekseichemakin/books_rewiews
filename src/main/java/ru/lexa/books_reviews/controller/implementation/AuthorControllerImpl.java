@@ -39,7 +39,7 @@ public class AuthorControllerImpl implements AuthorController {
 
 	@Override
 	public AuthorDTO createAuthor(AuthorRequestDTO dto) {
-		return authorMapper.authorToDto(authorService.create(authorMapper.dtoToAuthor(dto, null, null)));
+		return authorMapper.authorToDto(authorService.create(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
@@ -54,11 +54,8 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
-	//TODO посмотреть какие запросы выполняются. Предложить варианты оптимизации
-	public AuthorDTO updateBook(AuthorDTO dto) {
-		Collection<Book> books = authorService.read(dto.getId()).getBooks();
-		Collection<Film> films = authorService.read(dto.getId()).getFilms();
-		return authorMapper.authorToDto(authorService.update(authorMapper.dtoToAuthor(dto, books, films)));
+	public AuthorDTO updateAuthor(AuthorDTO dto) {
+		return authorMapper.authorToDto(authorService.update(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.service;
 
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Сервис обрабатывающий запорсы с контроллера {@link ru.lexa.books_reviews.controller.BookController}
  */
+@Transactional
 public interface BookService {
     /**
      * Создает книгу с заданными параметрми

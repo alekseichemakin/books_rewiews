@@ -60,7 +60,7 @@ public class BookServiceImpl implements BookService {
 				.orElseThrow(() -> {throw new BookNotFoundException(book.getId());})
 				.getReview());
 		Collection<Film> films = book.getFilms();
-//		films.forEach(film -> film.setAuthor(book.getAuthor()));
+		films.forEach(film -> film.setAuthors(book.getAuthors()));
 		films = films.stream().map(filmService::update).collect(Collectors.toList());
 		book.setFilms(films);
 		try {

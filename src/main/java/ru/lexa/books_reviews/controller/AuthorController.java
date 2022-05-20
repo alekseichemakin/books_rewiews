@@ -31,7 +31,7 @@ public interface AuthorController {
 
 	@ApiOperation(value = "Изменить автора.")
 	@PutMapping
-	AuthorDTO updateBook(@RequestBody AuthorDTO dto);
+	AuthorDTO updateAuthor(@RequestBody AuthorDTO dto);
 
 	@ApiOperation(value = "Удалить автора.")
 	@DeleteMapping("/{id}")

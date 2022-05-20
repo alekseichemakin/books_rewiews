@@ -23,8 +23,10 @@ public interface AuthorMapper {
 	 * @param films - фильмы автора
 	 * @return - сущность автора
 	 */
+	@Mapping(target = "films", ignore = true)
+	@Mapping(target = "books", ignore = true)
 	@Mapping(target = "id", source = "dto.id")
-	Author dtoToAuthor(AuthorDTO dto, Collection<Book> books, Collection<Film> films);
+	Author dtoToAuthor(AuthorDTO dto);
 
 	/**
 	 * Преобразовывает dto автора в сущность автора
@@ -34,8 +36,10 @@ public interface AuthorMapper {
 	 * @param films - фильмы автора
 	 * @return - сущность автора
 	 */
+	@Mapping(target = "films", ignore = true)
+	@Mapping(target = "books", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	Author dtoToAuthor(AuthorRequestDTO dto, Collection<Book> books, Collection<Film> films);
+	Author dtoToAuthor(AuthorRequestDTO dto);
 
 	/**
 	 * Преобразовывает сущность автора в dto автора

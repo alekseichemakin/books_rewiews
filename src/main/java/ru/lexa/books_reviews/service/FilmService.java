@@ -1,5 +1,6 @@
 package ru.lexa.books_reviews.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -7,6 +8,8 @@ import ru.lexa.books_reviews.repository.entity.Film;
 
 import java.util.List;
 
+//TODO add comments
+@Transactional
 public interface FilmService {
 	/**
 	 * Создает фильм с заданными параметрми

@@ -7,7 +7,9 @@ import ru.lexa.books_reviews.exception.AuthorNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.AuthorRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.service.AuthorService;
+import ru.lexa.books_reviews.service.BookService;
 
 import java.util.List;
 
@@ -19,6 +21,8 @@ import java.util.List;
 public class AuthorServiceImpl implements AuthorService {
 
 	private AuthorRepository authorRepository;
+
+	private BookService bookService;
 
 	@Override
 	public Author create(Author author) {
@@ -32,7 +36,9 @@ public class AuthorServiceImpl implements AuthorService {
 	@Override
 	public Author read(long id) {
 		return authorRepository.findById(id)
-				.orElseThrow(() -> {throw new AuthorNotFoundException(id);});
+				.orElseThrow(() -> {
+					throw new AuthorNotFoundException(id);
+				});
 	}
 
 	@Override
@@ -48,7 +54,17 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public void delete(long id) {
-		authorRepository.delete(read(id));
+		Author a = read(id);
+		for (Book b : a.getBooks()) {
+			if (b.getAuthors().size() == 1) {
+				bookService.delete(b.getId());
+			} else {
+				b.getAuthors().remove(a);
+				b.getFilms().forEach(film -> film.getAuthors().remove(a));
+				authorRepository.save(a);
+			}
+		}
+		authorRepository.delete(a);
 	}
 
 	@Override

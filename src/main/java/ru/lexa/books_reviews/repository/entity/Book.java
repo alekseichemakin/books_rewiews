@@ -6,7 +6,6 @@ import org.hibernate.envers.Audited;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Сущность книги
@@ -14,7 +13,6 @@ import java.util.Set;
 @Entity
 @Data
 @Audited
-//TODO сделать возможность нескольких авторов у книги
 public class Book {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,8 +45,6 @@ public class Book {
 	@JoinTable(name = "book_author",
 			joinColumns = @JoinColumn(name = "book_id"),
 			inverseJoinColumns = @JoinColumn(name = "author_id"))
-//	@ManyToOne
-//	@JoinColumn(name = "author_id")
 	private Collection<Author> authors;
 
 	/**

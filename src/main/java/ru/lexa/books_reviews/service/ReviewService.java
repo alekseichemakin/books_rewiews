@@ -1,5 +1,6 @@
 package ru.lexa.books_reviews.service;
 
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * Сервис обрабатывающий запорсы с контроллера {@link ru.lexa.books_reviews.controller.BookReviewController} {@link ru.lexa.books_reviews.controller.FilmReviewController}
  */
+@Transactional
 public interface ReviewService {
     /**
      * Создает отзыв к книге

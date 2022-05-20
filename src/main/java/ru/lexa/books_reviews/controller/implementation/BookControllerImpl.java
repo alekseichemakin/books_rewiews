@@ -42,10 +42,9 @@ public class BookControllerImpl implements BookController {
 	//TODO read @Transactional
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		Collection<Author> authors = new ArrayList<>();
-		for (Long id:dto.getAuthorIds()) {
+		for (Long id : dto.getAuthorIds()) {
 			authors.add(authorService.read(id));
 		}
-		authors.forEach(author -> System.out.println(author.getId()));
 		Book book = bookService.create(bookMapper.dtoToBook(dto, authors, null, null));
 		return mapHelper(book);
 	}
@@ -66,7 +65,7 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public BookResponseDTO updateBook(BookDTO dto) {
 		Set<Author> authors = new HashSet<>();
-		for (Long id:dto.getAuthorIds()) {
+		for (Long id : dto.getAuthorIds()) {
 			authors.add(authorService.read(id));
 		}
 		Collection<Review> reviews = bookService.read(dto.getId()).getReview();

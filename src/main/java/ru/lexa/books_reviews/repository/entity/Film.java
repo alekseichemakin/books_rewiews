@@ -35,9 +35,7 @@ public class Film {
 	@JoinTable(name = "film_author",
 			joinColumns = @JoinColumn(name = "film_id"),
 			inverseJoinColumns = @JoinColumn(name = "author_id"))
-//	@ManyToOne
-//	@JoinColumn(name = "author_id")
-	private Set<Author> authors;
+	private Collection<Author> authors;
 
 
 	/**
