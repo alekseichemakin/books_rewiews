@@ -23,7 +23,12 @@ public interface AuthorController {
 
 	@ApiOperation(value = "Получить всех авторов.")
 	@GetMapping
-	Collection<AuthorDTO> readAll();
+	Collection<AuthorDTO> readAll(@RequestParam(required = false) Integer page,
+	                              @RequestParam(required = false) Integer pageSize,
+	                              @RequestParam(required = false) Double maxRating,
+	                              @RequestParam(required = false) String name,
+	                              @RequestParam(required = false) String book,
+	                              @RequestParam(required = false) String film);
 
 	@ApiOperation(value = "Получить автора.")
 	@GetMapping("/{id}")
@@ -44,6 +49,4 @@ public interface AuthorController {
 	@ApiOperation(value = "Получить фильмы автора.")
 	@GetMapping("/{id}/films")
 	Collection<FilmDTO> readFilms(@PathVariable long id);
-
-	//TODO добавить поиск авторов (например по средним оценкам всех книг , фильмов)
 }

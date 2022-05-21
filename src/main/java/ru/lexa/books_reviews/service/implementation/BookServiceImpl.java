@@ -3,12 +3,13 @@ package ru.lexa.books_reviews.service.implementation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
-import ru.lexa.books_reviews.exception.ReviewNotFoundException;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -44,20 +45,26 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public Book read(long id) {
 		return bookRepository.findById(id)
-				.orElseThrow(() -> {throw new BookNotFoundException(id);});
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(id);
+				});
 	}
 
 	@Override
 	public void delete(long id) {
 		Book book = bookRepository.findById(id)
-				.orElseThrow(() -> {throw new BookNotFoundException(id);});
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(id);
+				});
 		bookRepository.delete(book);
 	}
 
 	@Override
 	public Book update(Book book) {
 		book.setReview(bookRepository.findById(book.getId())
-				.orElseThrow(() -> {throw new BookNotFoundException(book.getId());})
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(book.getId());
+				})
 				.getReview());
 		Collection<Film> films = book.getFilms();
 		films.forEach(film -> film.setAuthors(book.getAuthors()));
@@ -81,10 +88,14 @@ public class BookServiceImpl implements BookService {
 	public List<Book> readAll(BookFilterDTO filter) {
 		Specification<Book> spec = Specification
 				.where(BookSpecification.likeName(filter.getName()))
-//				.and(BookSpecification.likeAuthor(filter.getAuthor()))
+				.and(BookSpecification.likeAuthor(filter.getAuthor()))
 				.and(BookSpecification.likeDescription(filter.getDescription()))
 				.and(BookSpecification.likeReviewText(filter.getReviewText()))
 				.and(BookSpecification.lesThenRating(filter.getLessThenRating()));
+		if (filter.getPage() != null && filter.getPageSize() != null) {
+			Pageable page = PageRequest.of(filter.getPage(), filter.getPageSize());
+			return bookRepository.findAll(spec, page).toList();
+		}
 		return bookRepository.findAll(spec);
 	}
 }

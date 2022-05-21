@@ -23,17 +23,15 @@ public interface BookMapper {
 	/**
 	 * Преобразовывает dto книги в сущность книги
 	 *
-	 * @param dto - dto книги
-	 * @param author - автор книги
+	 * @param dto    - dto книги
+	 * @param authors - автор книги
 	 * @param review - отзывы книги
-	 * @param films - экранизаци книги
+	 * @param films  - экранизаци книги
 	 * @return - сущность книги
 	 */
-
 	@Mapping(target = "authors", source = "authors")
 	@Mapping(target = "id", source = "dto.id")
 	@Mapping(target = "name", source = "dto.name")
-//	@Mapping(target = "author", source = "author")
 	@Mapping(target = "review", source = "review")
 	@Mapping(target = "films", source = "films")
 	Book dtoToBook(BookDTO dto, Collection<Author> authors, Collection<Review> review, Collection<Film> films);
@@ -41,26 +39,25 @@ public interface BookMapper {
 	/**
 	 * Преобразовывает dto книги в сущность книги
 	 *
-	 * @param dto - dto книги
-	 * @param author - автор книги
+	 * @param dto    - dto книги
+	 * @param authors - автор книги
 	 * @param review - отзывы книги
-	 * @param films - экранизаци книги
+	 * @param films  - экранизаци книги
 	 * @return - сущность книги
 	 */
-
 	@Mapping(target = "authors", source = "authors")
 	@Mapping(target = "name", source = "dto.name")
-//	@Mapping(target = "author", source = "author")
 	@Mapping(target = "review", source = "review")
 	@Mapping(target = "films", source = "films")
 	@Mapping(target = "id", ignore = true)
 	Book dtoToBook(BookRequestDTO dto, Collection<Author> authors, Collection<Review> review, Collection<Film> films);
 
 	//TODO add comments
+
 	/**
 	 * Преобразовывает сущность книги в dto книги
 	 *
-	 * @param book - сущность книги
+	 * @param book        - сущность книги
 	 * @param reviewCount - колличество отзывов
 	 * @return - dto книги
 	 */

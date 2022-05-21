@@ -1,9 +1,11 @@
 package ru.lexa.books_reviews.controller.implementation;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.AuthorController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
@@ -43,9 +45,9 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
-	//TODO добавить Pageable в параметры поиска
-	public Collection<AuthorDTO> readAll() {
-		return authorService.readAll().stream().map(authorMapper::authorToDto).collect(Collectors.toList());
+	public Collection<AuthorDTO> readAll(Integer page, Integer pageSize, Double maxRating, String name, String book, String film) {
+		AuthorFilterDTO filter = new AuthorFilterDTO(name, book, film, maxRating, page, pageSize);
+		return authorService.readAll(filter).stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
 import ru.lexa.books_reviews.exception.AuthorNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.entity.Author;
@@ -53,5 +54,5 @@ public interface AuthorService {
 	 *
 	 * @return список авторов
 	 */
-	List<Author> readAll();
+	List<Author> readAll(AuthorFilterDTO filter);
 }

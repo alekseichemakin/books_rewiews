@@ -39,7 +39,6 @@ public class BookControllerImpl implements BookController {
 	private AuthorMapper authorMapper;
 
 	@Override
-	//TODO read @Transactional
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		Collection<Author> authors = new ArrayList<>();
 		for (Long id : dto.getAuthorIds()) {
@@ -50,8 +49,11 @@ public class BookControllerImpl implements BookController {
 	}
 
 	@Override
-	public Collection<BookResponseDTO> readAll(String author, String description, String name, String reviewText, Double maxRating) {
-		BookFilterDTO filter = new BookFilterDTO(name, description, null, reviewText, maxRating);
+	public Collection<BookResponseDTO> readAll(Integer page, Integer pageSize,
+	                                           String author, String description,
+	                                           String name, String reviewText,
+	                                           Double maxRating) {
+		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText, maxRating, page, pageSize);
 		return bookService.readAll(filter).stream()
 				.map(this::mapHelper)
 				.collect(Collectors.toList());

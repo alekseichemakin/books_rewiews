@@ -27,7 +27,9 @@ public interface BookController {
 
 	@ApiOperation(value = "Получить все книги.")
 	@GetMapping
-	Collection<BookResponseDTO> readAll(@RequestParam(required = false) String author,
+	Collection<BookResponseDTO> readAll(@RequestParam(required = false) Integer page,
+	                                    @RequestParam(required = false) Integer pageSize,
+	                                    @RequestParam(required = false) String author,
 	                                    @RequestParam(required = false) String description,
 	                                    @RequestParam(required = false) String name,
 	                                    @RequestParam(required = false) String reviewText,

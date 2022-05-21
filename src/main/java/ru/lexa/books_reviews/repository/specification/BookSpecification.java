@@ -1,14 +1,10 @@
 package ru.lexa.books_reviews.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Book_;
-import ru.lexa.books_reviews.repository.entity.Review;
-import ru.lexa.books_reviews.repository.entity.Review_;
+import ru.lexa.books_reviews.repository.entity.*;
 
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
+import javax.persistence.criteria.JoinType;
 
 /**
  * Спецификация для поиска книг в БД
@@ -29,8 +25,10 @@ public class BookSpecification {
 	public static Specification<Book> likeAuthor(String author) {
 		if (author == null)
 			return null;
-//		return (root, query, cb) -> cb.like(root.get(Book_.author.getName()), "%" + author + "%");
-		return null;
+		return (root, query, cb) -> {
+			Join<Book, Author> authorJoin = root.join(Book_.AUTHORS);
+			return cb.like(authorJoin.get(Author_.NAME), "%" + author + "%");
+		};
 	}
 
 	/**
@@ -54,7 +52,6 @@ public class BookSpecification {
 		};
 	}
 
-	//TODO improve
 	/**
 	 * @return спецификацию для поиска по ретйтингу, меньше переданному
 	 */
@@ -62,15 +59,10 @@ public class BookSpecification {
 		if (maxRating == null)
 			return null;
 		return (root, query, cb) -> {
-			return null;
+			Join<Book, Review> rev = root.join(Book_.REVIEW, JoinType.INNER);       //	SELECT b FROM book b INNER JOIN review r ON b.id = r.book_id
+			query.groupBy(root);                                                    //	GROUP BY b
+			query.having(cb.lessThan(cb.avg(rev.get(Review_.RATING)), maxRating));  //	having avg(rating) > ?
+			return query.getRestriction();
 		};
 	}
-//	select b
-//	from (SELECT b, avg(r.rating) rat
-//	FROM review r,
-//	book b
-//	WHERE b.id = r.book_id
-//	GROUP BY b)
-//	as result
-//	where rat > 5;
 }

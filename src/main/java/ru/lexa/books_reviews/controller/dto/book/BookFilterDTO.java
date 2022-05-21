@@ -20,13 +20,20 @@ public class BookFilterDTO {
 	@ApiModelProperty(value = "Описание книги.", example = "Book Description")
 	private String description;
 
-	//TODO improve desription
-	@ApiModelProperty(value = "Имя втора книги.", example = "Book Author")
-	private List<String> authors;
+	@ApiModelProperty(value = "Имя автора книги.", example = "Book Author")
+	private String author;
 
 	@ApiModelProperty(value = "Текст отзыва к книге.", example = "Book Review Text")
 	private String reviewText;
 
 	@ApiModelProperty(value = "Наибольший ретинг книги", example = "5")
 	private Double lessThenRating;
+
+	//TODO improve
+	@ApiModelProperty(value = "Наибольший ретинг книги", example = "5")
+	private Integer page;
+
+	//TODO improve
+	@ApiModelProperty(value = "Наибольший ретинг книги", example = "5")
+	private Integer pageSize;
 }
