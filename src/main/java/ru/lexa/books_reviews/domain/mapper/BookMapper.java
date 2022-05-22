@@ -23,10 +23,10 @@ public interface BookMapper {
 	/**
 	 * Преобразовывает dto книги в сущность книги
 	 *
-	 * @param dto    - dto книги
+	 * @param dto     - dto книги
 	 * @param authors - автор книги
-	 * @param review - отзывы книги
-	 * @param films  - экранизаци книги
+	 * @param review  - отзывы книги
+	 * @param films   - экранизаци книги
 	 * @return - сущность книги
 	 */
 	@Mapping(target = "authors", source = "authors")
@@ -39,10 +39,10 @@ public interface BookMapper {
 	/**
 	 * Преобразовывает dto книги в сущность книги
 	 *
-	 * @param dto    - dto книги
+	 * @param dto     - dto книги
 	 * @param authors - автор книги
-	 * @param review - отзывы книги
-	 * @param films  - экранизаци книги
+	 * @param review  - отзывы книги
+	 * @param films   - экранизаци книги
 	 * @return - сущность книги
 	 */
 	@Mapping(target = "authors", source = "authors")
@@ -52,13 +52,14 @@ public interface BookMapper {
 	@Mapping(target = "id", ignore = true)
 	Book dtoToBook(BookRequestDTO dto, Collection<Author> authors, Collection<Review> review, Collection<Film> films);
 
-	//TODO add comments
 
 	/**
 	 * Преобразовывает сущность книги в dto книги
 	 *
 	 * @param book        - сущность книги
 	 * @param reviewCount - колличество отзывов
+	 * @param avgRating   - срелний ретйтинг
+	 * @param authorIds   - Id авторов
 	 * @return - dto книги
 	 */
 	@Mapping(target = "authorIds", source = "authorIds")

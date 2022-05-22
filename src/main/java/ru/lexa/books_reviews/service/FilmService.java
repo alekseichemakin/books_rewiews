@@ -8,7 +8,9 @@ import ru.lexa.books_reviews.repository.entity.Film;
 
 import java.util.List;
 
-//TODO add comments
+/**
+ * Сервис обрабатывающий запорсы с контроллера {@link ru.lexa.books_reviews.controller.FilmController}
+ */
 @Transactional
 public interface FilmService {
 	/**

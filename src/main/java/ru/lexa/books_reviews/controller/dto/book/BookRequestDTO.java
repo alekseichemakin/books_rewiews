@@ -16,7 +16,6 @@ public class BookRequestDTO {
 	@ApiModelProperty(value = "Описание книги.", example = "Book Description")
 	private String description;
 
-	//TODO improve description
-	@ApiModelProperty(value = "ID автора книги.")
+	@ApiModelProperty(value = "ID авторов книги.")
 	private List<Long> authorIds;
 }

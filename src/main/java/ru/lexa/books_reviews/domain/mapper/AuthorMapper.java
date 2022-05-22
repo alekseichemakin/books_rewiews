@@ -15,15 +15,13 @@ import java.util.List;
 /**
  * Маппер автора
  */
-//TODO improve description
 @Mapper(componentModel = "spring")
 public interface AuthorMapper {
 	/**
 	 * Преобразовывает dto автора в сущность автора
 	 *
 	 * @param dto   - dto автора
-	 * @param books - книги автора
-	 * @param films - фильмы автора
+	 *
 	 * @return - сущность автора
 	 */
 	@Mapping(target = "films", ignore = true)

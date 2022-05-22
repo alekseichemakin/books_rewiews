@@ -22,12 +22,10 @@ public class AuthorFilterDTO {
 	@ApiModelProperty(value = "Наибольший ретинг книги", example = "5")
 	private Double maxRating;
 
-	//TODO improve
-	@ApiModelProperty(value = "Наибольший ретинг книги", example = "5")
+	@ApiModelProperty(value = "Страница", example = "0")
 	private Integer page;
 
-	//TODO improve
-	@ApiModelProperty(value = "Наибольший ретинг книги", example = "5")
+	@ApiModelProperty(value = "Размер страницы", example = "5")
 	private Integer pageSize;
 
 }

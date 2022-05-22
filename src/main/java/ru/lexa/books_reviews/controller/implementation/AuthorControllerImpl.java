@@ -63,7 +63,6 @@ public class AuthorControllerImpl implements AuthorController {
 	@Override
 	//TODO ret Добиться появления Exception
 	public Collection<BookResponseDTO> readBooks(long id) {
-//TODO		authorService.read(id).getBooks().toString(); stackOverFlow
 		return authorService.read(id).getBooks().stream()
 				.map(mapHelper::bookMapHelper)
 				.collect(Collectors.toList());
