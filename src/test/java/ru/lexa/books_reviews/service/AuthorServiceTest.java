@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
 import ru.lexa.books_reviews.repository.AuthorRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.service.implementation.AuthorServiceImpl;
@@ -68,7 +69,7 @@ public class AuthorServiceTest {
 		authors.add(saveAuthor3);
 		when(authorRepository.findAll()).thenReturn(authors);
 
-		List<Author> authorsResponse = authorService.readAll();
+		List<Author> authorsResponse = authorService.readAll(new AuthorFilterDTO());
 		assertEquals(3, authorsResponse.size());
 	}
 }

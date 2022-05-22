@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.lexa.books_reviews.configuration.WebConfig;
 import ru.lexa.books_reviews.repository.entity.Book;
@@ -18,6 +19,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
+@Sql(executionPhase= Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts="classpath:/ReviewRepositoryTest.sql")
+@Sql(executionPhase= Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts="classpath:/ClearReviewRepositoryTest.sql")
 @DataJpaTest
 public class ReviewRepositoryTest {
 	@Autowired
@@ -26,70 +29,21 @@ public class ReviewRepositoryTest {
 	@Autowired
 	private ReviewRepository reviewRepository;
 
-//	@Autowired
-//	private BookRepository bookRepository;
-//
-//	@Autowired
-//	private FilmRepository filmRepository;
+
 
 	@Test
 	//TODO сделать предзаполнение через SQL
 	public void whenFindBookReviews_thenReturnReviews() {
-		// given
-		Book book = new Book();
-		book.setName("testBook");
-		Film film = new Film();
-		film.setName("testFilm");
-		Review review1 = new Review();
-		Review review2 = new Review();
-		Review review3 = new Review();
-
-		review1.setBook(book);
-		review1.setRating(5);
-		review2.setFilm(film);
-		review2.setRating(5);
-		review3.setBook(book);
-		review3.setRating(5);
-		entityManager.persist(book);
-		entityManager.persist(film);
-		entityManager.flush();
-		entityManager.persist(review1);
-		entityManager.persist(review2);
-		entityManager.persist(review3);
-		entityManager.flush();
-
 		// when
 		List<Review> found = reviewRepository.findAllBooksReviews();
 
 		// then
 		assertEquals(found.size(), 2);
+
 	}
 
 	@Test
 	public void whenFindFilmReviews_thenReturnReviews() {
-		// given
-		Book book = new Book();
-		book.setName("testBook");
-		Film film = new Film();
-		film.setName("testFilm");
-		Review review1 = new Review();
-		Review review2 = new Review();
-		Review review3 = new Review();
-
-		review1.setBook(book);
-		review1.setRating(5);
-		review2.setFilm(film);
-		review2.setRating(5);
-		review3.setBook(book);
-		review3.setRating(5);
-		entityManager.persist(book);
-		entityManager.persist(film);
-		entityManager.flush();
-		entityManager.persist(review1);
-		entityManager.persist(review2);
-		entityManager.persist(review3);
-		entityManager.flush();
-
 		// when
 		List<Review> found = reviewRepository.findAllFilmsReviews();
 

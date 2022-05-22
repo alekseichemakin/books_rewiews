@@ -45,16 +45,18 @@ public class FilmServiceTest {
 		Book book = new Book();
 		Author author = new Author();
 		Film saveFilm = new Film();
+		List<Author> authors = new ArrayList<>();
 		saveFilm.setName("test");
 		author.setName("test");
 		book.setName("test");
-		saveFilm.setAuthor(author);
+		authors.add(author);
+		saveFilm.setAuthors(authors);
 		saveFilm.setBook(book);
 		Film film = filmService.create(saveFilm);
 
 		assertEquals("test", film.getName());
 		assertEquals("test", film.getBook().getName());
-		assertEquals("test", film.getAuthor().getName());
+		assertEquals("test", film.getAuthors().stream().findFirst().get().getName());
 	}
 
 	@Test
@@ -62,10 +64,12 @@ public class FilmServiceTest {
 		Book book = new Book();
 		Author author = new Author();
 		Film saveFilm = new Film();
+		List<Author> authors = new ArrayList<>();
 		saveFilm.setName("test");
 		author.setName("test");
 		book.setName("test");
-		saveFilm.setAuthor(author);
+		authors.add(author);
+		saveFilm.setAuthors(authors);
 		saveFilm.setBook(book);
 		when(filmRepository.findById(1L)).thenReturn(Optional.of(saveFilm));
 
@@ -73,7 +77,7 @@ public class FilmServiceTest {
 
 		assertEquals("test", film.getName());
 		assertEquals("test", film.getBook().getName());
-		assertEquals("test", film.getAuthor().getName());
+		assertEquals("test", film.getAuthors().stream().findFirst().get().getName());
 	}
 
 	@Test

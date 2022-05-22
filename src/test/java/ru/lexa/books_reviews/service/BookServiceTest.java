@@ -17,8 +17,10 @@ import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.implementation.BookServiceImpl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
@@ -42,31 +44,35 @@ public class BookServiceTest {
 	public void whenSaveBook_ReturnBook() {
 		Book saveBook = new Book();
 		Author author = new Author();
+		List<Author> authors = new ArrayList<>();
 		when(bookRepository.save(Mockito.any(Book.class))).thenAnswer(i -> i.getArguments()[0]);
 
 		author.setName("test");
 		saveBook.setName("test");
-		saveBook.setAuthor(author);
+		authors.add(author);
+		saveBook.setAuthors(authors);
 		Book book = bookService.create(saveBook);
 
 		assertEquals("test", book.getName());
-		assertEquals("test", book.getAuthor().getName());
+		assertEquals("test", book.getAuthors().stream().findFirst().get().getName());
 	}
 
 	@Test
 	public void whenReadBook_ReturnBook() {
 		Book saveBook = new Book();
 		Author author = new Author();
+		List<Author> authors = new ArrayList<>();
 		saveBook.setId(1L);
 		saveBook.setName("test");
 		author.setName("test");
-		saveBook.setAuthor(author);
+		authors.add(author);
+		saveBook.setAuthors(authors);
 		when(bookRepository.findById(1L)).thenReturn(Optional.of(saveBook));
 
 		Book book = bookService.read(1);
 
 		assertEquals("test", book.getName());
-		assertEquals("test", book.getAuthor().getName());
+		assertEquals("test", book.getAuthors().stream().findFirst().get().getName());
 	}
 
 	@Test
