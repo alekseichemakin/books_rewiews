@@ -9,9 +9,9 @@ import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
-import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
 import ru.lexa.books_reviews.domain.mapper.BookMapper;
 import ru.lexa.books_reviews.domain.mapper.BookReviewMapper;
+import ru.lexa.books_reviews.domain.mapper.MapHelper;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -19,7 +19,10 @@ import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -36,7 +39,7 @@ public class BookControllerImpl implements BookController {
 
 	private AuthorService authorService;
 
-	private AuthorMapper authorMapper;
+	private MapHelper mapHelper;
 
 	@Override
 	public BookResponseDTO createBook(BookRequestDTO dto) {
@@ -45,7 +48,7 @@ public class BookControllerImpl implements BookController {
 			authors.add(authorService.read(id));
 		}
 		Book book = bookService.create(bookMapper.dtoToBook(dto, authors, null, null));
-		return mapHelper(book);
+		return mapHelper.bookMapHelper(book);
 	}
 
 	@Override
@@ -55,13 +58,13 @@ public class BookControllerImpl implements BookController {
 	                                           Double maxRating) {
 		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText, maxRating, page, pageSize);
 		return bookService.readAll(filter).stream()
-				.map(this::mapHelper)
+				.map(mapHelper::bookMapHelper)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public BookResponseDTO readBook(long id) {
-		return mapHelper(bookService.read(id));
+		return mapHelper.bookMapHelper(bookService.read(id));
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class BookControllerImpl implements BookController {
 		Collection<Film> films = bookService.read(dto.getId()).getFilms();
 		Book book = bookMapper.dtoToBook(dto, authors, reviews, films);
 		book = bookService.update(book);
-		return mapHelper(book);
+		return mapHelper.bookMapHelper(book);
 	}
 
 	@Override
@@ -97,15 +100,7 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public Collection<AuthorDTO> getAuthors(long id) {
 		return bookService.read(id).getAuthors().stream()
-				.map(authorMapper::authorToDto)
+				.map(mapHelper::authorMapHelper)
 				.collect(Collectors.toList());
-	}
-
-	private BookResponseDTO mapHelper(Book book) {
-		int reviewCount = book.getReview() == null ? 0 : book.getReview().size();
-		double avgRating = bookService.averageRating(book.getId());
-		List<Long> authorIds = new ArrayList<>();
-		book.getAuthors().forEach(author -> authorIds.add(author.getId()));
-		return bookMapper.bookToDto(book, reviewCount, avgRating, authorIds);
 	}
 }

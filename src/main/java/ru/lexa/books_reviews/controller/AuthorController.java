@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 
@@ -19,11 +20,11 @@ public interface AuthorController {
 	@ApiOperation(value = "Добавить нового автора.")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	AuthorDTO createAuthor(@RequestBody AuthorRequestDTO dto);
+	AuthorResponseDTO createAuthor(@RequestBody AuthorRequestDTO dto);
 
 	@ApiOperation(value = "Получить всех авторов.")
 	@GetMapping
-	Collection<AuthorDTO> readAll(@RequestParam(required = false) Integer page,
+	Collection<AuthorResponseDTO> readAll(@RequestParam(required = false) Integer page,
 	                              @RequestParam(required = false) Integer pageSize,
 	                              @RequestParam(required = false) Double maxRating,
 	                              @RequestParam(required = false) String name,
@@ -32,11 +33,11 @@ public interface AuthorController {
 
 	@ApiOperation(value = "Получить автора.")
 	@GetMapping("/{id}")
-	AuthorDTO readAuthor(@PathVariable long id);
+	AuthorResponseDTO readAuthor(@PathVariable long id);
 
 	@ApiOperation(value = "Изменить автора.")
 	@PutMapping
-	AuthorDTO updateAuthor(@RequestBody AuthorDTO dto);
+	AuthorResponseDTO updateAuthor(@RequestBody AuthorDTO dto);
 
 	@ApiOperation(value = "Удалить автора.")
 	@DeleteMapping("/{id}")
