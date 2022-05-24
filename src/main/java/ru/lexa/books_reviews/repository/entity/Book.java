@@ -24,7 +24,7 @@ public class Book {
 	 */
 	@OneToMany(mappedBy = "book", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL, orphanRemoval = true)
-	private Collection<Review> review;
+	private Collection<Review> reviews;
 
 	/**
 	 * Название книги

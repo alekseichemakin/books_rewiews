@@ -1,4 +1,4 @@
-package ru.lexa.books_reviews.domain.mapper;
+package ru.lexa.books_reviews.controller.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

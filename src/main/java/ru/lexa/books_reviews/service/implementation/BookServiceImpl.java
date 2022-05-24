@@ -8,16 +8,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.BookRepository;
+import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
+import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
+import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.repository.specification.BookSpecification;
+import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
+import ru.lexa.books_reviews.service.ReviewService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,69 +40,85 @@ public class BookServiceImpl implements BookService {
 
 	private FilmService filmService;
 
+	private BookDomainMapper bookDomainMapper;
+
+	private ReviewService reviewService;
+
 	@Override
-	public Book create(Book book) {
+	public BookDomain create(BookDomain book) {
+		BookDomain domain;
 		try {
-			return bookRepository.save(book);
+			domain = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
+		domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
+		return domain;
 	}
 
 	@Override
-	public Book read(long id) {
-		return bookRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(id);
-				});
+	public BookDomain read(long id) {
+		BookDomain domain = bookDomainMapper.bookToDomain(bookRepository.findById(id)
+				.orElseThrow(() -> {throw new BookNotFoundException(id);}));
+		domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
+		domain.setAverageRating(averageRating(id));
+		domain.setReviewCount(domain.getReviews().size());
+		return domain;
 	}
 
 	@Override
 	public void delete(long id) {
-		Book book = bookRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(id);
-				});
-		bookRepository.delete(book);
+		bookRepository.delete(bookRepository.findById(id)
+				.orElseThrow(() -> {throw new BookNotFoundException(id);}));
 	}
 
 	@Override
-	public Book update(Book book) {
-		book.setReview(bookRepository.findById(book.getId())
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(book.getId());
-				})
-				.getReview());
+	public BookDomain update(BookDomain book) {
+		book.setFilms(read(book.getId()).getFilms());
+		book.setReviews(read(book.getId()).getReviews());
 		Collection<Film> films = book.getFilms();
-		films.forEach(film -> film.setAuthors(book.getAuthors()));
-		films = films.stream().map(filmService::update).collect(Collectors.toList());
-		book.setFilms(films);
+		BookDomain finalBook = book;
+		films.forEach(film -> film.setAuthors(finalBook.getAuthors()));
+		films.forEach(filmService::update);
+
 		try {
-			return bookRepository.save(book);
+			book = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
+		book.setAuthorIds(book.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
+		book.setAverageRating(averageRating(book.getId()));
+		book.setReviewCount(book.getReviews().size());
+		return book;
 	}
 
 	@Override
 	public double averageRating(long id) {
-		Book book = read(id);
-		return book.getReview() == null || book.getReview().size() == 0 ?
-				0 : book.getReview().stream().mapToDouble(Review::getRating).sum() / book.getReview().size();
+		bookRepository.findById(id)
+				.orElseThrow(() -> {throw new BookNotFoundException(id);});
+		Double rating = reviewService.getBookAverageRating(id);
+		return rating == null ? 0 : rating;
 	}
 
 	@Override
-	public List<Book> readAll(BookFilterDTO filter) {
+	public List<BookDomain> readAll(BookFilterDTO filter) {
 		Specification<Book> spec = Specification
 				.where(BookSpecification.likeName(filter.getName()))
 				.and(BookSpecification.likeAuthor(filter.getAuthor()))
 				.and(BookSpecification.likeDescription(filter.getDescription()))
 				.and(BookSpecification.likeReviewText(filter.getReviewText()))
 				.and(BookSpecification.lesThenRating(filter.getLessThenRating()));
+		List<Book> books;
 		if (filter.getPage() != null && filter.getPageSize() != null) {
 			Pageable page = PageRequest.of(filter.getPage(), filter.getPageSize());
-			return bookRepository.findAll(spec, page).toList();
+			books = bookRepository.findAll(spec, page).toList();
+		} else {
+			books = bookRepository.findAll(spec);
 		}
-		return bookRepository.findAll(spec);
+		List<BookDomain> bookDomains = books.stream().map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
+		bookDomains.forEach(domain -> domain.setReviewCount(domain.getReviews().size()));
+		bookDomains.forEach(domain -> domain.setAverageRating(averageRating(domain.getId())));
+		bookDomains.forEach(domain -> domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList())));
+		return bookDomains;
 	}
 }

@@ -17,10 +17,8 @@ import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.implementation.BookServiceImpl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
@@ -101,7 +99,7 @@ public class BookServiceTest {
 		review2.setRating(5);
 		reviews.add(review1);
 		reviews.add(review2);
-		saveBook.setReview(reviews);
+		saveBook.setReviews(reviews);
 		when(bookRepository.findById(1L)).thenReturn(Optional.of(saveBook));
 
 		double rating = bookService.averageRating(1);

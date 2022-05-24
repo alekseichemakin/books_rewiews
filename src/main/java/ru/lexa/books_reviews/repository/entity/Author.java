@@ -1,13 +1,11 @@
 package ru.lexa.books_reviews.repository.entity;
 
 import lombok.Data;
-import lombok.ToString;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collection;
-import java.util.Set;
 
 
 /**

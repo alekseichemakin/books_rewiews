@@ -23,15 +23,15 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewRepository reviewRepository;
 
-	private BookService bookService;
+//	private BookService bookService;
 
 	private FilmService filmService;
 
 	@Override
 	public Review create(Review review) {
-		if (review.getBook() != null && bookService.read(review.getBook().getId()) == null) {
-			throw new BookNotFoundException(review.getBook().getId());
-		}
+//		if (review.getBook() != null && bookService.read(review.getBook().getId()) == null) {
+//			throw new BookNotFoundException(review.getBook().getId());
+//		}
 		if (review.getFilm() != null && filmService.read(review.getFilm().getId()) == null) {
 			throw new FilmNotFoundException(review.getFilm().getId());
 		}
@@ -71,5 +71,10 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public List<Review> readAllFilmsReviews() {
 		return reviewRepository.findAllFilmsReviews();
+	}
+
+	@Override
+	public Double getBookAverageRating(long bookId) {
+		return reviewRepository.getAverageRating(bookId);
 	}
 }

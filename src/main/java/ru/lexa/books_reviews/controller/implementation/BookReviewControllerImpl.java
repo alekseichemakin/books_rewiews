@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookReviewController;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
-import ru.lexa.books_reviews.domain.mapper.BookReviewMapper;
+import ru.lexa.books_reviews.controller.mapper.BookMapper;
+import ru.lexa.books_reviews.controller.mapper.BookReviewMapper;
 import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.ReviewService;
 
@@ -27,9 +29,12 @@ public class BookReviewControllerImpl implements BookReviewController {
 
 	private BookReviewMapper reviewMapper;
 
+	private BookDomainMapper bookDomainMapper;
+
+
 	@Override
 	public BookReviewDTO createReview(BookReviewRequestDTO dto) {
-		Book book = bookService.read(dto.getBookId());
+		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
 		return reviewMapper.reviewToDto(reviewService.create(reviewMapper.dtoToReview(dto, book)));
 	}
 
@@ -47,7 +52,7 @@ public class BookReviewControllerImpl implements BookReviewController {
 
 	@Override
 	public BookReviewDTO updateReview(BookReviewDTO dto) {
-		Book book = bookService.read(dto.getBookId());
+		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
 		return reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto, book)));
 	}
 

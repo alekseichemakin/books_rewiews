@@ -2,6 +2,7 @@ package ru.lexa.books_reviews.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.exception.AuthorNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.entity.Author;
@@ -20,7 +21,7 @@ public interface AuthorService {
 	 * @return созданного автора
 	 * @throws NameErrorException, если автор с данным именнем существует
 	 */
-	Author create(Author author);
+	AuthorDomain create(AuthorDomain author);
 
 	/**
 	 * Возвращает автора по ID
@@ -29,7 +30,7 @@ public interface AuthorService {
 	 * @return - объект автора с заданным ID
 	 * @throws AuthorNotFoundException, если нет автора с данным ID
 	 */
-	Author read(long id);
+	AuthorDomain read(long id);
 
 	/**
 	 * Обновляет автора с заданным ID,
@@ -39,7 +40,7 @@ public interface AuthorService {
 	 * @return - объект обновленного автора
 	 * @throws AuthorNotFoundException, NameErrorException если нет книги с данным ID или книга с данным именем уже существует
 	 */
-	Author update(Author author);
+	AuthorDomain update(AuthorDomain author);
 
 	/**
 	 * Удаляет автора с заданным ID
@@ -54,5 +55,5 @@ public interface AuthorService {
 	 *
 	 * @return список авторов
 	 */
-	List<Author> readAll(AuthorFilterDTO filter);
+	List<AuthorDomain> readAll(AuthorFilterDTO filter);
 }

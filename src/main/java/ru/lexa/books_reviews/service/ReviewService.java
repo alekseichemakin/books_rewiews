@@ -64,4 +64,7 @@ public interface ReviewService {
      * @return список отзывов
      */
     List<Review> readAllFilmsReviews();
+
+    //TODO add comments
+    Double getBookAverageRating(long bookId);
 }

@@ -1,18 +1,11 @@
-package ru.lexa.books_reviews.domain.mapper;
+package ru.lexa.books_reviews.controller.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
-import ru.lexa.books_reviews.repository.entity.Author;
-import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Film;
-import ru.lexa.books_reviews.repository.entity.Review;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import ru.lexa.books_reviews.domain.BookDomain;
 
 /**
  * Маппер книг
@@ -29,12 +22,12 @@ public interface BookMapper {
 	 * @param films   - экранизаци книги
 	 * @return - сущность книги
 	 */
-	@Mapping(target = "authors", source = "authors")
-	@Mapping(target = "id", source = "dto.id")
-	@Mapping(target = "name", source = "dto.name")
-	@Mapping(target = "review", source = "review")
-	@Mapping(target = "films", source = "films")
-	Book dtoToBook(BookDTO dto, Collection<Author> authors, Collection<Review> review, Collection<Film> films);
+	@Mapping(target = "reviews", ignore = true)
+	@Mapping(target = "reviewCount", ignore = true)
+	@Mapping(target = "films", ignore = true)
+	@Mapping(target = "averageRating", ignore = true)
+	@Mapping(target = "authors", ignore = true)
+	BookDomain dtoToBook(BookDTO dto);
 
 	/**
 	 * Преобразовывает dto книги в сущность книги
@@ -45,12 +38,13 @@ public interface BookMapper {
 	 * @param films   - экранизаци книги
 	 * @return - сущность книги
 	 */
-	@Mapping(target = "authors", source = "authors")
-	@Mapping(target = "name", source = "dto.name")
-	@Mapping(target = "review", source = "review")
-	@Mapping(target = "films", source = "films")
+	@Mapping(target = "reviews", ignore = true)
+	@Mapping(target = "reviewCount", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	Book dtoToBook(BookRequestDTO dto, Collection<Author> authors, Collection<Review> review, Collection<Film> films);
+	@Mapping(target = "films", ignore = true)
+	@Mapping(target = "averageRating", ignore = true)
+	@Mapping(target = "authors", ignore = true)
+	BookDomain dtoToBook(BookRequestDTO dto);
 
 
 	/**
@@ -62,7 +56,5 @@ public interface BookMapper {
 	 * @param authorIds   - Id авторов
 	 * @return - dto книги
 	 */
-	@Mapping(target = "authorIds", source = "authorIds")
-	@Mapping(target = "averageRating", source = "avgRating")
-	BookResponseDTO bookToDto(Book book, int reviewCount, double avgRating, List<Long> authorIds);
+	BookResponseDTO bookToDto(BookDomain book);
 }

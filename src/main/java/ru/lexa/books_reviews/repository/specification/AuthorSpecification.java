@@ -50,7 +50,7 @@ public class AuthorSpecification {
 			return null;
 		return (root, query, cb) -> {
 			Join<Author, Book> bookJoin = root.join(Author_.BOOKS);
-			Join<Book, Review> rev = bookJoin.join(Book_.REVIEW, JoinType.INNER);
+			Join<Book, Review> rev = bookJoin.join(Book_.REVIEWS, JoinType.INNER);
 			query.groupBy(root, bookJoin);
 			query.having(cb.lessThan(cb.avg(rev.get(Review_.RATING)), maxRating))
 					.distinct(true);

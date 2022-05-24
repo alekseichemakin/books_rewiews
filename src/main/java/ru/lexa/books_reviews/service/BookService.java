@@ -3,6 +3,7 @@ package ru.lexa.books_reviews.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -21,7 +22,7 @@ public interface BookService {
      * @return созданную книгу
      * @throws NameErrorException, если книга с данным именнем существует
      */
-    Book create(Book book);
+    BookDomain create(BookDomain book);
 
     /**
      * Возвращает книгу по ID
@@ -29,7 +30,7 @@ public interface BookService {
      * @return - объект книги с заданным ID
      * @throws BookNotFoundException, если нет книги с данным ID
      */
-    Book read(long id);
+    BookDomain read(long id);
 
     /**
      * Обновляет книгу с заданным ID,
@@ -38,7 +39,7 @@ public interface BookService {
      * @return - объект обновленной книги
      * @throws BookNotFoundException,NameErrorException если нет книги с данным ID или книга с данным именем уже существует
      */
-    Book update(Book book);
+    BookDomain update(BookDomain book);
 
     /**
      * Удаляет книгу с заданным ID
@@ -60,5 +61,5 @@ public interface BookService {
      *
      * @return список книг
      */
-    List<Book> readAll(BookFilterDTO filter);
+    List<BookDomain> readAll(BookFilterDTO filter);
 }

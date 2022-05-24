@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.FilmReviewController;
 import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.FilmReviewRequestDTO;
-import ru.lexa.books_reviews.domain.mapper.FilmReviewMapper;
+import ru.lexa.books_reviews.controller.mapper.FilmReviewMapper;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.service.FilmService;
 import ru.lexa.books_reviews.service.ReviewService;

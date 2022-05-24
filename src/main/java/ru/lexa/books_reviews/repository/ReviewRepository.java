@@ -33,4 +33,7 @@ public interface ReviewRepository extends CrudRepository<Review, Long> {
      */
     @Query(value = "SELECT r FROM Review r WHERE r.film is not null")
     List<Review> findAllFilmsReviews();
+
+    @Query("select avg(r.rating) from Review r where r.book.id = ?1")
+    Double getAverageRating(long id);
 }

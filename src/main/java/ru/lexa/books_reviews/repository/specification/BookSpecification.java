@@ -47,7 +47,7 @@ public class BookSpecification {
 		if (text == null)
 			return null;
 		return (root, query, cb) -> {
-			Join<Book, Review> rev = root.join(Book_.REVIEW);
+			Join<Book, Review> rev = root.join(Book_.REVIEWS);
 			return cb.like(rev.get(Review_.TEXT), "%" + text + "%");
 		};
 	}
@@ -59,7 +59,7 @@ public class BookSpecification {
 		if (maxRating == null)
 			return null;
 		return (root, query, cb) -> {
-			Join<Book, Review> rev = root.join(Book_.REVIEW, JoinType.INNER);       //	SELECT b FROM book b INNER JOIN review r ON b.id = r.book_id
+			Join<Book, Review> rev = root.join(Book_.REVIEWS, JoinType.INNER);       //	SELECT b FROM book b INNER JOIN review r ON b.id = r.book_id
 			query.groupBy(root);                                                    //	GROUP BY b
 			query.having(cb.lessThan(cb.avg(rev.get(Review_.RATING)), maxRating));  //	having avg(rating) > ?
 			return query.getRestriction();

@@ -9,10 +9,12 @@ import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
-import ru.lexa.books_reviews.domain.mapper.AuthorMapper;
-import ru.lexa.books_reviews.domain.mapper.FilmMapper;
-import ru.lexa.books_reviews.domain.mapper.MapHelper;
+import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
+import ru.lexa.books_reviews.controller.mapper.BookMapper;
+import ru.lexa.books_reviews.controller.mapper.FilmMapper;
+import ru.lexa.books_reviews.controller.mapper.MapHelper;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
 
 import java.util.Collection;
@@ -31,28 +33,30 @@ public class AuthorControllerImpl implements AuthorController {
 
 	private FilmMapper filmMapper;
 
-	private MapHelper mapHelper;
+	private BookDomainMapper bookDomainMapper;
+
+	private BookMapper bookMapper;
+
 
 	@Override
 	public AuthorResponseDTO createAuthor(AuthorRequestDTO dto) {
-		Author author = authorService.create(authorMapper.dtoToAuthor(dto));
-		return mapHelper.authorMapHelper(author);
+		return authorMapper.authorToDto(authorService.create(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
 	public Collection<AuthorResponseDTO> readAll(Integer page, Integer pageSize, Double maxRating, String name, String book, String film) {
 		AuthorFilterDTO filter = new AuthorFilterDTO(name, book, film, maxRating, page, pageSize);
-		return authorService.readAll(filter).stream().map(mapHelper::authorMapHelper).collect(Collectors.toList());
+		return authorService.readAll(filter).stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
 
 	@Override
 	public AuthorResponseDTO readAuthor(long id) {
-		return mapHelper.authorMapHelper(authorService.read(id));
+		return authorMapper.authorToDto(authorService.read(id));
 	}
 
 	@Override
 	public AuthorResponseDTO updateAuthor(AuthorDTO dto) {
-		return mapHelper.authorMapHelper(authorService.update(authorMapper.dtoToAuthor(dto)));
+		return authorMapper.authorToDto(authorService.update(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
@@ -64,7 +68,7 @@ public class AuthorControllerImpl implements AuthorController {
 	//TODO ret Добиться появления Exception
 	public Collection<BookResponseDTO> readBooks(long id) {
 		return authorService.read(id).getBooks().stream()
-				.map(mapHelper::bookMapHelper)
+				.map(book -> bookMapper.bookToDto(bookDomainMapper.bookToDomain(book)))
 				.collect(Collectors.toList());
 	}
 

@@ -8,8 +8,11 @@ import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
 import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
-import ru.lexa.books_reviews.domain.mapper.*;
+import ru.lexa.books_reviews.controller.mapper.FilmMapper;
+import ru.lexa.books_reviews.controller.mapper.FilmReviewMapper;
+import ru.lexa.books_reviews.controller.mapper.MapHelper;
 import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 
@@ -33,9 +36,11 @@ public class FilmControllerImpl implements FilmController {
 
 	private MapHelper mapHelper;
 
+	private BookDomainMapper bookDomainMapper;
+
 	@Override
 	public FilmDTO createFilm(FilmRequestDTO dto) {
-		Book book = bookService.read(dto.getBookId());
+		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
 		return filmMapper.filmToDto(filmService.create(filmMapper.dtoToFilm(dto, book.getAuthors(), book)));
 	}
 
@@ -53,7 +58,7 @@ public class FilmControllerImpl implements FilmController {
 
 	@Override
 	public FilmDTO updateFilm(FilmDTO dto) {
-		Book book = bookService.read(dto.getBookId());
+		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
 		return filmMapper.filmToDto(filmService.update(filmMapper.dtoToFilm(dto, book.getAuthors(), book)));
 	}
 
