@@ -2,17 +2,20 @@ package ru.lexa.books_reviews.service.implementation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.lexa.books_reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.ReviewNotFoundException;
 import ru.lexa.books_reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.repository.entity.Review;
+import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 import ru.lexa.books_reviews.service.ReviewService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса {@link ru.lexa.books_reviews.service.ReviewService}
@@ -23,30 +26,26 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewRepository reviewRepository;
 
-//	private BookService bookService;
-
-	private FilmService filmService;
+	private ReviewDomainMapper reviewDomainMapper;
 
 	@Override
-	public Review create(Review review) {
-//		if (review.getBook() != null && bookService.read(review.getBook().getId()) == null) {
-//			throw new BookNotFoundException(review.getBook().getId());
-//		}
-		if (review.getFilm() != null && filmService.read(review.getFilm().getId()) == null) {
-			throw new FilmNotFoundException(review.getFilm().getId());
-		}
-		return reviewRepository.save(review);
+	public ReviewDomain create(ReviewDomain review) {
+		review = reviewDomainMapper.reviewToDomain(reviewRepository.save(reviewDomainMapper.domainToReview(review)));
+		return setIds(review);
 	}
 
 	@Override
-	public List<Review> readAll() {
-		return reviewRepository.findAll();
+	public List<ReviewDomain> readAll() {
+		List<ReviewDomain> reviewDomains = reviewRepository.findAll().stream().map(reviewDomainMapper::reviewToDomain).collect(Collectors.toList());
+		reviewDomains.forEach(this::setIds);
+		return reviewDomains;
 	}
 
 	@Override
-	public Review read(long id) {
-		return reviewRepository.findById(id)
-				.orElseThrow(() -> {throw new ReviewNotFoundException(id);});
+	public ReviewDomain read(long id) {
+		ReviewDomain review = reviewDomainMapper.reviewToDomain(reviewRepository.findById(id)
+				.orElseThrow(() -> {throw new ReviewNotFoundException(id);}));
+		return setIds(review);
 	}
 
 	@Override
@@ -57,24 +56,35 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public Review update(@Valid Review review) {
-		reviewRepository.findById(review.getId())
-				.orElseThrow(() -> {throw new ReviewNotFoundException(review.getId());});
-		return reviewRepository.save(review);
+	public ReviewDomain update(ReviewDomain review) {
+		ReviewDomain reviewDomain = read(review.getId());
+		reviewDomain.setText(review.getText());
+		reviewDomain.setRating(review.getRating());
+		reviewDomain = reviewDomainMapper.reviewToDomain(reviewRepository.save(reviewDomainMapper.domainToReview(review)));
+		return setIds(reviewDomain);
 	}
 
 	@Override
-	public List<Review> readAllBooksReviews() {
-		return reviewRepository.findAllBooksReviews();
+	public List<ReviewDomain> readAllBooksReviews() {
+		return reviewRepository.findAllBooksReviews().stream().map(reviewDomainMapper::reviewToDomain).map(this::setIds).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Review> readAllFilmsReviews() {
-		return reviewRepository.findAllFilmsReviews();
+	public List<ReviewDomain> readAllFilmsReviews() {
+		return reviewRepository.findAllFilmsReviews().stream().map(reviewDomainMapper::reviewToDomain).map(this::setIds).collect(Collectors.toList());
 	}
 
 	@Override
 	public Double getBookAverageRating(long bookId) {
 		return reviewRepository.getAverageRating(bookId);
+	}
+
+	private ReviewDomain setIds(ReviewDomain review) {
+		if (review.getBook() != null) {
+			review.setBookId(review.getBook().getId());
+		} else if (review.getFilm() != null) {
+			review.setFilmId(review.getFilm().getId());
+		}
+		return review;
 	}
 }

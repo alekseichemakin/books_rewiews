@@ -15,6 +15,7 @@ import ru.lexa.books_reviews.controller.mapper.MapHelper;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
+import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
@@ -40,6 +41,8 @@ public class BookControllerImpl implements BookController {
 	private MapHelper mapHelper;
 
 	private AuthorDomainMapper authorDomainMapper;
+
+	private ReviewDomainMapper reviewDomainMapper;
 
 	@Override
 	public BookResponseDTO createBook(BookRequestDTO dto) {
@@ -86,9 +89,11 @@ public class BookControllerImpl implements BookController {
 
 	@Override
 	public Collection<BookReviewDTO> getReviews(long id) {
-		return bookService.read(id).getReviews().stream()
-				.map(reviewMapper::reviewToDto)
+		Collection<BookReviewDTO> reviews = bookService.read(id).getReviews().stream()
+				.map(review -> reviewMapper.reviewToDto(reviewDomainMapper.reviewToDomain(review)))
 				.collect(Collectors.toList());
+		reviews.forEach(r -> r.setBookId(id));
+		return reviews;
 	}
 
 	@Override

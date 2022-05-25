@@ -6,6 +6,7 @@ import ru.lexa.books_reviews.controller.FilmReviewController;
 import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.FilmReviewRequestDTO;
 import ru.lexa.books_reviews.controller.mapper.FilmReviewMapper;
+import ru.lexa.books_reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.FilmService;
@@ -31,8 +32,9 @@ public class FilmReviewControllerImpl implements FilmReviewController {
 
 	@Override
 	public FilmReviewDTO createReview(FilmReviewRequestDTO dto) {
-		Film film = filmDomainMapper.domainToFilm(filmService.read(dto.getFilmId()));
-		return reviewMapper.reviewToDto(reviewService.create(reviewMapper.dtoToReview(dto, film)));
+		ReviewDomain reviewDomain = reviewMapper.dtoToReview(dto);
+		reviewDomain.setFilm(filmDomainMapper.domainToFilm(filmService.read(dto.getFilmId())));
+		return reviewMapper.reviewToDto(reviewService.create(reviewDomain));
 	}
 
 	@Override
@@ -49,9 +51,9 @@ public class FilmReviewControllerImpl implements FilmReviewController {
 
 	@Override
 	public FilmReviewDTO updateReview(FilmReviewDTO dto) {
-		Film film = filmDomainMapper.domainToFilm(filmService.read(dto.getFilmId()));
-		return reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto, film)));
-
+		ReviewDomain reviewDomain = reviewMapper.dtoToReview(dto);
+		reviewDomain.setFilm(filmDomainMapper.domainToFilm(filmService.read(dto.getFilmId())));
+		return reviewMapper.reviewToDto(reviewService.update(reviewDomain));
 	}
 
 	@Override

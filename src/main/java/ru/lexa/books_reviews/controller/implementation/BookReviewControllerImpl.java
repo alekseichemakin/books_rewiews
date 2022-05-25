@@ -8,6 +8,7 @@ import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.BookReviewMapper;
+import ru.lexa.books_reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
@@ -34,8 +35,9 @@ public class BookReviewControllerImpl implements BookReviewController {
 
 	@Override
 	public BookReviewDTO createReview(BookReviewRequestDTO dto) {
-		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
-		return reviewMapper.reviewToDto(reviewService.create(reviewMapper.dtoToReview(dto, book)));
+		ReviewDomain reviewDomain = reviewMapper.dtoToReview(dto);
+		reviewDomain.setBook(bookDomainMapper.domainToBook(bookService.read(dto.getBookId())));
+		return reviewMapper.reviewToDto(reviewDomain);
 	}
 
 	@Override
@@ -52,9 +54,9 @@ public class BookReviewControllerImpl implements BookReviewController {
 
 	@Override
 	public BookReviewDTO updateReview(BookReviewDTO dto) {
-		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
-		return reviewMapper.reviewToDto(reviewService.update(reviewMapper.dtoToReview(dto, book)));
-	}
+		ReviewDomain reviewDomain = reviewMapper.dtoToReview(dto);
+		reviewDomain.setBook(bookDomainMapper.domainToBook(bookService.read(dto.getBookId())));
+		return reviewMapper.reviewToDto(reviewDomain);}
 
 	@Override
 	public void deleteReview(long id) {

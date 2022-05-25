@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import ru.lexa.books_reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
@@ -21,13 +22,13 @@ public interface ReviewService {
      * @throws BookNotFoundException, если нет книги с данным ID
      * @throws FilmNotFoundException, если нет фильма с данным ID
      */
-    Review create(Review review);
+    ReviewDomain create(ReviewDomain review);
 
     /**
      * Возвращает список всех имеющихся отзывов
      * @return список отзывов
      */
-    List<Review> readAll();
+    List<ReviewDomain> readAll();
 
     /**
      * Возвращает отзыв по ID
@@ -35,7 +36,7 @@ public interface ReviewService {
      * @return - объект отзыва с заданным ID
      * @throws ReviewNotFoundException, если нет отзыва с данным ID
      */
-    Review read(long id);
+    ReviewDomain read(long id);
 
     /**
      * Обновляет отзыв с заданным ID,
@@ -44,7 +45,7 @@ public interface ReviewService {
      * @return - объект обновленного отзыва
      * @throws ReviewNotFoundException, если нет отзыва с данным ID
      */
-    Review update(Review review);
+    ReviewDomain update(ReviewDomain review);
 
     /**
      * Удаляет отзыв с заданным ID
@@ -57,13 +58,13 @@ public interface ReviewService {
      * Возвращает список всех имеющихся отзывов для книг
      * @return список отзывов
      */
-    List<Review> readAllBooksReviews();
+    List<ReviewDomain> readAllBooksReviews();
 
     /**
      * Возвращает список всех имеющихся отзывов для фильмов
      * @return список отзывов
      */
-    List<Review> readAllFilmsReviews();
+    List<ReviewDomain> readAllFilmsReviews();
 
     //TODO add comments
     Double getBookAverageRating(long bookId);
