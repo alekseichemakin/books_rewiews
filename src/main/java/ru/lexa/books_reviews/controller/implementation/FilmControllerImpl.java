@@ -8,15 +8,20 @@ import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
 import ru.lexa.books_reviews.controller.dto.review.FilmReviewDTO;
-import ru.lexa.books_reviews.controller.mapper.FilmMapper;
-import ru.lexa.books_reviews.controller.mapper.FilmReviewMapper;
-import ru.lexa.books_reviews.controller.mapper.MapHelper;
+import ru.lexa.books_reviews.controller.mapper.*;
+import ru.lexa.books_reviews.domain.AuthorDomain;
+import ru.lexa.books_reviews.domain.BookDomain;
+import ru.lexa.books_reviews.domain.FilmDomain;
+import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Film;
+import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -34,14 +39,21 @@ public class FilmControllerImpl implements FilmController {
 
 	private FilmReviewMapper reviewMapper;
 
-	private MapHelper mapHelper;
-
 	private BookDomainMapper bookDomainMapper;
+
+	private AuthorDomainMapper authorDomainMapper;
+
+	private AuthorMapper authorMapper;
+
+	private BookMapper bookMapper;
 
 	@Override
 	public FilmDTO createFilm(FilmRequestDTO dto) {
 		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
-		return filmMapper.filmToDto(filmService.create(filmMapper.dtoToFilm(dto, book.getAuthors(), book)));
+		FilmDomain filmDomain = filmMapper.dtoToFilm(dto);
+		filmDomain.setBook(book);
+		filmDomain.setAuthors(book.getAuthors());
+		return filmMapper.filmToDto(filmService.create(filmDomain));
 	}
 
 	@Override
@@ -59,7 +71,10 @@ public class FilmControllerImpl implements FilmController {
 	@Override
 	public FilmDTO updateFilm(FilmDTO dto) {
 		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
-		return filmMapper.filmToDto(filmService.update(filmMapper.dtoToFilm(dto, book.getAuthors(), book)));
+		FilmDomain filmDomain = filmMapper.dtoToFilm(dto);
+		filmDomain.setBook(book);
+		filmDomain.setAuthors(book.getAuthors());
+		return filmMapper.filmToDto(filmService.update(filmDomain));
 	}
 
 	@Override
@@ -69,21 +84,21 @@ public class FilmControllerImpl implements FilmController {
 
 	@Override
 	public Collection<FilmReviewDTO> getReviews(long id) {
-		return filmService.read(id).getReview().stream()
+		return filmService.read(id).getReviews().stream()
 				.map(reviewMapper::reviewToDto)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Collection<AuthorDTO> getAuthors(long id) {
-		return filmService.read(id).getAuthors().stream()
-				.map(mapHelper::authorMapHelper)
-				.collect(Collectors.toList());
+		List<AuthorDomain> authorDomains = filmService.read(id).getAuthors().stream().map(authorDomainMapper::authorToDomain).collect(Collectors.toList());
+		authorDomains.forEach(domain -> domain.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList())));
+		authorDomains.forEach(domain -> domain.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList())));
+		return authorDomains.stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
 
 	@Override
 	public BookResponseDTO readBook(long id) {
-		Book book = filmService.read(id).getBook();
-		return mapHelper.bookMapHelper(book);
+		return bookMapper.bookToDto(bookService.read(filmService.read(id).getBookId()));
 	}
 }

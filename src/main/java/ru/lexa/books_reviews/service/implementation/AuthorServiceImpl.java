@@ -19,6 +19,8 @@ import ru.lexa.books_reviews.repository.specification.AuthorSpecification;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,9 +81,9 @@ public class AuthorServiceImpl implements AuthorService {
 			} else {
 				b.getAuthors().remove(a);
 				b.getFilms().forEach(film -> film.getAuthors().remove(a));
-				authorRepository.save(a);
 			}
 		}
+		authorRepository.save(a);
 		authorRepository.delete(a);
 	}
 

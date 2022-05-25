@@ -15,6 +15,7 @@ import ru.lexa.books_reviews.controller.mapper.FilmMapper;
 import ru.lexa.books_reviews.controller.mapper.MapHelper;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
+import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
 
 import java.util.Collection;
@@ -36,6 +37,8 @@ public class AuthorControllerImpl implements AuthorController {
 	private BookDomainMapper bookDomainMapper;
 
 	private BookMapper bookMapper;
+
+	private FilmDomainMapper filmDomainMapper;
 
 
 	@Override
@@ -75,7 +78,7 @@ public class AuthorControllerImpl implements AuthorController {
 	@Override
 	public Collection<FilmDTO> readFilms(long id) {
 		return authorService.read(id).getFilms().stream()
-				.map(filmMapper::filmToDto)
+				.map(film -> filmMapper.filmToDto(filmDomainMapper.filmToDomain(film)))
 				.collect(Collectors.toList());
 	}
 }

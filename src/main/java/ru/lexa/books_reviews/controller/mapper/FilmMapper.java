@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
+import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
@@ -23,7 +24,7 @@ public interface FilmMapper {
 	 * @return - dto фильма
 	 */
 	@Mapping(target = "bookId", source = "book.id")
-	FilmDTO filmToDto(Film film);
+	FilmDTO filmToDto(FilmDomain film);
 
 	/**
 	 * Преобразовывает dto фильма в сущность фильма
@@ -33,12 +34,10 @@ public interface FilmMapper {
 	 * @param book - экранизированная книга
 	 * @return - сущность фильма
 	 */
-	@Mapping(target = "dateRelease", source = "dto.dateRelease")
-	@Mapping(target = "id", source = "dto.id")
-	@Mapping(target = "name", source = "dto.name")
-	@Mapping(target = "authors", source = "authors")
-	@Mapping(target = "book", source = "book")
-	Film dtoToFilm(FilmDTO dto, Collection<Author> authors, Book book);
+	@Mapping(target = "book", ignore = true)
+	@Mapping(target = "authors", ignore = true)
+	@Mapping(target = "reviews", ignore = true)
+	FilmDomain dtoToFilm(FilmDTO dto);
 
 	/**
 	 * Преобразовывает dto фильма в сущность фильма
@@ -48,10 +47,9 @@ public interface FilmMapper {
 	 * @param book - экранизированная книга
 	 * @return - сущность фильма
 	 */
-	@Mapping(target = "dateRelease", source = "dto.dateRelease")
-	@Mapping(target = "name", source = "dto.name")
+	@Mapping(target = "reviews", ignore = true)
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "authors", source = "authors")
-	@Mapping(target = "book", source = "book")
-	Film dtoToFilm(FilmRequestDTO dto, Collection<Author> authors, Book book);
+	@Mapping(target = "book", ignore = true)
+	@Mapping(target = "authors", ignore = true)
+	FilmDomain dtoToFilm(FilmRequestDTO dto);
 }

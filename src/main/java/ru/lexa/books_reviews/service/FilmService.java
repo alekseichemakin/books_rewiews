@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.service;
 
 import org.springframework.transaction.annotation.Transactional;
+import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -19,7 +20,7 @@ public interface FilmService {
 	 * @return созданный фильм
 	 * @throws NameErrorException, если фильм с данным именнем существует
 	 */
-	Film create(Film film);
+	FilmDomain create(FilmDomain film);
 
 	/**
 	 * Возвращает фильм по ID
@@ -27,7 +28,7 @@ public interface FilmService {
 	 * @return - объект фильма с заданным ID
 	 * @throws FilmNotFoundException, если нет фильма с данным ID
 	 */
-	Film read(long id);
+	FilmDomain read(long id);
 
 	/**
 	 * Обновляет фильм с заданным ID,
@@ -36,7 +37,7 @@ public interface FilmService {
 	 * @return - объект обновленного фильма
 	 * @throws FilmNotFoundException, NameErrorException если нет фильма с данным ID или фильма с данным именем уже существует
 	 */
-	Film update(Film film);
+	FilmDomain update(FilmDomain film);
 
 	/**
 	 * Удаляет фильм с заданным ID
@@ -50,6 +51,6 @@ public interface FilmService {
 	 *
 	 * @return список фильмов
 	 */
-	List<Film> readAll();
+	List<FilmDomain> readAll();
 
 }

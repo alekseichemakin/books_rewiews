@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
+import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.BookRepository;
@@ -18,6 +19,7 @@ import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
+import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.repository.specification.BookSpecification;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
@@ -38,11 +40,11 @@ public class BookServiceImpl implements BookService {
 
 	private BookRepository bookRepository;
 
-	private FilmService filmService;
-
 	private BookDomainMapper bookDomainMapper;
 
 	private ReviewService reviewService;
+
+	private FilmDomainMapper filmDomainMapper;
 
 	@Override
 	public BookDomain create(BookDomain book) {
@@ -79,7 +81,7 @@ public class BookServiceImpl implements BookService {
 		Collection<Film> films = book.getFilms();
 		BookDomain finalBook = book;
 		films.forEach(film -> film.setAuthors(finalBook.getAuthors()));
-		films.forEach(filmService::update);
+		films.forEach(film -> filmDomainMapper.filmToDomain(film));
 
 		try {
 			book = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));

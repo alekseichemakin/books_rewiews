@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.sql.Date;
 import java.util.Collection;
-import java.util.Set;
 
 /**
  * Сущность фильма
@@ -43,7 +42,7 @@ public class Film {
 	 */
 	@OneToMany(mappedBy = "film", fetch = FetchType.LAZY,
 			cascade = CascadeType.ALL, orphanRemoval = true)
-	private Collection<Review> review;
+	private Collection<Review> reviews;
 
 	/**
 	 * Дата экранизации
