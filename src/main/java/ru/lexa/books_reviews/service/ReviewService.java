@@ -69,6 +69,5 @@ public interface ReviewService {
 	 */
 	List<ReviewDomain> readAllFilmsReviews();
 
-	//TODO add comments
 	Double getBookAverageRating(long bookId);
 }
