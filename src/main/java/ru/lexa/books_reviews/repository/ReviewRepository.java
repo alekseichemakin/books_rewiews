@@ -27,13 +27,18 @@ public interface ReviewRepository extends CrudRepository<Review, Long> {
     List<Review> findAllBooksReviews();
 
     /**
-     * Возвращает список отзывов для фильмоф
+     * Возвращает список отзывов для фильмов
      *
      * @return список отзывов
      */
     @Query(value = "SELECT r FROM Review r WHERE r.film is not null")
     List<Review> findAllFilmsReviews();
 
+    /**
+     * Возвращает средний рейтинг книги
+     *
+     * @return средний рейтинг
+     */
     @Query("select avg(r.rating) from Review r where r.book.id = ?1")
     Double getAverageRating(long id);
 }

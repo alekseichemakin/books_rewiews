@@ -6,25 +6,17 @@ import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorResponseDTO;
 import ru.lexa.books_reviews.domain.AuthorDomain;
-import ru.lexa.books_reviews.repository.entity.Author;
-import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Film;
-import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
- * Маппер автора
+ * Маппер dto и domain автора
  */
 @Mapper(componentModel = "spring")
 public interface AuthorMapper {
 	/**
-	 * Преобразовывает dto автора в сущность автора
+	 * Преобразовывает domain автора в dto автора
 	 *
-	 * @param dto   - dto автора
-	 *
-	 * @return - сущность автора
+	 * @param dto - dto автора
+	 * @return - domain автора
 	 */
 	@Mapping(target = "filmIds", ignore = true)
 	@Mapping(target = "bookIds", ignore = true)
@@ -34,10 +26,10 @@ public interface AuthorMapper {
 	AuthorDomain dtoToAuthor(AuthorDTO dto);
 
 	/**
-	 * Преобразовывает dto автора в сущность автора
+	 * Преобразовывает dto автора в domain автора
 	 *
-	 * @param dto   - dto автора
-	 * @return - сущность автора
+	 * @param dto - dto автора
+	 * @return - domain автора
 	 */
 	@Mapping(target = "filmIds", ignore = true)
 	@Mapping(target = "bookIds", ignore = true)
@@ -47,9 +39,9 @@ public interface AuthorMapper {
 	AuthorDomain dtoToAuthor(AuthorRequestDTO dto);
 
 	/**
-	 * Преобразовывает сущность автора в dto автора
+	 * Преобразовывает domain автора в dto автора
 	 *
-	 * @param author - сущность автора
+	 * @param author - domain автора
 	 * @return - dto автора
 	 */
 	AuthorResponseDTO authorToDto(AuthorDomain author);

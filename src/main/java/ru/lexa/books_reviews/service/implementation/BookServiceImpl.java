@@ -7,26 +7,21 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
-import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
-import ru.lexa.books_reviews.repository.entity.Review;
-import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.repository.specification.BookSpecification;
-import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
-import ru.lexa.books_reviews.service.FilmService;
 import ru.lexa.books_reviews.service.ReviewService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Реализация сервиса {@link ru.lexa.books_reviews.service.BookService}
  */
+@Transactional(readOnly = true)
 @Service
 @AllArgsConstructor
 public class BookServiceImpl implements BookService {
@@ -46,6 +42,7 @@ public class BookServiceImpl implements BookService {
 
 	private FilmDomainMapper filmDomainMapper;
 
+	@Transactional
 	@Override
 	public BookDomain create(BookDomain book) {
 		BookDomain domain;
@@ -61,17 +58,22 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public BookDomain read(long id) {
 		BookDomain domain = bookDomainMapper.bookToDomain(bookRepository.findById(id)
-				.orElseThrow(() -> {throw new BookNotFoundException(id);}));
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(id);
+				}));
 		domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
 		domain.setAverageRating(averageRating(id));
 		domain.setReviewCount(domain.getReviews().size());
 		return domain;
 	}
 
+	@Transactional
 	@Override
 	public void delete(long id) {
 		bookRepository.delete(bookRepository.findById(id)
-				.orElseThrow(() -> {throw new BookNotFoundException(id);}));
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(id);
+				}));
 	}
 
 	@Override
@@ -97,7 +99,9 @@ public class BookServiceImpl implements BookService {
 	@Override
 	public double averageRating(long id) {
 		bookRepository.findById(id)
-				.orElseThrow(() -> {throw new BookNotFoundException(id);});
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(id);
+				});
 		Double rating = reviewService.getBookAverageRating(id);
 		return rating == null ? 0 : rating;
 	}

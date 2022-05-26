@@ -9,8 +9,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.repository.AuthorRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
+import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapperImpl;
 import ru.lexa.books_reviews.service.implementation.AuthorServiceImpl;
 
 import java.util.ArrayList;
@@ -25,6 +28,9 @@ public class AuthorServiceTest {
 	@Mock
 	AuthorRepository authorRepository;
 
+	@Mock
+	AuthorDomainMapper authorDomainMapper;
+
 	@InjectMocks
 	AuthorServiceImpl authorService;
 
@@ -36,12 +42,11 @@ public class AuthorServiceTest {
 
 	@Test
 	public void whenSaveAuthor_ReturnAuthor() {
-		Author saveAuthor = new Author();
+		AuthorDomain saveAuthor = new AuthorDomain();
 		when(authorRepository.save(Mockito.any(Author.class))).thenAnswer(i -> i.getArguments()[0]);
-
 		saveAuthor.setName("test");
 
-		Author author = authorService.create(saveAuthor);
+		AuthorDomain author = authorService.create(saveAuthor);
 		assertEquals("test", author.getName());
 	}
 
@@ -53,7 +58,7 @@ public class AuthorServiceTest {
 		when(authorRepository.findById(1L)).thenReturn(Optional.of(saveAuthor));
 
 
-		Author author = authorService.read(1);
+		AuthorDomain author = authorService.read(1);
 		assertEquals("test", author.getName());
 	}
 
@@ -69,7 +74,7 @@ public class AuthorServiceTest {
 		authors.add(saveAuthor3);
 		when(authorRepository.findAll()).thenReturn(authors);
 
-		List<Author> authorsResponse = authorService.readAll(new AuthorFilterDTO());
+		List<AuthorDomain> authorsResponse = authorService.readAll(new AuthorFilterDTO());
 		assertEquals(3, authorsResponse.size());
 	}
 }

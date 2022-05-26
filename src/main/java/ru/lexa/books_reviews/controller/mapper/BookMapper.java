@@ -8,19 +8,16 @@ import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 
 /**
- * Маппер книг
+ * Маппер dto и domain книг
  */
 @Mapper(componentModel = "spring")
 public interface BookMapper {
 
 	/**
-	 * Преобразовывает dto книги в сущность книги
+	 * Преобразовывает dto книги в domain книги
 	 *
-	 * @param dto     - dto книги
-	 * @param authors - автор книги
-	 * @param review  - отзывы книги
-	 * @param films   - экранизаци книги
-	 * @return - сущность книги
+	 * @param dto - dto книги
+	 * @return - domain книги
 	 */
 	@Mapping(target = "reviews", ignore = true)
 	@Mapping(target = "reviewCount", ignore = true)
@@ -30,13 +27,10 @@ public interface BookMapper {
 	BookDomain dtoToBook(BookDTO dto);
 
 	/**
-	 * Преобразовывает dto книги в сущность книги
+	 * Преобразовывает dto книги в domain книги
 	 *
-	 * @param dto     - dto книги
-	 * @param authors - автор книги
-	 * @param review  - отзывы книги
-	 * @param films   - экранизаци книги
-	 * @return - сущность книги
+	 * @param dto - dto книги
+	 * @return - domain книги
 	 */
 	@Mapping(target = "reviews", ignore = true)
 	@Mapping(target = "reviewCount", ignore = true)
@@ -48,12 +42,9 @@ public interface BookMapper {
 
 
 	/**
-	 * Преобразовывает сущность книги в dto книги
+	 * Преобразовывает domain книги в dto книги
 	 *
-	 * @param book        - сущность книги
-	 * @param reviewCount - колличество отзывов
-	 * @param avgRating   - срелний ретйтинг
-	 * @param authorIds   - Id авторов
+	 * @param book - domain книги
 	 * @return - dto книги
 	 */
 	BookResponseDTO bookToDto(BookDomain book);

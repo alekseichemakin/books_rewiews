@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
 import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.exception.AuthorNotFoundException;
@@ -19,8 +20,6 @@ import ru.lexa.books_reviews.repository.specification.AuthorSpecification;
 import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class AuthorServiceImpl implements AuthorService {
 
 	private AuthorRepository authorRepository;
@@ -37,6 +37,7 @@ public class AuthorServiceImpl implements AuthorService {
 
 	private AuthorDomainMapper authorDomainMapper;
 
+	@Transactional
 	@Override
 	public AuthorDomain create(AuthorDomain author) {
 		try {
@@ -50,14 +51,17 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public AuthorDomain read(long id) {
-		Author author =  authorRepository.findById(id)
-				.orElseThrow(() -> {throw new AuthorNotFoundException(id);});
+		Author author = authorRepository.findById(id)
+				.orElseThrow(() -> {
+					throw new AuthorNotFoundException(id);
+				});
 		AuthorDomain authorDomain = authorDomainMapper.authorToDomain(author);
 		authorDomain.setBookIds(author.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
 		authorDomain.setFilmIds(author.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
 		return authorDomain;
 	}
 
+	@Transactional
 	@Override
 	public AuthorDomain update(AuthorDomain author) {
 		author.setBooks(read(author.getId()).getBooks());
@@ -71,10 +75,13 @@ public class AuthorServiceImpl implements AuthorService {
 		}
 	}
 
+	@Transactional
 	@Override
 	public void delete(long id) {
-		Author a =  authorRepository.findById(id)
-				.orElseThrow(() -> {throw new AuthorNotFoundException(id);});
+		Author a = authorRepository.findById(id)
+				.orElseThrow(() -> {
+					throw new AuthorNotFoundException(id);
+				});
 		for (Book b : a.getBooks()) {
 			if (b.getAuthors().size() == 1) {
 				bookService.delete(b.getId());

@@ -10,24 +10,23 @@ import ru.lexa.books_reviews.repository.entity.Review;
 
 
 /**
- * Маппер отзывов для фильмов
+ * Маппер dto и domain отзывов для фильмов
  */
 @Mapper(componentModel = "spring")
 public interface FilmReviewMapper {
 	/**
-	 * Преобразовывает сущность отзыва в dto отзыва
+	 * Преобразовывает domain отзыва в dto отзыва
 	 *
-	 * @param review - сущность отзыва
+	 * @param review - domain отзыва
 	 * @return - dto отзыва
 	 */
 	FilmReviewDTO reviewToDto(ReviewDomain review);
 
 	/**
-	 * Преобразовывает dto отзыва в сущность отзыва
+	 * Преобразовывает dto отзыва в domain отзыва
 	 *
 	 * @param dto - dto отзыва
-	 * @param film - фильм отзыва
-	 * @return - сущность книги
+	 * @return - domain книги
 	 */
 	@Mapping(target = "film", ignore = true)
 	@Mapping(target = "bookId", ignore = true)
@@ -35,11 +34,10 @@ public interface FilmReviewMapper {
 	ReviewDomain dtoToReview(FilmReviewDTO dto);
 
 	/**
-	 * Преобразовывает dto отзыва в сущность отзыва
+	 * Преобразовывает dto отзыва в domain отзыва
 	 *
 	 * @param dto - dto отзыва
-	 * @param film - фильм отзыва
-	 * @return - сущность книги
+	 * @return - domain книги
 	 */
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "film", ignore = true)

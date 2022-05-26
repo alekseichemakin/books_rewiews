@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import ru.lexa.books_reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.service.implementation.ReviewServiceImpl;
@@ -36,10 +37,10 @@ public class ReviewServiceTest {
 	public void whenSaveReview_ReturnReview() {
 		when(reviewRepository.save(Mockito.any(Review.class))).thenAnswer(i -> i.getArguments()[0]);
 
-		Review saveReview = new Review();
+		ReviewDomain saveReview = new ReviewDomain();
 		saveReview.setText("test");
 		saveReview.setRating(5);
-		Review review = reviewService.create(saveReview);
+		ReviewDomain review = reviewService.create(saveReview);
 
 		assertEquals("test", review.getText());
 		assertEquals(5, review.getRating());
@@ -53,7 +54,7 @@ public class ReviewServiceTest {
 		saveReview.setId(1L);
 		when(reviewRepository.findById(1L)).thenReturn(Optional.of(saveReview));
 
-		Review review = reviewService.read(1);
+		ReviewDomain review = reviewService.read(1);
 
 		assertEquals(5, review.getRating());
 		assertEquals("test", review.getText());
@@ -71,7 +72,7 @@ public class ReviewServiceTest {
 		reviews.add(review3);
 		when(reviewRepository.findAll()).thenReturn(reviews);
 
-		List<Review> reviewsResponse = reviewService.readAll();
+		List<ReviewDomain> reviewsResponse = reviewService.readAll();
 		assertEquals(3, reviewsResponse.size());
 	}
 }

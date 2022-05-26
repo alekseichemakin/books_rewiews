@@ -12,13 +12,14 @@ import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.FilmMapper;
-import ru.lexa.books_reviews.controller.mapper.MapHelper;
+import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -70,8 +71,11 @@ public class AuthorControllerImpl implements AuthorController {
 	@Override
 	//TODO ret Добиться появления Exception
 	public Collection<BookResponseDTO> readBooks(long id) {
-		return authorService.read(id).getBooks().stream()
-				.map(book -> bookMapper.bookToDto(bookDomainMapper.bookToDomain(book)))
+		List<BookDomain> bookDomainList = authorService.read(id).getBooks().stream()
+				.map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
+		bookDomainList.forEach(b -> b.setAuthorIds(b.getAuthors().stream().map(Author::getId).collect(Collectors.toList())));
+		return bookDomainList.stream()
+				.map(bookMapper::bookToDto)
 				.collect(Collectors.toList());
 	}
 

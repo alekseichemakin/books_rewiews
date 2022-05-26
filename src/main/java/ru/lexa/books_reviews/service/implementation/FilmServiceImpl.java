@@ -3,21 +3,21 @@ package ru.lexa.books_reviews.service.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.FilmRepository;
-import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.FilmService;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса {@link ru.lexa.books_reviews.service.FilmService}
  */
+@Transactional(readOnly = true)
 @Service
 @AllArgsConstructor
 public class FilmServiceImpl implements FilmService {
@@ -26,6 +26,7 @@ public class FilmServiceImpl implements FilmService {
 
 	private FilmDomainMapper filmDomainMapper;
 
+	@Transactional
 	@Override
 	public FilmDomain create(FilmDomain film) {
 		try {
@@ -38,11 +39,14 @@ public class FilmServiceImpl implements FilmService {
 	@Override
 	public FilmDomain read(long id) {
 		FilmDomain filmDomain = filmDomainMapper.filmToDomain(filmRepository.findById(id)
-				.orElseThrow(() -> {throw new FilmNotFoundException(id);}));
+				.orElseThrow(() -> {
+					throw new FilmNotFoundException(id);
+				}));
 		filmDomain.setBookId(filmDomain.getBook().getId());
 		return filmDomain;
 	}
 
+	@Transactional
 	@Override
 	public FilmDomain update(FilmDomain film) {
 		film.setReviews(read(film.getId()).getReviews());
@@ -53,6 +57,7 @@ public class FilmServiceImpl implements FilmService {
 		}
 	}
 
+	@Transactional
 	@Override
 	public void delete(long id) {
 		filmRepository.deleteById(read(id).getId());

@@ -1,18 +1,15 @@
 package ru.lexa.books_reviews.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
 import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.exception.AuthorNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
-import ru.lexa.books_reviews.repository.entity.Author;
 
 import java.util.List;
 
 /**
  * Сервис обрабатывающий запорсы с контроллера {@link ru.lexa.books_reviews.controller.AuthorController}
  */
-@Transactional
 public interface AuthorService {
 	/**
 	 * Создает автора с заданными параметрми

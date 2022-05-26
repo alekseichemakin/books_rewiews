@@ -9,9 +9,9 @@ import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
+import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.BookReviewMapper;
-import ru.lexa.books_reviews.controller.mapper.MapHelper;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
@@ -38,20 +38,16 @@ public class BookControllerImpl implements BookController {
 
 	private AuthorService authorService;
 
-	private MapHelper mapHelper;
-
 	private AuthorDomainMapper authorDomainMapper;
+
+	private AuthorMapper authorMapper;
 
 	private ReviewDomainMapper reviewDomainMapper;
 
 	@Override
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		BookDomain domain = bookMapper.dtoToBook(dto);
-		List<Author> authors = new ArrayList<>();
-		for (long id: domain.getAuthorIds()) {
-			authors.add(authorDomainMapper.domainToAuthor(authorService.read(id)));
-		}
-		domain.setAuthors(authors);
+		setAuthorToDomain(domain);
 		return bookMapper.bookToDto(bookService.create(domain));
 	}
 
@@ -74,11 +70,7 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public BookResponseDTO updateBook(BookDTO dto) {
 		BookDomain domain = bookMapper.dtoToBook(dto);
-		List<Author> authors = new ArrayList<>();
-		for (long id: domain.getAuthorIds()) {
-			authors.add(authorDomainMapper.domainToAuthor(authorService.read(id)));
-		}
-		domain.setAuthors(authors);
+		setAuthorToDomain(domain);
 		return bookMapper.bookToDto(bookService.update(domain));
 	}
 
@@ -104,7 +96,16 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public Collection<AuthorDTO> getAuthors(long id) {
 		return bookService.read(id).getAuthors().stream()
-				.map(mapHelper::authorMapHelper)
+				.map(author -> authorMapper.authorToDto(authorDomainMapper.authorToDomain(author)))
 				.collect(Collectors.toList());
 	}
+
+	private void setAuthorToDomain(BookDomain domain) {
+		List<Author> authors = new ArrayList<>();
+		for (long id: domain.getAuthorIds()) {
+			authors.add(authorDomainMapper.domainToAuthor(authorService.read(id)));
+		}
+		domain.setAuthors(authors);
+	}
+
 }

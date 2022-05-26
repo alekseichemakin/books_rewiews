@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.jpa.domain.Specification;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.FilmRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
@@ -44,7 +45,7 @@ public class FilmServiceTest {
 
 		Book book = new Book();
 		Author author = new Author();
-		Film saveFilm = new Film();
+		FilmDomain saveFilm = new FilmDomain();
 		List<Author> authors = new ArrayList<>();
 		saveFilm.setName("test");
 		author.setName("test");
@@ -52,7 +53,7 @@ public class FilmServiceTest {
 		authors.add(author);
 		saveFilm.setAuthors(authors);
 		saveFilm.setBook(book);
-		Film film = filmService.create(saveFilm);
+		FilmDomain film = filmService.create(saveFilm);
 
 		assertEquals("test", film.getName());
 		assertEquals("test", film.getBook().getName());
@@ -73,7 +74,7 @@ public class FilmServiceTest {
 		saveFilm.setBook(book);
 		when(filmRepository.findById(1L)).thenReturn(Optional.of(saveFilm));
 
-		Film film = filmService.read(1);
+		FilmDomain film = filmService.read(1);
 
 		assertEquals("test", film.getName());
 		assertEquals("test", film.getBook().getName());
@@ -92,7 +93,7 @@ public class FilmServiceTest {
 		films.add(saveFilm3);
 		when(filmRepository.findAll()).thenReturn(films);
 
-		List<Film> filmResponse = filmService.readAll();
+		List<FilmDomain> filmResponse = filmService.readAll();
 		assertEquals(3, filmResponse.size());
 	}
 }

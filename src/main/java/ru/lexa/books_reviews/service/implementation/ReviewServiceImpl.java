@@ -2,24 +2,21 @@ package ru.lexa.books_reviews.service.implementation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.domain.ReviewDomain;
-import ru.lexa.books_reviews.exception.BookNotFoundException;
-import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.ReviewNotFoundException;
 import ru.lexa.books_reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
-import ru.lexa.books_reviews.service.BookService;
-import ru.lexa.books_reviews.service.FilmService;
 import ru.lexa.books_reviews.service.ReviewService;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса {@link ru.lexa.books_reviews.service.ReviewService}
  */
+@Transactional(readOnly = true)
 @Service
 @AllArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
@@ -28,6 +25,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private ReviewDomainMapper reviewDomainMapper;
 
+	@Transactional
 	@Override
 	public ReviewDomain create(ReviewDomain review) {
 		review = reviewDomainMapper.reviewToDomain(reviewRepository.save(reviewDomainMapper.domainToReview(review)));
@@ -44,17 +42,23 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public ReviewDomain read(long id) {
 		ReviewDomain review = reviewDomainMapper.reviewToDomain(reviewRepository.findById(id)
-				.orElseThrow(() -> {throw new ReviewNotFoundException(id);}));
+				.orElseThrow(() -> {
+					throw new ReviewNotFoundException(id);
+				}));
 		return setIds(review);
 	}
 
+	@Transactional
 	@Override
 	public void delete(long id) {
 		Review review = reviewRepository.findById(id)
-				.orElseThrow(() -> {throw new ReviewNotFoundException(id);});
+				.orElseThrow(() -> {
+					throw new ReviewNotFoundException(id);
+				});
 		reviewRepository.delete(review);
 	}
 
+	@Transactional
 	@Override
 	public ReviewDomain update(ReviewDomain review) {
 		ReviewDomain reviewDomain = read(review.getId());

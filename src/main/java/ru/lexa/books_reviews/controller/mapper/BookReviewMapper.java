@@ -5,28 +5,25 @@ import org.mapstruct.Mapping;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
 import ru.lexa.books_reviews.domain.ReviewDomain;
-import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Review;
 
 /**
- * Маппер отзывов для книг
+ * Маппер dto и domain отзывов для книг
  */
 @Mapper(componentModel = "spring")
 public interface BookReviewMapper {
 	/**
-	 * Преобразовывает сущность отзыва в dto отзыва
+	 * Преобразовывает domain отзыва в dto отзыва
 	 *
-	 * @param review - сущность отзыва
+	 * @param review - domain отзыва
 	 * @return - dto отзыва
 	 */
 	BookReviewDTO reviewToDto(ReviewDomain review);
 
 	/**
-	 * Преобразовывает dto отзыва в сущность отзыва
+	 * Преобразовывает dto отзыва в domain отзыва
 	 *
 	 * @param dto - dto отзыва
-	 * @param book - книга отзыва
-	 * @return - сущность книги
+	 * @return - domain книги
 	 */
 	@Mapping(target = "filmId", ignore = true)
 	@Mapping(target = "film", ignore = true)
@@ -34,11 +31,10 @@ public interface BookReviewMapper {
 	ReviewDomain dtoToReview(BookReviewDTO dto);
 
 	/**
-	 * Преобразовывает dto отзыва в сущность отзыва
+	 * Преобразовывает dto отзыва в domain отзыва
 	 *
 	 * @param dto - dto отзыва
-	 * @param book - книга отзыва
-	 * @return - сущность книги
+	 * @return - domain книги
 	 */
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "filmId", ignore = true)
