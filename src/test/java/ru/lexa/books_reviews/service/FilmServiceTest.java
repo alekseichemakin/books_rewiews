@@ -10,12 +10,14 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.jpa.domain.Specification;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.FilmRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
+import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.implementation.FilmServiceImpl;
 
 import java.sql.Date;
@@ -31,6 +33,9 @@ public class FilmServiceTest {
 	@Mock
 	FilmRepository filmRepository;
 
+	@Mock
+	FilmDomainMapper filmDomainMapper;
+
 	@InjectMocks
 	FilmServiceImpl filmService;
 
@@ -41,44 +46,33 @@ public class FilmServiceTest {
 
 	@Test
 	public void whenSaveFilm_ReturnFilm() {
-		when(filmRepository.save(Mockito.any(Film.class))).thenAnswer(i -> i.getArguments()[0]);
-
-		Book book = new Book();
-		Author author = new Author();
 		FilmDomain saveFilm = new FilmDomain();
-		List<Author> authors = new ArrayList<>();
 		saveFilm.setName("test");
-		author.setName("test");
-		book.setName("test");
-		authors.add(author);
-		saveFilm.setAuthors(authors);
-		saveFilm.setBook(book);
+
+		when(filmRepository.save(Mockito.any(Film.class))).thenAnswer(i -> i.getArguments()[0]);
+		when(filmDomainMapper.filmToDomain(Mockito.any(Film.class))).thenReturn(saveFilm);
+		when(filmDomainMapper.domainToFilm(Mockito.any(FilmDomain.class))).thenReturn(new Film());
+
 		FilmDomain film = filmService.create(saveFilm);
 
 		assertEquals("test", film.getName());
-		assertEquals("test", film.getBook().getName());
-		assertEquals("test", film.getAuthors().stream().findFirst().get().getName());
 	}
 
 	@Test
 	public void whenReadFilm_ReturnFilm() {
 		Book book = new Book();
-		Author author = new Author();
-		Film saveFilm = new Film();
-		List<Author> authors = new ArrayList<>();
+		FilmDomain saveFilm = new FilmDomain();
 		saveFilm.setName("test");
-		author.setName("test");
-		book.setName("test");
-		authors.add(author);
-		saveFilm.setAuthors(authors);
+		book.setId(0L);
 		saveFilm.setBook(book);
-		when(filmRepository.findById(1L)).thenReturn(Optional.of(saveFilm));
+
+		when(filmRepository.findById(1L)).thenReturn(Optional.of(new Film()));
+		when(filmDomainMapper.filmToDomain(Mockito.any(Film.class))).thenReturn(saveFilm);
+		when(filmDomainMapper.domainToFilm(Mockito.any(FilmDomain.class))).thenReturn(new Film());
 
 		FilmDomain film = filmService.read(1);
 
 		assertEquals("test", film.getName());
-		assertEquals("test", film.getBook().getName());
-		assertEquals("test", film.getAuthors().stream().findFirst().get().getName());
 	}
 
 	@Test
@@ -87,11 +81,16 @@ public class FilmServiceTest {
 		Film saveFilm1 = new Film();
 		Film saveFilm2 = new Film();
 		Film saveFilm3 = new Film();
+		FilmDomain filmDomain = new FilmDomain();
+		Book book = new Book();
+		book.setId(0L);
+		filmDomain.setBook(book);
 
 		films.add(saveFilm1);
 		films.add(saveFilm2);
 		films.add(saveFilm3);
 		when(filmRepository.findAll()).thenReturn(films);
+		when(filmDomainMapper.filmToDomain(Mockito.any(Film.class))).thenReturn(filmDomain);
 
 		List<FilmDomain> filmResponse = filmService.readAll();
 		assertEquals(3, filmResponse.size());

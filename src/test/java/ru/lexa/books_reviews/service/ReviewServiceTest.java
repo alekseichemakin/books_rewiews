@@ -8,9 +8,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.repository.ReviewRepository;
+import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Review;
+import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
 import ru.lexa.books_reviews.service.implementation.ReviewServiceImpl;
 
 import java.util.ArrayList;
@@ -25,6 +28,9 @@ public class ReviewServiceTest {
 	@Mock
 	ReviewRepository reviewRepository;
 
+	@Mock
+	ReviewDomainMapper reviewDomainMapper;
+
 	@InjectMocks
 	ReviewServiceImpl reviewService;
 
@@ -35,11 +41,14 @@ public class ReviewServiceTest {
 
 	@Test
 	public void whenSaveReview_ReturnReview() {
-		when(reviewRepository.save(Mockito.any(Review.class))).thenAnswer(i -> i.getArguments()[0]);
-
 		ReviewDomain saveReview = new ReviewDomain();
 		saveReview.setText("test");
 		saveReview.setRating(5);
+
+		when(reviewRepository.save(Mockito.any(Review.class))).thenAnswer(i -> i.getArguments()[0]);
+		when(reviewDomainMapper.reviewToDomain(Mockito.any(Review.class))).thenReturn(saveReview);
+		when(reviewDomainMapper.domainToReview(Mockito.any(ReviewDomain.class))).thenReturn(new Review());
+
 		ReviewDomain review = reviewService.create(saveReview);
 
 		assertEquals("test", review.getText());
@@ -48,11 +57,14 @@ public class ReviewServiceTest {
 
 	@Test
 	public void whenReadReview_ReturnReview() {
-		Review saveReview = new Review();
+		ReviewDomain saveReview = new ReviewDomain();
 		saveReview.setText("test");
 		saveReview.setRating(5);
 		saveReview.setId(1L);
-		when(reviewRepository.findById(1L)).thenReturn(Optional.of(saveReview));
+
+		when(reviewRepository.findById(1L)).thenReturn(Optional.of(new Review()));
+		when(reviewDomainMapper.reviewToDomain(Mockito.any(Review.class))).thenReturn(saveReview);
+		when(reviewDomainMapper.domainToReview(Mockito.any(ReviewDomain.class))).thenReturn(new Review());
 
 		ReviewDomain review = reviewService.read(1);
 
@@ -71,6 +83,8 @@ public class ReviewServiceTest {
 		reviews.add(review2);
 		reviews.add(review3);
 		when(reviewRepository.findAll()).thenReturn(reviews);
+		when(reviewDomainMapper.reviewToDomain(Mockito.any(Review.class))).thenReturn(new ReviewDomain());
+
 
 		List<ReviewDomain> reviewsResponse = reviewService.readAll();
 		assertEquals(3, reviewsResponse.size());
