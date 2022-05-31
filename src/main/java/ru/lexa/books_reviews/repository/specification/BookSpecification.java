@@ -4,13 +4,15 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.lexa.books_reviews.repository.entity.*;
 
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
 
 /**
  * Спецификация для поиска книг в БД
  */
 public class BookSpecification {
 
+	/**
+	 * Переменныя для хранения join с таблицей review
+	 */
 	private static Join<Book, Review> rev = null;
 
 	/**
