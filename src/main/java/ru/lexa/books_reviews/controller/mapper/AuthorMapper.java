@@ -18,8 +18,6 @@ public interface AuthorMapper {
 	 * @param dto - dto автора
 	 * @return - domain автора
 	 */
-	@Mapping(target = "filmIds", ignore = true)
-	@Mapping(target = "bookIds", ignore = true)
 	@Mapping(target = "films", ignore = true)
 	@Mapping(target = "books", ignore = true)
 	@Mapping(target = "id", source = "dto.id")
@@ -31,8 +29,6 @@ public interface AuthorMapper {
 	 * @param dto - dto автора
 	 * @return - domain автора
 	 */
-	@Mapping(target = "filmIds", ignore = true)
-	@Mapping(target = "bookIds", ignore = true)
 	@Mapping(target = "films", ignore = true)
 	@Mapping(target = "books", ignore = true)
 	@Mapping(target = "id", ignore = true)
@@ -44,5 +40,7 @@ public interface AuthorMapper {
 	 * @param author - domain автора
 	 * @return - dto автора
 	 */
+	@Mapping(target = "filmIds", ignore = true)
+	@Mapping(target = "bookIds", ignore = true)
 	AuthorResponseDTO authorToDto(AuthorDomain author);
 }

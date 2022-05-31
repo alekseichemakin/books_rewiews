@@ -56,8 +56,6 @@ public class AuthorServiceImpl implements AuthorService {
 					throw new AuthorNotFoundException(id);
 				});
 		AuthorDomain authorDomain = authorDomainMapper.authorToDomain(author);
-		authorDomain.setBookIds(author.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
-		authorDomain.setFilmIds(author.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
 		return authorDomain;
 	}
 
@@ -109,8 +107,6 @@ public class AuthorServiceImpl implements AuthorService {
 			authors = authorRepository.findAll(specification);
 		}
 		List<AuthorDomain> authorDomains = authors.stream().map(authorDomainMapper::authorToDomain).collect(Collectors.toList());
-		authorDomains.forEach(domain -> domain.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList())));
-		authorDomains.forEach(domain -> domain.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList())));
 		return authorDomains;
 	}
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.FilmController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmRequestDTO;
@@ -96,15 +97,23 @@ public class FilmControllerImpl implements FilmController {
 	}
 
 	@Override
-	public Collection<AuthorDTO> getAuthors(long id) {
-		List<AuthorDomain> authorDomains = filmService.read(id).getAuthors().stream().map(authorDomainMapper::authorToDomain).collect(Collectors.toList());
-		authorDomains.forEach(domain -> domain.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList())));
-		authorDomains.forEach(domain -> domain.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList())));
-		return authorDomains.stream().map(authorMapper::authorToDto).collect(Collectors.toList());
+	public BookResponseDTO readBook(long id) {
+		BookDomain bookDomain = bookService.read(filmService.read(id).getBook().getId());
+		BookResponseDTO bookResponseDTO = bookMapper.bookToDto(bookDomain);
+		bookResponseDTO.setAuthorIds(bookDomain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
+		return bookResponseDTO;
 	}
 
 	@Override
-	public BookResponseDTO readBook(long id) {
-		return bookMapper.bookToDto(bookService.read(filmService.read(id).getBookId()));
+	public Collection<AuthorDTO> getAuthors(long id) {
+		List<AuthorDomain> authorDomains = filmService.read(id).getAuthors().stream().map(authorDomainMapper::authorToDomain).collect(Collectors.toList());
+		return authorDomains.stream().map(this::setBookAuthorIds).collect(Collectors.toList());
+	}
+
+	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
+		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
+		dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
+		dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
+		return dto;
 	}
 }

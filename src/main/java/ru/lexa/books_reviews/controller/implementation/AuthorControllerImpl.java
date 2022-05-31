@@ -12,8 +12,11 @@ import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.FilmMapper;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
@@ -44,23 +47,23 @@ public class AuthorControllerImpl implements AuthorController {
 
 	@Override
 	public AuthorResponseDTO createAuthor(AuthorRequestDTO dto) {
-		return authorMapper.authorToDto(authorService.create(authorMapper.dtoToAuthor(dto)));
+		return setBookAuthorIds(authorService.create(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
 	public Collection<AuthorResponseDTO> readAll(Integer page, Integer pageSize, Double maxRating, String name, String book, String film) {
 		AuthorFilterDTO filter = new AuthorFilterDTO(name, book, film, maxRating, page, pageSize);
-		return authorService.readAll(filter).stream().map(authorMapper::authorToDto).collect(Collectors.toList());
+		return authorService.readAll(filter).stream().map(this::setBookAuthorIds).collect(Collectors.toList());
 	}
 
 	@Override
 	public AuthorResponseDTO readAuthor(long id) {
-		return authorMapper.authorToDto(authorService.read(id));
+		return setBookAuthorIds(authorService.read(id));
 	}
 
 	@Override
 	public AuthorResponseDTO updateAuthor(AuthorDTO dto) {
-		return authorMapper.authorToDto(authorService.update(authorMapper.dtoToAuthor(dto)));
+		return setBookAuthorIds(authorService.update(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
@@ -73,9 +76,11 @@ public class AuthorControllerImpl implements AuthorController {
 	public Collection<BookResponseDTO> readBooks(long id) {
 		List<BookDomain> bookDomainList = authorService.read(id).getBooks().stream()
 				.map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
-		bookDomainList.forEach(b -> b.setAuthorIds(b.getAuthors().stream().map(Author::getId).collect(Collectors.toList())));
-		return bookDomainList.stream()
-				.map(bookMapper::bookToDto)
+		return bookDomainList.stream().map(b -> {
+					BookResponseDTO dto = bookMapper.bookToDto(b);
+					dto.setAuthorIds(b.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
+					return dto;
+				})
 				.collect(Collectors.toList());
 	}
 
@@ -84,5 +89,12 @@ public class AuthorControllerImpl implements AuthorController {
 		return authorService.read(id).getFilms().stream()
 				.map(film -> filmMapper.filmToDto(filmDomainMapper.filmToDomain(film)))
 				.collect(Collectors.toList());
+	}
+
+	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
+		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
+		dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
+		dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
+		return dto;
 	}
 }

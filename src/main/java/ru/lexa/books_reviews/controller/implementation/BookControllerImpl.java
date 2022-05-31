@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
+import ru.lexa.books_reviews.controller.dto.author.AuthorResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookRequestDTO;
@@ -12,8 +14,11 @@ import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.BookReviewMapper;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
@@ -47,8 +52,8 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		BookDomain domain = bookMapper.dtoToBook(dto);
-		setAuthorToDomain(domain);
-		return bookMapper.bookToDto(bookService.create(domain));
+		setAuthorToDomain(dto, domain);
+		return setAuthorsToDto(domain);
 	}
 
 	@Override
@@ -58,20 +63,20 @@ public class BookControllerImpl implements BookController {
 	                                           Double maxRating) {
 		BookFilterDTO filter = new BookFilterDTO(name, description, author, reviewText, maxRating, page, pageSize);
 		return bookService.readAll(filter).stream()
-				.map(bookMapper::bookToDto)
+				.map(this::setAuthorsToDto)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public BookResponseDTO readBook(long id) {
-		return bookMapper.bookToDto(bookService.read(id));
+		return setAuthorsToDto(bookService.read(id));
 	}
 
 	@Override
 	public BookResponseDTO updateBook(BookDTO dto) {
 		BookDomain domain = bookMapper.dtoToBook(dto);
-		setAuthorToDomain(domain);
-		return bookMapper.bookToDto(bookService.update(domain));
+		setAuthorToDomain(dto, domain);
+		return setAuthorsToDto(bookService.update(domain));
 	}
 
 	@Override
@@ -96,16 +101,28 @@ public class BookControllerImpl implements BookController {
 	@Override
 	public Collection<AuthorDTO> getAuthors(long id) {
 		return bookService.read(id).getAuthors().stream()
-				.map(author -> authorMapper.authorToDto(authorDomainMapper.authorToDomain(author)))
+				.map(author -> setBookAuthorIds(authorDomainMapper.authorToDomain(author)))
 				.collect(Collectors.toList());
 	}
 
-	private void setAuthorToDomain(BookDomain domain) {
+	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
+		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
+		dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
+		dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
+		return dto;
+	}
+
+	private void setAuthorToDomain(BookRequestDTO dto, BookDomain domain) {
 		List<Author> authors = new ArrayList<>();
-		for (long id: domain.getAuthorIds()) {
+		for (long id: dto.getAuthorIds()) {
 			authors.add(authorDomainMapper.domainToAuthor(authorService.read(id)));
 		}
 		domain.setAuthors(authors);
 	}
 
+	private BookResponseDTO setAuthorsToDto(BookDomain domain) {
+		BookResponseDTO responseDTO = bookMapper.bookToDto(bookService.create(domain));
+		responseDTO.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
+		return responseDTO;
+	}
 }

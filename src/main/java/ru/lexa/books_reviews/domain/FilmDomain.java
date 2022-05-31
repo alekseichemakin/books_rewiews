@@ -43,9 +43,4 @@ public class FilmDomain {
 	 */
 	private Book book;
 
-	/**
-	 *  Id экранизированной книги
-	 */
-	private long bookId;
-
 }

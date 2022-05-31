@@ -47,5 +47,6 @@ public interface BookMapper {
 	 * @param book - domain книги
 	 * @return - dto книги
 	 */
+	@Mapping(target = "authorIds", ignore = true)
 	BookResponseDTO bookToDto(BookDomain book);
 }

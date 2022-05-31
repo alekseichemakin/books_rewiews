@@ -51,7 +51,6 @@ public class BookServiceImpl implements BookService {
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
-		domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
 		return domain;
 	}
 
@@ -61,7 +60,6 @@ public class BookServiceImpl implements BookService {
 				.orElseThrow(() -> {
 					throw new BookNotFoundException(id);
 				}));
-		domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
 		domain.setAverageRating(averageRating(id));
 		domain.setReviewCount(domain.getReviews().size());
 		return domain;
@@ -90,7 +88,6 @@ public class BookServiceImpl implements BookService {
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
-		book.setAuthorIds(book.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
 		book.setAverageRating(averageRating(book.getId()));
 		book.setReviewCount(book.getReviews().size());
 		return book;
@@ -124,7 +121,6 @@ public class BookServiceImpl implements BookService {
 		List<BookDomain> bookDomains = books.stream().map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
 		bookDomains.forEach(domain -> domain.setReviewCount(domain.getReviews().size()));
 		bookDomains.forEach(domain -> domain.setAverageRating(averageRating(domain.getId())));
-		bookDomains.forEach(domain -> domain.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList())));
 		return bookDomains;
 	}
 }

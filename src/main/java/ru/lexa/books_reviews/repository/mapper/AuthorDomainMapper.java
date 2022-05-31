@@ -25,7 +25,5 @@ public interface AuthorDomainMapper {
 	 * @param author - сущность автора
 	 * @return - domain автора
 	 */
-	@Mapping(target = "filmIds", ignore = true)
-	@Mapping(target = "bookIds", ignore = true)
 	AuthorDomain authorToDomain(Author author);
 }

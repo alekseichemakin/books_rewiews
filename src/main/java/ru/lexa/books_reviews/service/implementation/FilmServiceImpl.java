@@ -38,12 +38,10 @@ public class FilmServiceImpl implements FilmService {
 
 	@Override
 	public FilmDomain read(long id) {
-		FilmDomain filmDomain = filmDomainMapper.filmToDomain(filmRepository.findById(id)
+		return filmDomainMapper.filmToDomain(filmRepository.findById(id)
 				.orElseThrow(() -> {
 					throw new FilmNotFoundException(id);
 				}));
-		filmDomain.setBookId(filmDomain.getBook().getId());
-		return filmDomain;
 	}
 
 	@Transactional
@@ -65,8 +63,6 @@ public class FilmServiceImpl implements FilmService {
 
 	@Override
 	public List<FilmDomain> readAll() {
-		List<FilmDomain> filmDomains = filmRepository.findAll().stream().map(filmDomainMapper::filmToDomain).collect(Collectors.toList());
-		filmDomains.forEach(f -> f.setBookId(f.getBook().getId()));
-		return filmDomains;
+		return filmRepository.findAll().stream().map(filmDomainMapper::filmToDomain).collect(Collectors.toList());
 	}
 }
