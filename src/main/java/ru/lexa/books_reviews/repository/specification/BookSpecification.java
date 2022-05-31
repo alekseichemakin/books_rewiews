@@ -10,6 +10,9 @@ import javax.persistence.criteria.JoinType;
  * Спецификация для поиска книг в БД
  */
 public class BookSpecification {
+
+	private static Join<Book, Review> rev = null;
+
 	/**
 	 * @return спецификацию для поиска по части названия
 	 */
@@ -47,7 +50,7 @@ public class BookSpecification {
 		if (text == null)
 			return null;
 		return (root, query, cb) -> {
-			Join<Book, Review> rev = root.join(Book_.REVIEWS);
+			rev = rev == null ? root.join(Book_.REVIEWS) : rev;
 			return cb.like(rev.get(Review_.TEXT), "%" + text + "%");
 		};
 	}
@@ -59,7 +62,7 @@ public class BookSpecification {
 		if (maxRating == null)
 			return null;
 		return (root, query, cb) -> {
-			Join<Book, Review> rev = root.join(Book_.REVIEWS, JoinType.INNER);       //	SELECT b FROM book b INNER JOIN review r ON b.id = r.book_id
+			rev = rev == null ? root.join(Book_.REVIEWS) : rev;                     //	SELECT b FROM book b INNER JOIN review r ON b.id = r.book_id
 			query.groupBy(root);                                                    //	GROUP BY b
 			query.having(cb.lessThan(cb.avg(rev.get(Review_.RATING)), maxRating));  //	having avg(rating) > ?
 			return query.getRestriction();
