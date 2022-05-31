@@ -25,5 +25,6 @@ public interface AuthorDomainMapper {
 	 * @param author - сущность автора
 	 * @return - domain автора
 	 */
+	@Mapping(target = "avgRating", ignore = true)
 	AuthorDomain authorToDomain(Author author);
 }

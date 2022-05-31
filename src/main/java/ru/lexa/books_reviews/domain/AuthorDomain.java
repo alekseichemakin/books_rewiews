@@ -31,4 +31,6 @@ public class AuthorDomain {
 	 * Фильмы экранизированные по книгам данного автора
 	 */
 	private Collection<Film> films;
+
+	private Double avgRating;
 }

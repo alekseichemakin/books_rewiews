@@ -53,4 +53,6 @@ public interface AuthorService {
 	 * @return список авторов
 	 */
 	List<AuthorDomain> readAll(AuthorFilterDTO filter);
+
+	Double getAverageRating(long id);
 }

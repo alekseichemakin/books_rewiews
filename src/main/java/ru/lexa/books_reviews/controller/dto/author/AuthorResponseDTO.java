@@ -13,4 +13,7 @@ public class AuthorResponseDTO extends AuthorDTO {
 
 	@ApiModelProperty(value = "Id фильмов.")
 	private List<Long> filmIds;
+
+	@ApiModelProperty(value = "Срелний рейтинг автора")
+	private Double avgRating;
 }

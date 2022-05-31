@@ -50,4 +50,8 @@ public interface AuthorController {
 	@ApiOperation(value = "Получить фильмы автора.")
 	@GetMapping("/{id}/films")
 	Collection<FilmDTO> readFilms(@PathVariable long id);
+
+	@ApiOperation(value = "Получить средний рейтинг автора.")
+	@GetMapping("/{id}/rating")
+	Double getRating(@PathVariable long id);
 }

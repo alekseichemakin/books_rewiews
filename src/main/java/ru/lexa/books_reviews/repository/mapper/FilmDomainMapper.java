@@ -24,6 +24,5 @@ public interface FilmDomainMapper {
 	 * @param film - сущность фильма
 	 * @return - domain фильма
 	 */
-	@Mapping(target = "bookId", ignore = true)
 	FilmDomain filmToDomain(Film film);
 }

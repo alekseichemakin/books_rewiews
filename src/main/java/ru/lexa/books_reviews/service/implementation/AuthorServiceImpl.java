@@ -14,7 +14,6 @@ import ru.lexa.books_reviews.exception.NameErrorException;
 import ru.lexa.books_reviews.repository.AuthorRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.specification.AuthorSpecification;
 import ru.lexa.books_reviews.service.AuthorService;
@@ -55,8 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
 				.orElseThrow(() -> {
 					throw new AuthorNotFoundException(id);
 				});
-		AuthorDomain authorDomain = authorDomainMapper.authorToDomain(author);
-		return authorDomain;
+		return returnPrepare(authorDomainMapper.authorToDomain(author));
 	}
 
 	@Transactional
@@ -65,9 +63,10 @@ public class AuthorServiceImpl implements AuthorService {
 		author.setBooks(read(author.getId()).getBooks());
 		author.setFilms(read(author.getId()).getFilms());
 		try {
-			return authorDomainMapper
-					.authorToDomain(authorRepository.save(authorDomainMapper
-							.domainToAuthor(author)));
+			return returnPrepare(
+					authorDomainMapper
+							.authorToDomain(authorRepository.save(authorDomainMapper
+									.domainToAuthor(author))));
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
@@ -106,7 +105,17 @@ public class AuthorServiceImpl implements AuthorService {
 		} else {
 			authors = authorRepository.findAll(specification);
 		}
-		List<AuthorDomain> authorDomains = authors.stream().map(authorDomainMapper::authorToDomain).collect(Collectors.toList());
-		return authorDomains;
+		return authors.stream().map(author -> returnPrepare(authorDomainMapper.authorToDomain(author))).collect(Collectors.toList());
+	}
+
+	@Override
+	public Double getAverageRating(long id) {
+		Double rating = authorRepository.getAverageRating(id);
+		return rating == null ? 0 : rating;
+	}
+
+	private AuthorDomain returnPrepare(AuthorDomain authorDomain) {
+		authorDomain.setAvgRating(getAverageRating(authorDomain.getId()));
+		return authorDomain;
 	}
 }

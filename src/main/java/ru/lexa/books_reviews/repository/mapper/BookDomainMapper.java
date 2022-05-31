@@ -26,6 +26,5 @@ public interface BookDomainMapper {
 	 */
 	@Mapping(target = "reviewCount", ignore = true)
 	@Mapping(target = "averageRating", ignore = true)
-	@Mapping(target = "authorIds", ignore = true)
 	BookDomain bookToDomain(Book book);
 }

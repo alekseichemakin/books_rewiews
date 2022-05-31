@@ -37,7 +37,7 @@ public class BookReviewControllerImpl implements BookReviewController {
 	public BookReviewDTO createReview(BookReviewRequestDTO dto) {
 		ReviewDomain reviewDomain = reviewMapper.dtoToReview(dto);
 		reviewDomain.setBook(bookDomainMapper.domainToBook(bookService.read(dto.getBookId())));
-		return reviewMapper.reviewToDto(reviewDomain);
+		return reviewMapper.reviewToDto(reviewService.create(reviewDomain));
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class BookReviewControllerImpl implements BookReviewController {
 	public BookReviewDTO updateReview(BookReviewDTO dto) {
 		ReviewDomain reviewDomain = reviewMapper.dtoToReview(dto);
 		reviewDomain.setBook(bookDomainMapper.domainToBook(bookService.read(dto.getBookId())));
-		return reviewMapper.reviewToDto(reviewDomain);}
+		return reviewMapper.reviewToDto(reviewService.update(reviewDomain));}
 
 	@Override
 	public void deleteReview(long id) {

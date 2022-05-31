@@ -91,6 +91,11 @@ public class AuthorControllerImpl implements AuthorController {
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public Double getRating(long id) {
+		return authorService.getAverageRating(id);
+	}
+
 	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
 		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
 		dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));

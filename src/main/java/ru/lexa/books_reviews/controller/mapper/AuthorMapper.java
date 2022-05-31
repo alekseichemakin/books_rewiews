@@ -18,6 +18,7 @@ public interface AuthorMapper {
 	 * @param dto - dto автора
 	 * @return - domain автора
 	 */
+	@Mapping(target = "avgRating", ignore = true)
 	@Mapping(target = "films", ignore = true)
 	@Mapping(target = "books", ignore = true)
 	@Mapping(target = "id", source = "dto.id")
@@ -29,6 +30,7 @@ public interface AuthorMapper {
 	 * @param dto - dto автора
 	 * @return - domain автора
 	 */
+	@Mapping(target = "avgRating", ignore = true)
 	@Mapping(target = "films", ignore = true)
 	@Mapping(target = "books", ignore = true)
 	@Mapping(target = "id", ignore = true)
