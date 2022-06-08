@@ -4,11 +4,9 @@ package ru.lexa.books_reviews.reviews.controller.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookReviewController;
-import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
 import ru.lexa.books_reviews.reviews.controller.mapper.BookReviewMapper;
-import ru.lexa.books_reviews.reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.reviews.service.ReviewService;
 
 import java.util.Collection;
@@ -50,5 +48,10 @@ public class BookReviewControllerImpl implements BookReviewController {
 	@Override
 	public void deleteReview(long id) {
 		reviewService.delete(id);
+	}
+
+	@Override
+	public Double averageBookRating(long bookId) {
+		return reviewService.getBookAverageRating(bookId);
 	}
 }

@@ -3,12 +3,14 @@ package ru.lexa.books_reviews.reviews.service.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import ru.lexa.books_reviews.controller.dto.book.BookResponseDTO;
 import ru.lexa.books_reviews.controller.dto.film.FilmDTO;
 import ru.lexa.books_reviews.reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.reviews.controller.mapper.FilmMapper;
 import ru.lexa.books_reviews.reviews.domain.ReviewDomain;
+import ru.lexa.books_reviews.reviews.exception.InputErrorException;
 import ru.lexa.books_reviews.reviews.exception.ReviewNotFoundException;
 import ru.lexa.books_reviews.reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.reviews.repository.entity.Book;
@@ -122,9 +124,14 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	private Book getBookFromRest(Long bookId) {
-		BookResponseDTO bookResponseDTO = restTemplate.getForObject("http://localhost:8080/api/books/{id}",
-				BookResponseDTO.class,
-				bookId);
+		BookResponseDTO bookResponseDTO;
+		try {
+			bookResponseDTO = restTemplate.getForObject("http://localhost:8080/api/books/{id}",
+					BookResponseDTO.class,
+					bookId);
+		} catch (HttpClientErrorException e) {
+			throw new InputErrorException(e.getMessage());
+		}
 		return bookDomainMapper.domainToBook(bookMapper.dtoToBook(bookResponseDTO));
 	}
 

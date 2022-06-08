@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookController;
 import ru.lexa.books_reviews.controller.dto.author.AuthorDTO;
-import ru.lexa.books_reviews.controller.dto.author.AuthorRequestDTO;
 import ru.lexa.books_reviews.controller.dto.author.AuthorResponseDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookDTO;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
@@ -53,6 +52,7 @@ public class BookControllerImpl implements BookController {
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		BookDomain domain = bookMapper.dtoToBook(dto);
 		setAuthorToDomain(dto, domain);
+		bookService.create(domain);
 		return setAuthorsToDto(domain);
 	}
 
@@ -121,7 +121,7 @@ public class BookControllerImpl implements BookController {
 	}
 
 	private BookResponseDTO setAuthorsToDto(BookDomain domain) {
-		BookResponseDTO responseDTO = bookMapper.bookToDto(bookService.create(domain));
+		BookResponseDTO responseDTO = bookMapper.bookToDto(domain);
 		responseDTO.setAuthorIds(domain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
 		return responseDTO;
 	}

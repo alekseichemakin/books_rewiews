@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -19,7 +21,7 @@ import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.repository.specification.BookSpecification;
 import ru.lexa.books_reviews.service.BookService;
-import ru.lexa.books_reviews.service.ReviewService;
+import ru.lexa.books_reviews.service.FilmService;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,9 +39,11 @@ public class BookServiceImpl implements BookService {
 
 	private BookDomainMapper bookDomainMapper;
 
-	private ReviewService reviewService;
-
 	private FilmDomainMapper filmDomainMapper;
+
+	private RestTemplate restTemplate;
+
+	private FilmService filmService;
 
 	@Transactional
 	@Override
@@ -73,17 +77,22 @@ public class BookServiceImpl implements BookService {
 				}));
 	}
 
+	@Transactional
 	@Override
 	public BookDomain update(BookDomain book) {
-		book.setFilms(read(book.getId()).getFilms());
-		book.setReviews(read(book.getId()).getReviews());
-		Collection<Film> films = book.getFilms();
 		BookDomain finalBook = book;
+		Book updatableBook = bookRepository.findById(book.getId())
+				.orElseThrow(() -> {
+					throw new BookNotFoundException(finalBook.getId());
+				});
+		updatableBook.setAuthors(book.getAuthors());
+		updatableBook.setDescription(book.getDescription());
+		updatableBook.setName(book.getName());
+		Collection<Film> films = updatableBook.getFilms();
 		films.forEach(film -> film.setAuthors(finalBook.getAuthors()));
-		films.forEach(film -> filmDomainMapper.filmToDomain(film));
-
+		films.forEach(film -> filmService.update(filmDomainMapper.filmToDomain(film)));
 		try {
-			book = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));
+			book = bookDomainMapper.bookToDomain(bookRepository.save(updatableBook));
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
@@ -98,7 +107,9 @@ public class BookServiceImpl implements BookService {
 				.orElseThrow(() -> {
 					throw new BookNotFoundException(id);
 				});
-		Double rating = reviewService.getBookAverageRating(id);
+		Double rating = restTemplate.getForObject("http://localhost:8081/api/books/reviews/averageRating/{bookId}",
+				Double.class,
+				id);
 		return rating == null ? 0 : rating;
 	}
 

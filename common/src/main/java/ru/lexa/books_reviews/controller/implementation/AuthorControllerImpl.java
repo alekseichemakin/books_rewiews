@@ -98,8 +98,12 @@ public class AuthorControllerImpl implements AuthorController {
 
 	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
 		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
-		dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
-		dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
+		if (domain.getBooks() != null) {
+			dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
+		}
+		if (domain.getFilms() != null) {
+			dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
+		}
 		return dto;
 	}
 }

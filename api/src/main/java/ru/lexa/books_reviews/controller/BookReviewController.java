@@ -33,4 +33,8 @@ public interface BookReviewController {
 	@ApiOperation(value = "Удалить отзыв.")
 	@DeleteMapping("/{id}")
 	void deleteReview(@PathVariable long id);
+
+	@ApiOperation(value = "Получить средний ретинг книги.")
+	@GetMapping("/averageRating/{bookId}")
+	Double averageBookRating(@PathVariable long bookId);
 }

@@ -8,13 +8,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.ReviewDomain;
-import ru.lexa.books_reviews.repository.ReviewRepository;
-import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Review;
 import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
-import ru.lexa.books_reviews.service.implementation.ReviewServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
