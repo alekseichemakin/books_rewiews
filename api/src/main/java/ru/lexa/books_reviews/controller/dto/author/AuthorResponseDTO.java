@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DTO ответа автора
+ */
 @Data
 public class AuthorResponseDTO extends AuthorDTO {
 

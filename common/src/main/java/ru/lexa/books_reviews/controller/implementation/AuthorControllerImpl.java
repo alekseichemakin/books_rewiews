@@ -72,7 +72,6 @@ public class AuthorControllerImpl implements AuthorController {
 	}
 
 	@Override
-	//TODO ret Добиться появления Exception
 	public Collection<BookResponseDTO> readBooks(long id) {
 		List<BookDomain> bookDomainList = authorService.read(id).getBooks().stream()
 				.map(bookDomainMapper::bookToDomain).collect(Collectors.toList());

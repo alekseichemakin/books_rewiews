@@ -1,7 +1,6 @@
 package ru.lexa.books_reviews.repository.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.entity.Film;
 

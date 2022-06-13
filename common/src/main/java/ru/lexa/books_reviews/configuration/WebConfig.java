@@ -1,6 +1,7 @@
 package ru.lexa.books_reviews.configuration;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -25,6 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
+	@LoadBalanced
 	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
 		return restTemplateBuilder.build();
 	}

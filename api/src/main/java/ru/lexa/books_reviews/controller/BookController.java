@@ -25,7 +25,7 @@ public interface BookController {
 	@ResponseStatus(HttpStatus.CREATED)
 	BookResponseDTO createBook(@RequestBody @Valid BookRequestDTO dto);
 
-	@ApiOperation(value = "Получить все книги.")
+	@ApiOperation(value = "Поиск книг по параметрам.")
 	@GetMapping
 	Collection<BookResponseDTO> readAll(@RequestParam(required = false) Integer page,
 	                                    @RequestParam(required = false) Integer pageSize,

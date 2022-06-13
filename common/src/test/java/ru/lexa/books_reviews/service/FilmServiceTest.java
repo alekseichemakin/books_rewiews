@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.FilmRepository;
 import ru.lexa.books_reviews.repository.entity.Book;
@@ -63,7 +62,6 @@ public class FilmServiceTest {
 
 		when(filmRepository.findById(1L)).thenReturn(Optional.of(new Film()));
 		when(filmDomainMapper.filmToDomain(Mockito.any(Film.class))).thenReturn(saveFilm);
-		when(filmDomainMapper.domainToFilm(Mockito.any(FilmDomain.class))).thenReturn(new Film());
 
 		FilmDomain film = filmService.read(1);
 

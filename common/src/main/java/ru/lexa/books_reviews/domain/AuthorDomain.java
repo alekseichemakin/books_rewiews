@@ -32,5 +32,8 @@ public class AuthorDomain {
 	 */
 	private Collection<Film> films;
 
+	/**
+	 * Средний рейтинг автора
+	 */
 	private Double avgRating;
 }

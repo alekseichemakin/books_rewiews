@@ -1,5 +1,6 @@
-package ru.lexa.books_reviews.service;
+package ru.lexa.books_reviews.reviews.service;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,15 +9,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import ru.lexa.books_reviews.domain.ReviewDomain;
-import ru.lexa.books_reviews.repository.entity.Review;
-import ru.lexa.books_reviews.repository.mapper.ReviewDomainMapper;
+import ru.lexa.books_reviews.reviews.domain.ReviewDomain;
+import ru.lexa.books_reviews.reviews.repository.ReviewRepository;
+import ru.lexa.books_reviews.reviews.repository.entity.Review;
+import ru.lexa.books_reviews.reviews.repository.mapper.ReviewDomainMapper;
+import ru.lexa.books_reviews.reviews.service.implementation.ReviewServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,8 +49,8 @@ public class ReviewServiceTest {
 
 		ReviewDomain review = reviewService.create(saveReview);
 
-		assertEquals("test", review.getText());
-		assertEquals(5, review.getRating());
+		Assert.assertEquals("test", review.getText());
+		Assert.assertEquals(5, review.getRating());
 	}
 
 	@Test
@@ -64,8 +66,8 @@ public class ReviewServiceTest {
 
 		ReviewDomain review = reviewService.read(1);
 
-		assertEquals(5, review.getRating());
-		assertEquals("test", review.getText());
+		Assert.assertEquals(5, review.getRating());
+		Assert.assertEquals("test", review.getText());
 	}
 
 	@Test
@@ -83,6 +85,6 @@ public class ReviewServiceTest {
 
 
 		List<ReviewDomain> reviewsResponse = reviewService.readAll();
-		assertEquals(3, reviewsResponse.size());
+		Assert.assertEquals(3, reviewsResponse.size());
 	}
 }

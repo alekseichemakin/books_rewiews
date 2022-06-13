@@ -22,7 +22,7 @@ public interface AuthorController {
 	@ResponseStatus(HttpStatus.CREATED)
 	AuthorResponseDTO createAuthor(@RequestBody AuthorRequestDTO dto);
 
-	@ApiOperation(value = "Получить всех авторов.")
+	@ApiOperation(value = "Поиск автров по параметрам.")
 	@GetMapping
 	Collection<AuthorResponseDTO> readAll(@RequestParam(required = false) Integer page,
 	                              @RequestParam(required = false) Integer pageSize,

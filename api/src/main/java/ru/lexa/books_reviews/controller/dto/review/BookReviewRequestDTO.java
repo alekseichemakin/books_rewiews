@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * DTO запроса отзыва книги {@link ru.lexa.books_reviews.repository.entity.Review}
+ * DTO запроса отзыва книги
  */
 @Data
 public class BookReviewRequestDTO {

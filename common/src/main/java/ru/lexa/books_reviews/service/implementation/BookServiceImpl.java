@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
-import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -107,7 +106,7 @@ public class BookServiceImpl implements BookService {
 				.orElseThrow(() -> {
 					throw new BookNotFoundException(id);
 				});
-		Double rating = restTemplate.getForObject("http://localhost:8081/api/books/reviews/averageRating/{bookId}",
+		Double rating = restTemplate.getForObject("http://REVIEWS/api/books/reviews/averageRating/{bookId}",
 				Double.class,
 				id);
 		return rating == null ? 0 : rating;

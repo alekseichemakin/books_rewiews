@@ -126,7 +126,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private Book getBookFromRest(Long bookId) {
 		BookResponseDTO bookResponseDTO;
 		try {
-			bookResponseDTO = restTemplate.getForObject("http://localhost:8080/api/books/{id}",
+			bookResponseDTO = restTemplate.getForObject("http://COMMON/api/books/{id}",
 					BookResponseDTO.class,
 					bookId);
 		} catch (HttpClientErrorException e) {
@@ -136,7 +136,7 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	private Film getFilmFromRest(Long filmId) {
-		FilmDTO filmDTO = restTemplate.getForObject("http://localhost:8080/api/films/{id}",
+		FilmDTO filmDTO = restTemplate.getForObject("http://COMMON/api/films/{id}",
 				FilmDTO.class,
 				filmId);
 		return filmDomainMapper.domainToFilm(filmMapper.dtoToFilm(filmDTO));

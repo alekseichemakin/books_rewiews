@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * DTO запроса книги {@link ru.lexa.books_reviews.repository.entity.Book}
+ * DTO запроса книги
  */
 @Data
 public class BookRequestDTO {

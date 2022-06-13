@@ -29,7 +29,7 @@ public class SwaggerConfig {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder()
-				.title ("Rest API для книг и отзывов")
+				.title ("Rest API для книг, фильмов и авторов")
 				.contact(new Contact("Alexey Chemakin", "", ""))
 				.version("1.0")
 				.build();

@@ -62,7 +62,6 @@ public class AuthorServiceTest {
 		author.setFilms(new ArrayList<>());
 		when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(saveAuthor);
-		when(authorDomainMapper.domainToAuthor(Mockito.any(AuthorDomain.class))).thenReturn(new Author());
 
 		AuthorDomain authorRet = authorService.read(1);
 		assertEquals("test", authorRet.getName());

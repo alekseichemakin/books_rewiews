@@ -54,5 +54,11 @@ public interface AuthorService {
 	 */
 	List<AuthorDomain> readAll(AuthorFilterDTO filter);
 
+	/**
+	 * Возвращает средний рейтинг автора
+	 *
+	 * @param id - id автора
+	 * @throws AuthorNotFoundException, если нет автора с данным ID
+	 */
 	Double getAverageRating(long id);
 }
