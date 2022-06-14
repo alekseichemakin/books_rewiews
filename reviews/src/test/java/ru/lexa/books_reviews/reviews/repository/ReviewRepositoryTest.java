@@ -1,8 +1,10 @@
 package ru.lexa.books_reviews.reviews.repository;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -14,16 +16,15 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Sql(scripts="classpath:/ReviewRepositoryTest.sql")
 public class ReviewRepositoryTest {
 
 	@Autowired
 	private ReviewRepository reviewRepository;
 
 
-
 	@Test
-	@Sql(executionPhase= Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts="classpath:/ReviewRepositoryTest.sql")
-	@Sql(executionPhase= Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts="classpath:/ClearReviewRepositoryTest.sql")
 	public void whenFindBookReviews_thenReturnReviews() {
 		// when
 		List<Review> found = reviewRepository.findAllBooksReviews();
@@ -34,8 +35,6 @@ public class ReviewRepositoryTest {
 	}
 
 	@Test
-	@Sql(executionPhase= Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts="classpath:/ReviewRepositoryTest.sql")
-	@Sql(executionPhase= Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts="classpath:/ClearReviewRepositoryTest.sql")
 	public void whenFindFilmReviews_thenReturnReviews() {
 		// when
 		List<Review> found = reviewRepository.findAllFilmsReviews();
@@ -45,8 +44,6 @@ public class ReviewRepositoryTest {
 	}
 
 	@Test
-	@Sql(executionPhase= Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts="classpath:/ReviewRepositoryTest.sql")
-	@Sql(executionPhase= Sql.ExecutionPhase.AFTER_TEST_METHOD, scripts="classpath:/ClearReviewRepositoryTest.sql")
 	public void whenGetAverageRating_thenReturnRating() {
 		// when
 		double rating = reviewRepository.getAverageRating(1);

@@ -86,7 +86,7 @@ public class ReviewServiceImpl implements ReviewService {
 
 	@Transactional
 	@Override
-	public ReviewDomain update(ReviewDomain review) { //todo check
+	public ReviewDomain update(ReviewDomain review) {
 		ReviewDomain reviewDomain = read(review.getId());
 		if (review.getBookId() != null) {
 			reviewDomain.setBook(getBookFromRest(review.getBookId()));

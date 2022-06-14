@@ -62,7 +62,6 @@ public class ReviewServiceTest {
 
 		when(reviewRepository.findById(1L)).thenReturn(Optional.of(new Review()));
 		when(reviewDomainMapper.reviewToDomain(Mockito.any(Review.class))).thenReturn(saveReview);
-		when(reviewDomainMapper.domainToReview(Mockito.any(ReviewDomain.class))).thenReturn(new Review());
 
 		ReviewDomain review = reviewService.read(1);
 
