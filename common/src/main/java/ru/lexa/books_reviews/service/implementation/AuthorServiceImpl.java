@@ -11,8 +11,10 @@ import ru.lexa.books_reviews.controller.dto.author.AuthorFilterDTO;
 import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.exception.AuthorNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
+import ru.lexa.books_reviews.repository.AuthorBookRepository;
 import ru.lexa.books_reviews.repository.AuthorRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.AuthorBook;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.specification.AuthorSpecification;
@@ -35,6 +37,8 @@ public class AuthorServiceImpl implements AuthorService {
 	private BookService bookService;
 
 	private AuthorDomainMapper authorDomainMapper;
+
+	private AuthorBookRepository authorBookRepository;
 
 	@Transactional
 	@Override
@@ -80,14 +84,11 @@ public class AuthorServiceImpl implements AuthorService {
 					throw new AuthorNotFoundException(id);
 				});
 		for (Book b : a.getBooks()) {
+			authorBookRepository.delete(new AuthorBook(a, b));
 			if (b.getAuthors().size() == 1) {
 				bookService.delete(b.getId());
-			} else {
-				b.getAuthors().remove(a);
-				b.getFilms().forEach(film -> film.getAuthors().remove(a));
 			}
 		}
-		authorRepository.save(a);
 		authorRepository.delete(a);
 	}
 

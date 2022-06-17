@@ -1,6 +1,5 @@
 package ru.lexa.books_reviews.service.implementation;
 
-
 import lombok.AllArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +12,10 @@ import ru.lexa.books_reviews.controller.dto.book.BookFilterDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
+import ru.lexa.books_reviews.repository.AuthorBookRepository;
 import ru.lexa.books_reviews.repository.BookRepository;
+import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.AuthorBook;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
@@ -22,6 +24,7 @@ import ru.lexa.books_reviews.repository.specification.BookSpecification;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,102 +37,118 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BookServiceImpl implements BookService {
 
-	private BookRepository bookRepository;
+    private AuthorBookRepository authorBookRepository;
 
-	private BookDomainMapper bookDomainMapper;
+    private BookRepository bookRepository;
 
-	private FilmDomainMapper filmDomainMapper;
+    private BookDomainMapper bookDomainMapper;
 
-	private RestTemplate restTemplate;
+    private FilmDomainMapper filmDomainMapper;
 
-	private FilmService filmService;
+    private RestTemplate restTemplate;
 
-	@Transactional
-	@Override
-	public BookDomain create(BookDomain book) {
-		BookDomain domain;
-		try {
-			domain = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));
-		} catch (DataIntegrityViolationException e) {
-			throw new NameErrorException();
-		}
-		return domain;
-	}
+    private FilmService filmService;
 
-	@Override
-	public BookDomain read(long id) {
-		BookDomain domain = bookDomainMapper.bookToDomain(bookRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(id);
-				}));
-		domain.setAverageRating(averageRating(id));
-		domain.setReviewCount(domain.getReviews().size());
-		return domain;
-	}
+    @Transactional
+    @Override
+    public BookDomain create(BookDomain book) {
+        BookDomain domain;
+        List<Author> authors = book.getAuthors();
+        book.setAuthors(new ArrayList<>());
+        try {
+            domain = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));
+        } catch (DataIntegrityViolationException e) {
+            throw new NameErrorException();
+        }
+        authors.forEach(author -> {
+            AuthorBook authorBook = new AuthorBook(author, bookDomainMapper.domainToBook(domain));
+            authorBookRepository.save(authorBook);
+        });
+        domain.setAuthors(authors);
+        return domain;
+    }
 
-	@Transactional
-	@Override
-	public void delete(long id) {
-		bookRepository.delete(bookRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(id);
-				}));
-	}
+    @Override
+    public BookDomain read(long id) {
+        BookDomain domain = bookDomainMapper.bookToDomain(bookRepository.findById(id)
+                .orElseThrow(() -> {
+                    throw new BookNotFoundException(id);
+                }));
+        domain.setAverageRating(averageRating(id));
+        domain.setReviewCount(domain.getReviews().size());
+        return domain;
+    }
 
-	@Transactional
-	@Override
-	public BookDomain update(BookDomain book) {
-		BookDomain finalBook = book;
-		Book updatableBook = bookRepository.findById(book.getId())
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(finalBook.getId());
-				});
-		updatableBook.setAuthors(book.getAuthors());
-		updatableBook.setDescription(book.getDescription());
-		updatableBook.setName(book.getName());
-		Collection<Film> films = updatableBook.getFilms();
-		films.forEach(film -> film.setAuthors(finalBook.getAuthors()));
-		films.forEach(film -> filmService.update(filmDomainMapper.filmToDomain(film)));
-		try {
-			book = bookDomainMapper.bookToDomain(bookRepository.save(updatableBook));
-		} catch (DataIntegrityViolationException e) {
-			throw new NameErrorException();
-		}
-		book.setAverageRating(averageRating(book.getId()));
-		book.setReviewCount(book.getReviews().size());
-		return book;
-	}
+    @Transactional
+    @Override
+    public void delete(long id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> {
+            throw new BookNotFoundException(id);
+        });
+        authorBookRepository.deleteAll(book.getAuthorBook());
+        bookRepository.delete(book);
+    }
 
-	@Override
-	public double averageRating(long id) {
-		bookRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new BookNotFoundException(id);
-				});
-		Double rating = restTemplate.getForObject("http://REVIEWS/api/books/reviews/averageRating/{bookId}",
-				Double.class,
-				id);
-		return rating == null ? 0 : rating;
-	}
+    @Transactional
+    @Override
+    public BookDomain update(BookDomain book) {
+        List<Author> authors = book.getAuthors();
+        BookDomain finalBook = book;
+        Book updatableBook = bookRepository.findById(book.getId())
+                .orElseThrow(() -> {
+                    throw new BookNotFoundException(finalBook.getId());
+                });
+        updatableBook.setAuthors(new ArrayList<>());
+        updatableBook.setDescription(book.getDescription());
+        updatableBook.setName(book.getName());
+        Collection<Film> films = updatableBook.getFilms();
+        films.forEach(film -> film.setAuthors(finalBook.getAuthors()));
+        films.forEach(film -> filmService.update(filmDomainMapper.filmToDomain(film)));
+        try {
+            book = bookDomainMapper.bookToDomain(bookRepository.save(updatableBook));
+        } catch (DataIntegrityViolationException e) {
+            throw new NameErrorException();
+        }
+        authors.forEach(author -> {
+            AuthorBook authorBook = new AuthorBook(author, bookDomainMapper.domainToBook(finalBook));
+            authorBookRepository.save(authorBook);
+        });
+        book.setAuthors(authors);
+        book.setAverageRating(averageRating(book.getId()));
+        book.setReviewCount(book.getReviews().size());
+        return book;
+    }
 
-	@Override
-	public List<BookDomain> readAll(BookFilterDTO filter) {
-		Specification<Book> spec = Specification
-				.where(BookSpecification.likeName(filter.getName()))
-				.and(BookSpecification.likeAuthor(filter.getAuthor()))
-				.and(BookSpecification.likeDescription(filter.getDescription()))
-				.and(BookSpecification.likeReviewText(filter.getReviewText()))
-				.and(BookSpecification.lesThenRating(filter.getLessThenRating()));
-		List<Book> books;
-		if (filter.getPage() != null && filter.getPageSize() != null) {
-			Pageable page = PageRequest.of(filter.getPage(), filter.getPageSize());
-			books = bookRepository.findAll(spec, page).toList();
-		} else {
-			books = bookRepository.findAll(spec);
-		}
-		List<BookDomain> bookDomains = books.stream().map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
-		bookDomains.forEach(domain -> domain.setReviewCount(domain.getReviews().size()));
-		bookDomains.forEach(domain -> domain.setAverageRating(averageRating(domain.getId())));
-		return bookDomains;
-	}
+    @Override
+    public double averageRating(long id) {
+        bookRepository.findById(id)
+                .orElseThrow(() -> {
+                    throw new BookNotFoundException(id);
+                });
+        Double rating = restTemplate.getForObject("http://REVIEWS/api/books/reviews/averageRating/{bookId}",
+                Double.class,
+                id);
+        return rating == null ? 0 : rating;
+    }
+
+    @Override
+    public List<BookDomain> readAll(BookFilterDTO filter) {
+        Specification<Book> spec = Specification
+                .where(BookSpecification.likeName(filter.getName()))
+                .and(BookSpecification.likeAuthor(filter.getAuthor()))
+                .and(BookSpecification.likeDescription(filter.getDescription()))
+                .and(BookSpecification.likeReviewText(filter.getReviewText()))
+                .and(BookSpecification.lesThenRating(filter.getLessThenRating()));
+        List<Book> books;
+        if (filter.getPage() != null && filter.getPageSize() != null) {
+            Pageable page = PageRequest.of(filter.getPage(), filter.getPageSize());
+            books = bookRepository.findAll(spec, page).toList();
+        } else {
+            books = bookRepository.findAll(spec);
+        }
+        List<BookDomain> bookDomains = books.stream().map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
+        bookDomains.forEach(domain -> domain.setReviewCount(domain.getReviews().size()));
+        bookDomains.forEach(domain -> domain.setAverageRating(averageRating(domain.getId())));
+        return bookDomains;
+    }
 }

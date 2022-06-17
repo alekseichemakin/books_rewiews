@@ -5,6 +5,7 @@ import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Domain автора {@link ru.lexa.books_reviews.repository.entity.Author}
@@ -25,7 +26,7 @@ public class AuthorDomain {
 	/**
 	 * Книги написанные автором
 	 */
-	private Collection<Book> books;
+	private List<Book> books;
 
 	/**
 	 * Фильмы экранизированные по книгам данного автора

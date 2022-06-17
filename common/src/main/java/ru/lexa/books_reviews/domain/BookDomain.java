@@ -6,6 +6,7 @@ import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.entity.Review;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Domain книги {@link ru.lexa.books_reviews.repository.entity.Book}
@@ -35,7 +36,7 @@ public class BookDomain {
 	/**
 	 * Авторы книги
 	 */
-	private Collection<Author> authors;
+	private List<Author> authors;
 
 	/**
 	 * Экранизации книги

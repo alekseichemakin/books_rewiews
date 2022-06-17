@@ -52,8 +52,7 @@ public class BookControllerImpl implements BookController {
 	public BookResponseDTO createBook(BookRequestDTO dto) {
 		BookDomain domain = bookMapper.dtoToBook(dto);
 		setAuthorToDomain(dto, domain);
-		bookService.create(domain);
-		return setAuthorsToDto(domain);
+		return setAuthorsToDto(bookService.create(domain));
 	}
 
 	@Override
