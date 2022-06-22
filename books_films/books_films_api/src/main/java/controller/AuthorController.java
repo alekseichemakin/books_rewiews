@@ -1,0 +1,57 @@
+package controller;
+
+import controller.dto.author.AuthorDTO;
+import controller.dto.author.AuthorRequestDTO;
+import controller.dto.author.AuthorResponseDTO;
+import controller.dto.book.BookResponseDTO;
+import controller.dto.film.FilmDTO;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Collection;
+
+/**
+ * Контроллер принимающий запросы для автора
+ */
+@RequestMapping("/api/authors")
+public interface AuthorController {
+
+	@ApiOperation(value = "Добавить нового автора.")
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+    AuthorResponseDTO createAuthor(@RequestBody AuthorRequestDTO dto);
+
+	@ApiOperation(value = "Поиск автров по параметрам.")
+	@GetMapping
+	Collection<AuthorResponseDTO> readAll(@RequestParam(required = false) Integer page,
+                                          @RequestParam(required = false) Integer pageSize,
+                                          @RequestParam(required = false) Double maxRating,
+                                          @RequestParam(required = false) String name,
+                                          @RequestParam(required = false) String book,
+                                          @RequestParam(required = false) String film);
+
+	@ApiOperation(value = "Получить автора.")
+	@GetMapping("/{id}")
+    AuthorResponseDTO readAuthor(@PathVariable long id);
+
+	@ApiOperation(value = "Изменить автора.")
+	@PutMapping
+    AuthorResponseDTO updateAuthor(@RequestBody AuthorDTO dto);
+
+	@ApiOperation(value = "Удалить автора.")
+	@DeleteMapping("/{id}")
+	void deleteAuthor(@PathVariable long id);
+
+	@ApiOperation(value = "Получить книги автора.")
+	@GetMapping("/{id}/books")
+	Collection<BookResponseDTO> readBooks(@PathVariable long id);
+
+	@ApiOperation(value = "Получить фильмы автора.")
+	@GetMapping("/{id}/films")
+	Collection<FilmDTO> readFilms(@PathVariable long id);
+
+	@ApiOperation(value = "Получить средний рейтинг автора.")
+	@GetMapping("/{id}/rating")
+	Double getRating(@PathVariable long id);
+}
