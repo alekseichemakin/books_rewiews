@@ -22,7 +22,6 @@ import ru.lexa.books_reviews.service.AuthorService;
 import ru.lexa.books_reviews.service.BookService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Реализация сервиса {@link ru.lexa.books_reviews.service.AuthorService}
@@ -44,9 +43,7 @@ public class AuthorServiceImpl implements AuthorService {
 	@Override
 	public AuthorDomain create(AuthorDomain author) {
 		try {
-			return authorDomainMapper
-					.authorToDomain(authorRepository.save(authorDomainMapper
-							.domainToAuthor(author)));
+			return prepareAuthorToReturn(authorRepository.save(authorDomainMapper.domainToAuthor(author)));
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
@@ -54,12 +51,9 @@ public class AuthorServiceImpl implements AuthorService {
 
 	@Override
 	public AuthorDomain read(long id) {
-		AuthorDomain author = authorDomainMapper.authorToDomain(authorRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new AuthorNotFoundException(id);
-				}));
-		author.setAvgRating(getAverageRating(id));
-		return author;
+		return prepareAuthorToReturn(authorRepository
+				.findById(id)
+				.orElseThrow(() -> { throw new AuthorNotFoundException(id); }));
 	}
 
 	@Transactional
@@ -68,11 +62,7 @@ public class AuthorServiceImpl implements AuthorService {
 		author.setBooks(read(author.getId()).getBooks());
 		author.setFilms(read(author.getId()).getFilms());
 		try {
-			author = authorDomainMapper
-					.authorToDomain(authorRepository.save(authorDomainMapper
-							.domainToAuthor(author)));
-			author.setAvgRating(getAverageRating(author.getId()));
-			return author;
+			return prepareAuthorToReturn(authorRepository.save(authorDomainMapper.domainToAuthor(author)));
 		} catch (DataIntegrityViolationException e) {
 			throw new NameErrorException();
 		}
@@ -82,9 +72,7 @@ public class AuthorServiceImpl implements AuthorService {
 	@Override
 	public void delete(long id) {
 		Author a = authorRepository.findById(id)
-				.orElseThrow(() -> {
-					throw new AuthorNotFoundException(id);
-				});
+				.orElseThrow(() -> { throw new AuthorNotFoundException(id); });
 		for (Book b : a.getBooks()) {
 			authorBookRepository.delete(new AuthorBook(a, b));
 			if (b.getAuthors().size() == 1) {
@@ -108,8 +96,7 @@ public class AuthorServiceImpl implements AuthorService {
 			authors = authorRepository.findAll(specification);
 		}
 		List<AuthorDomain> authorDomains = authors.stream()
-				.map(author -> authorDomainMapper.authorToDomain(author))
-				.peek(a -> a.setAvgRating(getAverageRating(a.getId())))
+				.map(this::prepareAuthorToReturn)
 				.toList();
 		if (filter.getMaxRating() != null) {
 			authorDomains = authorDomains.stream()
@@ -125,12 +112,18 @@ public class AuthorServiceImpl implements AuthorService {
 				.orElseThrow(() -> {
 					throw new AuthorNotFoundException(id);
 				});
-		if (author.getBooks().size() == 0) {
+		if (author.getBooks() == null || author.getBooks().size() == 0) {
 			return 0.0;
 		}
 		return author.getBooks().stream()
 				.map(book -> bookService.averageRating(book.getId()))
 				.mapToDouble(Double::doubleValue)
 				.sum() / author.getBooks().size();
+	}
+
+	private AuthorDomain prepareAuthorToReturn(Author author) {
+		AuthorDomain authorDomain = authorDomainMapper.authorToDomain(author);
+		authorDomain.setAvgRating(getAverageRating(authorDomain.getId()));
+		return authorDomain;
 	}
 }

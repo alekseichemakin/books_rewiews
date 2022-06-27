@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewFilterDTO;
 
 import java.util.Collection;
 
@@ -20,12 +21,11 @@ public interface BookReviewController {
 
 	@ApiOperation(value = "Поиск отывов по параметрам.")
 	@GetMapping
-	Collection<BookReviewDTO> readAll(@RequestParam(required = false) String text,
-									  @RequestParam(required = false) Long bookId);
+	Collection<BookReviewDTO> readAll(ReviewFilterDTO reviewFilterDTO);
 
 	@ApiOperation(value = "Получить отзыв.")
 	@GetMapping("/{id}")
-	BookReviewDTO readReview(@PathVariable long id);
+	BookReviewDTO readReview(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Изменить отзыв.")
 	@PutMapping
@@ -33,9 +33,9 @@ public interface BookReviewController {
 
 	@ApiOperation(value = "Удалить отзыв.")
 	@DeleteMapping("/{id}")
-	void deleteReview(@PathVariable long id);
+	void deleteReview(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Получить средний ретинг книги.")
 	@GetMapping("/averageRating/{bookId}")
-	Double averageBookRating(@PathVariable long bookId);
+	Double averageBookRating(@PathVariable("bookId") long bookId);
 }

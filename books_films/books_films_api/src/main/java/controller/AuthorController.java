@@ -1,6 +1,7 @@
 package controller;
 
 import controller.dto.author.AuthorDTO;
+import controller.dto.author.AuthorFilterDTO;
 import controller.dto.author.AuthorRequestDTO;
 import controller.dto.author.AuthorResponseDTO;
 import controller.dto.book.BookResponseDTO;
@@ -24,12 +25,7 @@ public interface AuthorController {
 
 	@ApiOperation(value = "Поиск автров по параметрам.")
 	@GetMapping
-	Collection<AuthorResponseDTO> readAll(@RequestParam(required = false) Integer page,
-                                          @RequestParam(required = false) Integer pageSize,
-                                          @RequestParam(required = false) Double maxRating,
-                                          @RequestParam(required = false) String name,
-                                          @RequestParam(required = false) String book,
-                                          @RequestParam(required = false) String film);
+	Collection<AuthorResponseDTO> readAll(AuthorFilterDTO authorFilterDTO);
 
 	@ApiOperation(value = "Получить автора.")
 	@GetMapping("/{id}")

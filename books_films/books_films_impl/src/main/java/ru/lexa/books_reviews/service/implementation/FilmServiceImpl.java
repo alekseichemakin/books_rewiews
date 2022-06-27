@@ -1,9 +1,17 @@
 package ru.lexa.books_reviews.service.implementation;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.lexa.books_reviews.configuration.RabbitMqConfig;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -24,15 +32,23 @@ import java.util.stream.Collectors;
  */
 @Transactional(readOnly = true)
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
 
-    private FilmRepository filmRepository;
+    private final FilmRepository filmRepository;
 
-    private FilmDomainMapper filmDomainMapper;
+    private final FilmDomainMapper filmDomainMapper;
 
-    private AuthorFilmRepository authorFilmRepository;
+    private final AuthorFilmRepository authorFilmRepository;
 
+    private final AmqpTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.routing-key.deleteFilmsReviews}")
+    public String DELETE_FILM_REVIEW_ROUTING_KEY;
+    @Value("${spring.rabbitmq.exchange}")
+    public String EXCHANGE;
+
+    @CacheEvict(value = "books", key = "#film.book.id")
     @Transactional
     @Override
     public FilmDomain create(FilmDomain film) {
@@ -50,6 +66,7 @@ public class FilmServiceImpl implements FilmService {
         return film;
     }
 
+    @Cacheable(value = "films", key = "#id")
     @Override
     public FilmDomain read(long id) {
         return filmDomainMapper.filmToDomain(filmRepository.findById(id)
@@ -58,6 +75,10 @@ public class FilmServiceImpl implements FilmService {
                 }));
     }
 
+    @Caching(
+            put = @CachePut(value = "films", key = "#film.id"),
+            evict = @CacheEvict(value = "books", key = "#film.book.id")
+    )
     @Transactional
     @Override
     public FilmDomain update(FilmDomain film) {
@@ -75,12 +96,19 @@ public class FilmServiceImpl implements FilmService {
         return film;
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict (value = "films", key = "#id"),
+                    @CacheEvict(value = "books", key = "#film.book.id")
+            }
+    )
     @Transactional
     @Override
     public void delete(long id) {
         Film film = filmRepository.findById(id).orElseThrow(() -> {throw new FilmNotFoundException(id);});
         authorFilmRepository.deleteAll(film.getAuthorFilm());
         filmRepository.delete(film);
+        rabbitTemplate.convertAndSend(EXCHANGE, DELETE_FILM_REVIEW_ROUTING_KEY, id);
     }
 
     @Override

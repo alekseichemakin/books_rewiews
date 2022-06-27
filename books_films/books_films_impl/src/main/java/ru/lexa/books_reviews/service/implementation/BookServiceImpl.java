@@ -2,13 +2,21 @@ package ru.lexa.books_reviews.service.implementation;
 
 import controller.dto.book.BookFilterDTO;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
+import ru.lexa.books_reviews.configuration.RabbitMqConfig;
+import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
+import ru.lexa.books_reviews.controller.dto.review.ReviewFilterDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -33,24 +41,33 @@ import java.util.stream.Collectors;
  */
 @Transactional(readOnly = true)
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private AuthorBookRepository authorBookRepository;
+    private final AuthorBookRepository authorBookRepository;
 
-    private BookRepository bookRepository;
+    private final BookRepository bookRepository;
 
-    private BookDomainMapper bookDomainMapper;
+    private final BookDomainMapper bookDomainMapper;
 
-    private FilmDomainMapper filmDomainMapper;
+    private final FilmDomainMapper filmDomainMapper;
 
-    private FilmService filmService;
+    private final FilmService filmService;
 
-    private ReviewClient reviewClient;
+    private final ReviewClient reviewClient;
+
+    private final AmqpTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.exchange}")
+    private String EXCHANGE;
+    @Value("${spring.rabbitmq.routing-key.createBookReview}")
+    private String CREATE_BOOK_REVIEW_ROUTING_KEY;
+    @Value("${spring.rabbitmq.routing-key.deleteBooksReview}")
+    private String DELETE_BOOK_REVIEW_ROUTING_KEY;
 
     @Transactional
     @Override
-    public BookDomain create(BookDomain book) {
+    public BookDomain create(BookDomain book, BookReviewRequestDTO reviewRequestDTO) {
         List<Author> authors = book.getAuthors();
         book.setAuthors(new ArrayList<>());
         try {
@@ -62,20 +79,22 @@ public class BookServiceImpl implements BookService {
         authors.forEach(author -> authorBookRepository
                 .save(new AuthorBook(author, bookDomainMapper.domainToBook(finalBook))));
         book.setAuthors(authors);
+
+        if (reviewRequestDTO != null) {
+            reviewRequestDTO.setBookId(book.getId());
+            rabbitTemplate.convertAndSend(EXCHANGE, CREATE_BOOK_REVIEW_ROUTING_KEY, reviewRequestDTO);
+        }
         return book;
     }
 
+    @Cacheable(value = "books", key = "#id")
     @Override
     public BookDomain read(long id) {
-        BookDomain domain = bookDomainMapper.bookToDomain(bookRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new BookNotFoundException(id);
-                }));
-        domain.setAverageRating(averageRating(id));
-        domain.setReviewCount(reviewClient.getReviewsForBook(id).size());
-        return domain;
+        return prepareBookToReturn(bookRepository.findById(id)
+                .orElseThrow(() -> { throw new BookNotFoundException(id); }));
     }
 
+    @CacheEvict(value = "books", key = "#id")
     @Transactional
     @Override
     public void delete(long id) {
@@ -84,20 +103,19 @@ public class BookServiceImpl implements BookService {
         });
         authorBookRepository.deleteAll(book.getAuthorBook());
         bookRepository.delete(book);
+        rabbitTemplate.convertAndSend(EXCHANGE, DELETE_BOOK_REVIEW_ROUTING_KEY, id);
     }
 
+    @Cacheable(value = "bookRating", key = "#id")
     @Override
     public double averageRating(long id) {
-        bookRepository.findById(id)
-                .orElseThrow(() -> {
-                    throw new BookNotFoundException(id);
-                });
-        Double rating = reviewClient.getAverageBookRating(id);
+        Double rating = reviewClient.averageBookRating(id);
         return rating == null ? 0 : rating;
     }
 
     @Transactional
     @Override
+    @CachePut(value = "books", key = "#book.id")
     public BookDomain update(BookDomain book) {
         List<Author> authors = book.getAuthors();
         BookDomain finalBook = book;
@@ -105,6 +123,11 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> {
                     throw new BookNotFoundException(finalBook.getId());
                 });
+        updatableBook.getAuthors().forEach(author -> {
+            if (!authors.contains(author)) {
+                authorBookRepository.delete(new AuthorBook(author, updatableBook));
+            }
+        });
         updatableBook.setAuthors(new ArrayList<>());
         updatableBook.setDescription(book.getDescription());
         updatableBook.setName(book.getName());
@@ -112,7 +135,7 @@ public class BookServiceImpl implements BookService {
         films.forEach(film -> film.setAuthors(finalBook.getAuthors()));
         films.forEach(film -> filmService.update(filmDomainMapper.filmToDomain(film)));
         try {
-            book = bookDomainMapper.bookToDomain(bookRepository.save(updatableBook));
+            book = prepareBookToReturn(bookRepository.save(updatableBook));
         } catch (DataIntegrityViolationException e) {
             throw new NameErrorException();
         }
@@ -121,8 +144,6 @@ public class BookServiceImpl implements BookService {
             authorBookRepository.save(authorBook);
         });
         book.setAuthors(authors);
-        book.setAverageRating(averageRating(book.getId()));
-        book.setReviewCount(reviewClient.getReviewsForBook(book.getId()).size());
         return book;
     }
 
@@ -134,7 +155,7 @@ public class BookServiceImpl implements BookService {
                 .and(BookSpecification.likeDescription(filter.getDescription()));
         if (filter.getReviewText() != null && !filter.getReviewText().isEmpty()) {
             Set<Long> ids = new HashSet<>();
-            reviewClient.getReviewsForText(filter.getReviewText()).forEach(r -> ids.add(r.getBookId()));
+            reviewClient.readAll(new ReviewFilterDTO(filter.getReviewText(), null)).forEach(r -> ids.add(r.getBookId()));
             spec = spec.and(BookSpecification.byIds(ids.stream().toList()));
         }
         List<Book> books;
@@ -144,14 +165,23 @@ public class BookServiceImpl implements BookService {
         } else {
             books = bookRepository.findAll(spec);
         }
-        List<BookDomain> bookDomains = books.stream().map(bookDomainMapper::bookToDomain).collect(Collectors.toList());
-        bookDomains.forEach(domain -> domain.setReviewCount(reviewClient.getReviewsForBook(domain.getId()).size()));
-        bookDomains.forEach(domain -> domain.setAverageRating(averageRating(domain.getId())));
+        List<BookDomain> bookDomains = books.stream().map(this::prepareBookToReturn).collect(Collectors.toList());
         if (filter.getLessThenRating() != null) {
             bookDomains = bookDomains.stream()
                     .filter(d -> d.getAverageRating() < filter.getLessThenRating())
                     .collect(Collectors.toList());
         }
         return bookDomains;
+    }
+
+    @CacheEvict(value = {"books", "bookRating"}, key = "#id")
+    public void clearCache(long id) {
+    }
+
+    private BookDomain prepareBookToReturn(Book book) {
+        BookDomain bookDomain = bookDomainMapper.bookToDomain(book);
+        bookDomain.setAverageRating(averageRating(book.getId()));
+        bookDomain.setReviewCount(reviewClient.readAll(new ReviewFilterDTO(null, book.getId())).size());
+        return bookDomain;
     }
 }

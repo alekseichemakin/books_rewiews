@@ -4,7 +4,6 @@ package ru.lexa.books_reviews.reviews.controller.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.BookReviewController;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
@@ -32,15 +31,19 @@ public class BookReviewControllerImpl implements BookReviewController {
 		reviewService.create(reviewMapper.dtoToReview(dto));
 	}
 
+	@RabbitListener(queues = {"${queue.name.deleteBooksReviews}"})
+	public void listenerDeleteReview(@Payload long bookId) {
+		reviewService.deleteReviewsForBook(bookId);
+	}
+
 	@Override
 	public BookReviewDTO createReview(BookReviewRequestDTO dto) {
 		return reviewMapper.reviewToDto(reviewService.create(reviewMapper.dtoToReview(dto)));
 	}
 
 	@Override
-	public Collection<BookReviewDTO> readAll(String text, Long bookId) {
-		ReviewFilterDTO filterDTO = new ReviewFilterDTO(text, bookId);
-		return reviewService.readAllBooksReviews(filterDTO).stream()
+	public Collection<BookReviewDTO> readAll(ReviewFilterDTO reviewFilterDTO) {
+		return reviewService.readAllBooksReviews(reviewFilterDTO).stream()
 				.map(review -> reviewMapper.reviewToDto(review))
 				.collect(Collectors.toList());
 	}

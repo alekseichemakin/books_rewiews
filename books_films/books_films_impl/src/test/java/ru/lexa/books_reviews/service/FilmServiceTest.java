@@ -1,7 +1,7 @@
 package ru.lexa.books_reviews.service;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,7 +33,7 @@ public class FilmServiceTest {
 	@InjectMocks
 	FilmServiceImpl filmService;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		MockitoAnnotations.openMocks(this);
 	}
@@ -42,6 +42,7 @@ public class FilmServiceTest {
 	public void whenSaveFilm_ReturnFilm() {
 		FilmDomain saveFilm = new FilmDomain();
 		saveFilm.setName("test");
+		saveFilm.setAuthors(new ArrayList<>());
 
 		when(filmRepository.save(Mockito.any(Film.class))).thenAnswer(i -> i.getArguments()[0]);
 		when(filmDomainMapper.filmToDomain(Mockito.any(Film.class))).thenReturn(saveFilm);

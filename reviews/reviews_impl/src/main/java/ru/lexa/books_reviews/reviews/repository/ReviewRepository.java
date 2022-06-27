@@ -42,4 +42,8 @@ public interface ReviewRepository extends CrudRepository<Review, Long>, JpaSpeci
      */
     @Query("select avg(r.rating) from Review r where r.bookId = ?1")
     Double getAverageRating(long id);
+
+    void deleteAllByBookId(long bookId);
+
+    void deleteAllByFilmId(long filmId);
 }

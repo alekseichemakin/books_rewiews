@@ -68,5 +68,24 @@ public interface ReviewService {
 	 */
 	List<ReviewDomain> readAllFilmsReviews();
 
+	/**
+	 * Возвращает средний рейтинг книги
+	 *
+	 * @return средний рейтинг
+	 */
 	Double getBookAverageRating(long bookId);
+
+	/**
+	 * Удаление отзывов к книге
+	 *
+	 * @param bookId - id книги
+	 */
+	void deleteReviewsForBook(long bookId);
+
+	/**
+	 * Удаление отзывов к фильму
+	 *
+	 * @param filmId - id фильма
+	 */
+	void deleteReviewsForFilm(long filmId);
 }

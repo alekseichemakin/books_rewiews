@@ -1,9 +1,7 @@
 package controller;
 
 import controller.dto.author.AuthorDTO;
-import controller.dto.book.BookDTO;
-import controller.dto.book.BookRequestDTO;
-import controller.dto.book.BookResponseDTO;
+import controller.dto.book.*;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -17,26 +15,20 @@ import java.util.Collection;
  */
 @RequestMapping("/api/books")
 @Validated
-public interface BookController {
+public interface  BookController {
 
 	@ApiOperation(value = "Добавить новую книгу.")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-    BookResponseDTO createBook(@RequestBody @Valid BookRequestDTO dto);
+    BookResponseDTO createBook(@RequestBody @Valid BookReviewUnitedDTO bookReviewUnitedDTO);
 
 	@ApiOperation(value = "Поиск книг по параметрам.")
 	@GetMapping
-	Collection<BookResponseDTO> readAll(@RequestParam(required = false) Integer page,
-                                        @RequestParam(required = false) Integer pageSize,
-                                        @RequestParam(required = false) String author,
-                                        @RequestParam(required = false) String description,
-                                        @RequestParam(required = false) String name,
-                                        @RequestParam(required = false) String reviewText,
-                                        @RequestParam(required = false) Double maxRating);
+	Collection<BookResponseDTO> readAll(BookFilterDTO filterDTO);
 
 	@ApiOperation(value = "Получить книгу.")
 	@GetMapping("/{id}")
-    BookResponseDTO readBook(@PathVariable long id);
+    BookResponseDTO readBook(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Изменить книгу.")
 	@PutMapping
@@ -44,13 +36,17 @@ public interface BookController {
 
 	@ApiOperation(value = "Удалить книгу.")
 	@DeleteMapping("/{id}")
-	void deleteBook(@PathVariable long id);
+	void deleteBook(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Получить среднюю оценку.")
 	@GetMapping("/{id}/averageRating")
-	double getAverage(@PathVariable long id);
+	double getAverage(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Получить авторов книги.")
 	@GetMapping("/{id}/authors")
-	Collection<AuthorDTO> getAuthors(@PathVariable long id);
+	Collection<AuthorDTO> getAuthors(@PathVariable("id") long id);
+
+	@ApiOperation(value = "Отчистить кэш книги.")
+	@GetMapping("/{id}/clearCache")
+	void clearCache(@PathVariable("id") long id);
 }

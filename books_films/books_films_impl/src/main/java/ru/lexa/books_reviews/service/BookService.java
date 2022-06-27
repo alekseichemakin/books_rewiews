@@ -2,6 +2,7 @@ package ru.lexa.books_reviews.service;
 
 
 import controller.dto.book.BookFilterDTO;
+import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
@@ -19,7 +20,7 @@ public interface BookService {
 	 * @return созданную книгу
 	 * @throws NameErrorException, если книга с данным именнем существует
 	 */
-	BookDomain create(BookDomain book);
+	BookDomain create(BookDomain book, BookReviewRequestDTO reviewRequestDTO);
 
 	/**
 	 * Возвращает книгу по ID
@@ -63,4 +64,6 @@ public interface BookService {
 	 * @return список книг
 	 */
 	List<BookDomain> readAll(BookFilterDTO filter);
+
+	void clearCache(long id);
 }

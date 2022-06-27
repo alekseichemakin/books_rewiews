@@ -1,4 +1,4 @@
-package ru.lexa.books_reviews.reviews.configuration;
+package ru.lexa.books_reviews.configuration;
 
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -11,29 +11,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@EnableRabbit
 @Configuration
+@EnableRabbit
 public class RabbitMqConfig {
-    @Value("${queue.name.createBookReview}")
-    private String queue;
-
-    @Value("${queue.name.deleteBooksReviews}")
-    private String queue2;
-
-    @Value("${queue.name.deleteFilmsReviews}")
-    private String queue3;
-
-    @Value("${spring.rabbitmq.exchange}")
-    private String exchange;
-
-    @Value("${spring.rabbitmq.routing-key.createBookReview}")
-    private String routingKey;
-
-    @Value("${spring.rabbitmq.routing-key.deleteBooksReview}")
-    private String routingKey2;
-
-    @Value("${spring.rabbitmq.routing-key.deleteFilmsReviews}")
-    private String routingKey3;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
@@ -44,19 +24,18 @@ public class RabbitMqConfig {
     @Value("${spring.rabbitmq.host}")
     private String host;
 
+    @Value("${queue.name.clearBookCache}")
+    private String queue;
+
+    @Value("${spring.rabbitmq.routing-key.clearBookCache}")
+    private String routingKey;
+
+    @Value("${spring.rabbitmq.exchange}")
+    private String exchange;
+
     @Bean
     Queue queue() {
         return new Queue(queue, true);
-    }
-
-    @Bean
-    Queue queue2() {
-        return new Queue(queue2, true);
-    }
-
-    @Bean
-    Queue queue3() {
-        return new Queue(queue3, true);
     }
 
     @Bean
@@ -74,29 +53,11 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    Binding binding2() {
-        return BindingBuilder
-                .bind(queue2())
-                .to(myExchange())
-                .with(routingKey2)
-                .noargs();
-    }
-
-    @Bean
-    Binding binding3() {
-        return BindingBuilder
-                .bind(queue3())
-                .to(myExchange())
-                .with(routingKey3)
-                .noargs();
-    }
-
-    @Bean
     public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(host);
-        cachingConnectionFactory.setUsername(username);
-        cachingConnectionFactory.setPassword(password);
-        return cachingConnectionFactory;
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(host);
+        connectionFactory.setUsername(username);
+        connectionFactory.setPassword(password);
+        return connectionFactory;
     }
 
     @Bean
@@ -111,4 +72,3 @@ public class RabbitMqConfig {
         return rabbitTemplate;
     }
 }
-

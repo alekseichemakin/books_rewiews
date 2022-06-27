@@ -1,8 +1,8 @@
 package ru.lexa.books_reviews.service;
 
 import controller.dto.author.AuthorFilterDTO;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,7 +35,7 @@ public class AuthorServiceTest {
 	AuthorServiceImpl authorService;
 
 
-	@Before
+	@BeforeEach
 	public void init() {
 		MockitoAnnotations.openMocks(this);
 	}
@@ -47,6 +47,7 @@ public class AuthorServiceTest {
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(saveAuthor);
 		when(authorDomainMapper.domainToAuthor(Mockito.any(AuthorDomain.class))).thenReturn(new Author());
 		when(authorRepository.save(Mockito.any(Author.class))).thenAnswer(i -> i.getArguments()[0]);
+		when(authorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new Author()));
 
 		AuthorDomain author = authorService.create(saveAuthor);
 		assertEquals("test", author.getName());
@@ -83,6 +84,7 @@ public class AuthorServiceTest {
 		authorDomain.setBooks(new ArrayList<>());
 		when(authorRepository.findAll(Mockito.any(Specification.class))).thenReturn(authors);
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(authorDomain);
+		when(authorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new Author()));
 
 		List<AuthorDomain> authorsResponse = authorService.readAll(new AuthorFilterDTO());
 		assertEquals(3, authorsResponse.size());

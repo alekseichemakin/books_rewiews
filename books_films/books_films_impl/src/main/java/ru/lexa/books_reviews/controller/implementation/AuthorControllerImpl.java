@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.FilmMapper;
-import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
-import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
 import ru.lexa.books_reviews.service.AuthorService;
@@ -47,23 +44,22 @@ public class AuthorControllerImpl implements AuthorController {
 
 	@Override
 	public AuthorResponseDTO createAuthor(AuthorRequestDTO dto) {
-		return setBookAuthorIds(authorService.create(authorMapper.dtoToAuthor(dto)));
+		return authorMapper.authorToDto(authorService.create(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
-	public Collection<AuthorResponseDTO> readAll(Integer page, Integer pageSize, Double maxRating, String name, String book, String film) {
-		AuthorFilterDTO filter = new AuthorFilterDTO(name, book, film, maxRating, page, pageSize);
-		return authorService.readAll(filter).stream().map(this::setBookAuthorIds).collect(Collectors.toList());
+	public Collection<AuthorResponseDTO> readAll(AuthorFilterDTO authorFilterDTO) {
+		return authorService.readAll(authorFilterDTO).stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
 
 	@Override
 	public AuthorResponseDTO readAuthor(long id) {
-		return setBookAuthorIds(authorService.read(id));
+		return authorMapper.authorToDto(authorService.read(id));
 	}
 
 	@Override
 	public AuthorResponseDTO updateAuthor(AuthorDTO dto) {
-		return setBookAuthorIds(authorService.update(authorMapper.dtoToAuthor(dto)));
+		return authorMapper.authorToDto(authorService.update(authorMapper.dtoToAuthor(dto)));
 	}
 
 	@Override
@@ -93,16 +89,5 @@ public class AuthorControllerImpl implements AuthorController {
 	@Override
 	public Double getRating(long id) {
 		return authorService.getAverageRating(id);
-	}
-
-	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
-		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
-		if (domain.getBooks() != null) {
-			dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
-		}
-		if (domain.getFilms() != null) {
-			dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
-		}
-		return dto;
 	}
 }

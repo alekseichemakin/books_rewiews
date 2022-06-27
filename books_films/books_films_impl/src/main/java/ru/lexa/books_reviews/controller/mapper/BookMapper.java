@@ -5,7 +5,13 @@ import controller.dto.book.BookRequestDTO;
 import controller.dto.book.BookResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import ru.lexa.books_reviews.domain.BookDomain;
+import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Book;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Маппер dto и domain книг
@@ -45,6 +51,11 @@ public interface BookMapper {
 	 * @param book - domain книги
 	 * @return - dto книги
 	 */
-	@Mapping(target = "authorIds", ignore = true)
+	@Mapping(source = "authors", target = "authorIds", qualifiedByName = "setAuthorIds")
 	BookResponseDTO bookToDto(BookDomain book);
+
+	@Named("setAuthorIds")
+	default List<Long> setAuthorIds(List<Author> authors) {
+		return authors.stream().map(Author::getId).collect(Collectors.toList());
+	}
 }

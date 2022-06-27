@@ -2,7 +2,6 @@ package ru.lexa.books_reviews.controller.implementation;
 
 import controller.FilmController;
 import controller.dto.author.AuthorDTO;
-import controller.dto.author.AuthorResponseDTO;
 import controller.dto.book.BookResponseDTO;
 import controller.dto.film.FilmDTO;
 import controller.dto.film.FilmRequestDTO;
@@ -16,7 +15,6 @@ import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
@@ -92,14 +90,7 @@ public class FilmControllerImpl implements FilmController {
 
 	@Override
 	public Collection<AuthorDTO> getAuthors(long id) {
-		List<AuthorDomain> authorDomains = filmService.read(id).getAuthors().stream().map(authorDomainMapper::authorToDomain).collect(Collectors.toList());
-		return authorDomains.stream().map(this::setBookAuthorIds).collect(Collectors.toList());
-	}
-
-	private AuthorResponseDTO setBookAuthorIds(AuthorDomain domain) {
-		AuthorResponseDTO dto = authorMapper.authorToDto(domain);
-		dto.setBookIds(domain.getBooks().stream().map(Book::getId).collect(Collectors.toList()));
-		dto.setFilmIds(domain.getFilms().stream().map(Film::getId).collect(Collectors.toList()));
-		return dto;
+		List<AuthorDomain> authorDomains = filmService.read(id).getAuthors().stream().map(authorDomainMapper::authorToDomain).toList();
+		return authorDomains.stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
 }

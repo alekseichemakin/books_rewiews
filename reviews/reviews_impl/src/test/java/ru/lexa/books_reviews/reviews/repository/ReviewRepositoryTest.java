@@ -1,6 +1,5 @@
 package ru.lexa.books_reviews.reviews.repository;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +16,11 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Sql(scripts= "src/test/resources/ReviewRepositoryTest.sql")
+@Sql(scripts= "/ReviewRepositoryTest.sql")
 public class ReviewRepositoryTest {
 
 	@Autowired
 	private ReviewRepository reviewRepository;
-
 
 	@Test
 	public void whenFindBookReviews_thenReturnReviews() {

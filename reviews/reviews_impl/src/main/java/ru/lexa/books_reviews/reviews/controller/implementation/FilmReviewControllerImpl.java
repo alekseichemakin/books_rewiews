@@ -25,9 +25,9 @@ public class FilmReviewControllerImpl implements FilmReviewController {
 
     private FilmReviewMapper reviewMapper;
 
-    @RabbitListener(queues = {"${queue.name.createFilmReview}"})
-    public void listenerCreateReview(@Payload FilmReviewRequestDTO dto) {
-        reviewService.create(reviewMapper.dtoToReview(dto));
+    @RabbitListener(queues = {"${queue.name.deleteFilmsReviews}"})
+    public void listenerDeleteReview(@Payload long filmId) {
+        reviewService.deleteReviewsForFilm(filmId);
     }
 
     @Override

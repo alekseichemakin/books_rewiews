@@ -1,13 +1,20 @@
 package ru.lexa.books_reviews.reviews.service.implementation;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.review.ReviewFilterDTO;
 import ru.lexa.books_reviews.reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.reviews.exception.ReviewNotFoundException;
-import ru.lexa.books_reviews.reviews.integration.BookFilmClient;
+import ru.lexa.books_reviews.reviews.integration.BookClient;
+import ru.lexa.books_reviews.reviews.integration.FilmClient;
 import ru.lexa.books_reviews.reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.reviews.repository.entity.Review;
 import ru.lexa.books_reviews.reviews.repository.mapper.ReviewDomainMapper;
@@ -22,22 +29,33 @@ import java.util.stream.Collectors;
  */
 @Transactional(readOnly = true)
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-	private ReviewRepository reviewRepository;
+	private final ReviewRepository reviewRepository;
 
-	private ReviewDomainMapper reviewDomainMapper;
+	private final ReviewDomainMapper reviewDomainMapper;
 
-	private BookFilmClient bookFilmClient;
+	private final BookClient bookClient;
 
+	private final FilmClient filmClient;
+
+	private final AmqpTemplate rabbitTemplate;
+
+	@Value("${spring.rabbitmq.exchange}")
+	private String EXCHANGE;
+	@Value("${spring.rabbitmq.routing-key.clearBookCache}")
+	private String CLEAR_BOOK_CACHE;
+
+	@CacheEvict(value = "bookRating", key = "#review.bookId", condition="#review.bookId!=null")
 	@Transactional
 	@Override
 	public ReviewDomain create(ReviewDomain review) {
 		if (review.getBookId() != null) {
-			bookFilmClient.readBook(review.getBookId());
+			bookClient.readBook(review.getBookId());
+			rabbitTemplate.convertAndSend(EXCHANGE, CLEAR_BOOK_CACHE, review.getBookId());
 		} else if (review.getFilmId() != null) {
-			bookFilmClient.readFilm(review.getFilmId());
+			filmClient.readFilm(review.getFilmId());
 		}
 		return reviewDomainMapper.reviewToDomain(reviewRepository.save(reviewDomainMapper.domainToReview(review)));
 	}
@@ -47,6 +65,7 @@ public class ReviewServiceImpl implements ReviewService {
 		return reviewRepository.findAll().stream().map(reviewDomainMapper::reviewToDomain).collect(Collectors.toList());
 	}
 
+	@Cacheable(value = "reviews", key = "#id")
 	@Override
 	public ReviewDomain read(long id) {
 		return reviewDomainMapper.reviewToDomain(reviewRepository.findById(id)
@@ -55,6 +74,12 @@ public class ReviewServiceImpl implements ReviewService {
 				}));
 	}
 
+	@Caching(
+			evict = {
+					@CacheEvict(value = "reviews", key = "#id"),
+					@CacheEvict(value = "bookRating", allEntries = true)
+			}
+	)
 	@Transactional
 	@Override
 	public void delete(long id) {
@@ -63,16 +88,23 @@ public class ReviewServiceImpl implements ReviewService {
 					throw new ReviewNotFoundException(id);
 				});
 		reviewRepository.delete(review);
+		rabbitTemplate.convertAndSend(EXCHANGE, CLEAR_BOOK_CACHE, review.getBookId());
 	}
 
+
+	@Caching(
+			evict = @CacheEvict(value = "bookRating", allEntries = true),
+			put = @CachePut(value = "reviews", key = "#review.id")
+	)
 	@Transactional
 	@Override
 	public ReviewDomain update(ReviewDomain review) {
 		ReviewDomain reviewDomain = read(review.getId());
 		if (review.getBookId() != null) {
-			bookFilmClient.readBook(review.getBookId());
+			bookClient.readBook(review.getBookId());
+			rabbitTemplate.convertAndSend(EXCHANGE, CLEAR_BOOK_CACHE, review.getBookId());
 		} else if (review.getFilmId() != null) {
-			bookFilmClient.readFilm(review.getFilmId());
+			filmClient.readFilm(review.getFilmId());
 		}
 		reviewDomain.setText(review.getText());
 		reviewDomain.setRating(review.getRating());
@@ -93,8 +125,21 @@ public class ReviewServiceImpl implements ReviewService {
 		return reviewRepository.findAllFilmsReviews().stream().map(reviewDomainMapper::reviewToDomain).collect(Collectors.toList());
 	}
 
+	@Cacheable(value = "bookRating", key = "#bookId")
 	@Override
 	public Double getBookAverageRating(long bookId) {
 		return reviewRepository.getAverageRating(bookId);
+	}
+
+	@Transactional
+	@Override
+	public void deleteReviewsForBook(long bookId) {
+		reviewRepository.deleteAllByBookId(bookId);
+	}
+
+	@Transactional
+	@Override
+	public void deleteReviewsForFilm(long filmId) {
+		reviewRepository.deleteAllByFilmId(filmId);
 	}
 }

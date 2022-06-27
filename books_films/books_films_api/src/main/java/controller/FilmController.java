@@ -28,7 +28,7 @@ public interface FilmController {
 
 	@ApiOperation(value = "Получить фильм.")
 	@GetMapping("/{id}")
-    FilmDTO readFilm(@PathVariable long id);
+    FilmDTO readFilm(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Изменить фильм.")
 	@PutMapping
@@ -36,13 +36,13 @@ public interface FilmController {
 
 	@ApiOperation(value = "Удалить фильм.")
 	@DeleteMapping("/{id}")
-	void deleteFilm(@PathVariable long id);
+	void deleteFilm(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Получить автора фильма.")
 	@GetMapping("/{id}/authors")
-	Collection<AuthorDTO> getAuthors(@PathVariable long id);
+	Collection<AuthorDTO> getAuthors(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Получить экранизированную книгу.")
 	@GetMapping("/{id}/book")
-    BookResponseDTO readBook(@PathVariable long id);
+    BookResponseDTO readBook(@PathVariable("id") long id);
 }

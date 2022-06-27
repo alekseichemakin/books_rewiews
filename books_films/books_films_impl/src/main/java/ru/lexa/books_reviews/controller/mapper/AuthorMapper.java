@@ -5,7 +5,14 @@ import controller.dto.author.AuthorRequestDTO;
 import controller.dto.author.AuthorResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import ru.lexa.books_reviews.domain.AuthorDomain;
+import ru.lexa.books_reviews.repository.entity.Book;
+import ru.lexa.books_reviews.repository.entity.Film;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Маппер dto и domain автора
@@ -42,7 +49,17 @@ public interface AuthorMapper {
 	 * @param author - domain автора
 	 * @return - dto автора
 	 */
-	@Mapping(target = "filmIds", ignore = true)
-	@Mapping(target = "bookIds", ignore = true)
+	@Mapping(source = "films", target = "filmIds", qualifiedByName = "setFilmIds")
+	@Mapping(source = "books", target = "bookIds", qualifiedByName = "setBookIds")
 	AuthorResponseDTO authorToDto(AuthorDomain author);
+
+	@Named("setBookIds")
+	default List<Long> setBooksIds(List<Book> books) {
+		return books.stream().map(Book::getId).collect(Collectors.toList());
+	}
+
+	@Named("setFilmIds")
+	default List<Long> setFilmsIds(Collection<Film> films) {
+		return films.stream().map(Film::getId).collect(Collectors.toList());
+	}
 }

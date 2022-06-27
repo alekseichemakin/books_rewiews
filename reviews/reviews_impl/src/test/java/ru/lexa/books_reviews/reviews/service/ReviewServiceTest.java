@@ -1,8 +1,8 @@
 package ru.lexa.books_reviews.reviews.service;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,7 +32,7 @@ public class ReviewServiceTest {
 	@InjectMocks
 	ReviewServiceImpl reviewService;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		MockitoAnnotations.openMocks(this);
 	}
