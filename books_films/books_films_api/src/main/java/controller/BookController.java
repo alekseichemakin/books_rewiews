@@ -1,7 +1,9 @@
 package controller;
 
-import controller.dto.author.AuthorDTO;
-import controller.dto.book.*;
+import controller.dto.book.BookDTO;
+import controller.dto.book.BookFilterDTO;
+import controller.dto.book.BookResponseDTO;
+import controller.dto.book.BookReviewUnitedDTO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -41,10 +43,6 @@ public interface  BookController {
 	@ApiOperation(value = "Получить среднюю оценку.")
 	@GetMapping("/{id}/averageRating")
 	double getAverage(@PathVariable("id") long id);
-
-	@ApiOperation(value = "Получить авторов книги.")
-	@GetMapping("/{id}/authors")
-	Collection<AuthorDTO> getAuthors(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Отчистить кэш книги.")
 	@GetMapping("/{id}/clearCache")

@@ -10,7 +10,7 @@ public class AuthorSpecification {
 	 * @return спецификацию для поиска по части имени
 	 */
 	public static Specification<Author> likeName(String name) {
-		if (name == null)
+		if (name == null || name.isEmpty())
 			return null;
 		return (root, query, cb) -> cb.like(root.get(Author_.NAME), "%" + name + "%");
 	}
@@ -19,12 +19,12 @@ public class AuthorSpecification {
 	 * @return спецификацию для поиска по части названия книги
 	 */
 	public static Specification<Author> likeBook(String book) {
-		if (book == null)
+		if (book == null || book.isEmpty())
 			return null;
 		return (root, query, cb) -> {
 			Join<Author, Book> bookJoin = root.join(Author_.BOOKS);
 			query.distinct(true);
-			return cb.like(bookJoin.get(Book_.NAME), "%" + book + "%");
+			return cb.like(bookJoin.get(AuthorBook_.BOOK).get(Book_.NAME), "%" + book + "%");
 		};
 	}
 
@@ -35,9 +35,9 @@ public class AuthorSpecification {
 		if (film == null)
 			return null;
 		return (root, query, cb) -> {
-			Join<Author, Film> filmJoin = root.join(Author_.FILMS);
+			Join<Author, Film> bookJoin = root.join(Author_.BOOKS).join(AuthorBook_.BOOK).join(Book_.FILMS);
 			query.distinct(true);
-			return cb.like(filmJoin.get(Film_.NAME), "%" + film + "%");
+			return cb.like(bookJoin.get(Film_.NAME), "%" + film + "%");
 		};
 	}
 }

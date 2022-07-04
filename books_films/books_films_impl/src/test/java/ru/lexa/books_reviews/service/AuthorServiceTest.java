@@ -47,7 +47,6 @@ public class AuthorServiceTest {
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(saveAuthor);
 		when(authorDomainMapper.domainToAuthor(Mockito.any(AuthorDomain.class))).thenReturn(new Author());
 		when(authorRepository.save(Mockito.any(Author.class))).thenAnswer(i -> i.getArguments()[0]);
-		when(authorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new Author()));
 
 		AuthorDomain author = authorService.create(saveAuthor);
 		assertEquals("test", author.getName());
@@ -60,7 +59,6 @@ public class AuthorServiceTest {
 		saveAuthor.setName("test");
 		Author author = new Author();
 		author.setBooks(new ArrayList<>());
-		author.setFilms(new ArrayList<>());
 		when(authorRepository.findById(1L)).thenReturn(Optional.of(author));
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(saveAuthor);
 
@@ -84,7 +82,6 @@ public class AuthorServiceTest {
 		authorDomain.setBooks(new ArrayList<>());
 		when(authorRepository.findAll(Mockito.any(Specification.class))).thenReturn(authors);
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(authorDomain);
-		when(authorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new Author()));
 
 		List<AuthorDomain> authorsResponse = authorService.readAll(new AuthorFilterDTO());
 		assertEquals(3, authorsResponse.size());

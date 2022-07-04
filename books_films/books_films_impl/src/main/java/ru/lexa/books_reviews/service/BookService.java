@@ -6,6 +6,8 @@ import ru.lexa.books_reviews.controller.dto.review.BookReviewRequestDTO;
 import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.exception.BookNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
+import ru.lexa.books_reviews.repository.entity.Author;
+import ru.lexa.books_reviews.repository.entity.Film;
 
 import java.util.List;
 
@@ -65,5 +67,10 @@ public interface BookService {
 	 */
 	List<BookDomain> readAll(BookFilterDTO filter);
 
+	/**
+	 * Очищает кэш книги
+	 *
+	 * @param id - id книги
+	 */
 	void clearCache(long id);
 }

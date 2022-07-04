@@ -1,6 +1,5 @@
 package controller;
 
-import controller.dto.author.AuthorDTO;
 import controller.dto.book.BookResponseDTO;
 import controller.dto.film.FilmDTO;
 import controller.dto.film.FilmRequestDTO;
@@ -37,10 +36,6 @@ public interface FilmController {
 	@ApiOperation(value = "Удалить фильм.")
 	@DeleteMapping("/{id}")
 	void deleteFilm(@PathVariable("id") long id);
-
-	@ApiOperation(value = "Получить автора фильма.")
-	@GetMapping("/{id}/authors")
-	Collection<AuthorDTO> getAuthors(@PathVariable("id") long id);
 
 	@ApiOperation(value = "Получить экранизированную книгу.")
 	@GetMapping("/{id}/book")

@@ -4,8 +4,6 @@ import controller.dto.author.AuthorDTO;
 import controller.dto.author.AuthorFilterDTO;
 import controller.dto.author.AuthorRequestDTO;
 import controller.dto.author.AuthorResponseDTO;
-import controller.dto.book.BookResponseDTO;
-import controller.dto.film.FilmDTO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,14 +36,6 @@ public interface AuthorController {
 	@ApiOperation(value = "Удалить автора.")
 	@DeleteMapping("/{id}")
 	void deleteAuthor(@PathVariable long id);
-
-	@ApiOperation(value = "Получить книги автора.")
-	@GetMapping("/{id}/books")
-	Collection<BookResponseDTO> readBooks(@PathVariable long id);
-
-	@ApiOperation(value = "Получить фильмы автора.")
-	@GetMapping("/{id}/films")
-	Collection<FilmDTO> readFilms(@PathVariable long id);
 
 	@ApiOperation(value = "Получить средний рейтинг автора.")
 	@GetMapping("/{id}/rating")

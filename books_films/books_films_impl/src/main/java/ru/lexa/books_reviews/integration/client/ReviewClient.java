@@ -1,4 +1,4 @@
-package ru.lexa.books_reviews.integration;
+package ru.lexa.books_reviews.integration.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import ru.lexa.books_reviews.controller.BookReviewController;

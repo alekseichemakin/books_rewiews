@@ -1,7 +1,6 @@
 package ru.lexa.books_reviews.service;
 
 import controller.dto.book.BookFilterDTO;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -11,16 +10,14 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.jpa.domain.Specification;
-import ru.lexa.books_reviews.controller.dto.review.ReviewFilterDTO;
+import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.BookDomain;
-import ru.lexa.books_reviews.integration.ReviewClient;
-import ru.lexa.books_reviews.repository.AuthorBookRepository;
+import ru.lexa.books_reviews.integration.service.ReviewsService;
 import ru.lexa.books_reviews.repository.BookRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
-import ru.lexa.books_reviews.repository.entity.AuthorBook;
 import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.service.implementation.BookServiceImpl;
 import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
+import ru.lexa.books_reviews.service.implementation.BookServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +36,10 @@ public class BookServiceTest {
 	BookDomainMapper bookDomainMapper;
 
 	@Mock
-	ReviewClient reviewClient;
+	AuthorService authorService;
 
 	@Mock
-	AuthorBookRepository authorBookRepository;
+	ReviewsService reviewsService;
 
 	@InjectMocks
 	BookServiceImpl bookService;
@@ -60,9 +57,9 @@ public class BookServiceTest {
 		when(bookDomainMapper.bookToDomain(Mockito.any(Book.class))).thenReturn(saveBook);
 		when(bookDomainMapper.domainToBook(Mockito.any(BookDomain.class))).thenReturn(new Book());
 		when(bookRepository.save(Mockito.any(Book.class))).thenAnswer(i -> i.getArguments()[0]);
-		when(authorBookRepository.save(Mockito.any(AuthorBook.class))).thenReturn(new AuthorBook());
-
+		when(authorService.read(Mockito.anyLong())).thenReturn(new AuthorDomain());
 		author.setName("test");
+		author.setId(0L);
 		saveBook.setName("test");
 		authors.add(author);
 		saveBook.setAuthors(authors);
@@ -112,7 +109,6 @@ public class BookServiceTest {
 		bookDomain.setAuthors(new ArrayList<>());
 		when(bookRepository.findAll(Mockito.any(Specification.class))).thenReturn(books);
 		when(bookDomainMapper.bookToDomain(Mockito.any(Book.class))).thenReturn(bookDomain);
-		when(reviewClient.averageBookRating(Mockito.any(Long.class))).thenReturn(Double.valueOf(0));
 
 		List<BookDomain> booksResponse = bookService.readAll(new BookFilterDTO());
 		assertEquals(3, booksResponse.size());
@@ -120,6 +116,7 @@ public class BookServiceTest {
 
 	@Test
 	public void whenGetRating_ReturnRating() {
+		when(reviewsService.getBookAverageRating(Mockito.anyLong())).thenReturn(0.0);
 		double rating = bookService.averageRating(1);
 		assertEquals(0, rating, 0.1);
 	}

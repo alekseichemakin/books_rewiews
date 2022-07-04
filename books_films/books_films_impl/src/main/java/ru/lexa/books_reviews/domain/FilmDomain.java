@@ -23,11 +23,6 @@ public class FilmDomain {
 	private String name;
 
 	/**
-	 * Авторы экранизированной книги
-	 */
-	private List<Author> authors;
-
-	/**
 	 * Дата экранизации
 	 */
 	private Date dateRelease;

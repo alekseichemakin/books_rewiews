@@ -14,11 +14,6 @@ import java.util.List;
 public class BookSpecification {
 
 	/**
-	 * Переменныя для хранения join с таблицей review
-	 */
-//	private static Join<Book, Review> rev = null;
-
-	/**
 	 * @return спецификацию для поиска по части названия
 	 */
 	public static Specification<Book> likeName(String name) {

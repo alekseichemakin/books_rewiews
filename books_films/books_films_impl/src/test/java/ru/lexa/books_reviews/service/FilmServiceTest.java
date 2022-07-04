@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import ru.lexa.books_reviews.domain.BookDomain;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.FilmRepository;
 import ru.lexa.books_reviews.repository.entity.Book;
@@ -30,6 +31,8 @@ public class FilmServiceTest {
 	@Mock
 	FilmDomainMapper filmDomainMapper;
 
+	@Mock BookService bookService;
+
 	@InjectMocks
 	FilmServiceImpl filmService;
 
@@ -42,11 +45,14 @@ public class FilmServiceTest {
 	public void whenSaveFilm_ReturnFilm() {
 		FilmDomain saveFilm = new FilmDomain();
 		saveFilm.setName("test");
-		saveFilm.setAuthors(new ArrayList<>());
+		Book book = new Book();
+		book.setId(0L);
+		saveFilm.setBook(book);
 
 		when(filmRepository.save(Mockito.any(Film.class))).thenAnswer(i -> i.getArguments()[0]);
 		when(filmDomainMapper.filmToDomain(Mockito.any(Film.class))).thenReturn(saveFilm);
 		when(filmDomainMapper.domainToFilm(Mockito.any(FilmDomain.class))).thenReturn(new Film());
+		when(bookService.read(Mockito.anyLong())).thenReturn(new BookDomain());
 
 		FilmDomain film = filmService.create(saveFilm);
 

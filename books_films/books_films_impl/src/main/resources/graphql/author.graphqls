@@ -1,0 +1,31 @@
+type Author {
+    id: ID!,
+    name: String!,
+    books: [Book]
+}
+type Book {
+    id: ID!,
+    name: String!,
+    description: String
+    films: [Film]
+}
+
+type Film {
+    id: ID!,
+    name: String!,
+    book: Book
+}
+
+type Query {
+    authors(authorName: String,
+    bookName:String,
+    filmName: String):[Author]
+
+    author(id: ID):Author
+}
+
+type Mutation {
+    createAuthor(name: String!):Author
+    updateAuthor(id: ID!, name: String!):Author
+    deleteAuthor(id: ID!):Boolean
+}

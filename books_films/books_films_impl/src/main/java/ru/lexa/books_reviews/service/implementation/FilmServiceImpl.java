@@ -1,6 +1,5 @@
 package ru.lexa.books_reviews.service.implementation;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,19 +10,15 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.lexa.books_reviews.configuration.RabbitMqConfig;
 import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.exception.FilmNotFoundException;
 import ru.lexa.books_reviews.exception.NameErrorException;
-import ru.lexa.books_reviews.repository.AuthorFilmRepository;
 import ru.lexa.books_reviews.repository.FilmRepository;
-import ru.lexa.books_reviews.repository.entity.Author;
-import ru.lexa.books_reviews.repository.entity.AuthorFilm;
 import ru.lexa.books_reviews.repository.entity.Film;
 import ru.lexa.books_reviews.repository.mapper.FilmDomainMapper;
+import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,30 +34,26 @@ public class FilmServiceImpl implements FilmService {
 
     private final FilmDomainMapper filmDomainMapper;
 
-    private final AuthorFilmRepository authorFilmRepository;
-
     private final AmqpTemplate rabbitTemplate;
+
+    private final BookService bookService;
 
     @Value("${spring.rabbitmq.routing-key.deleteFilmsReviews}")
     public String DELETE_FILM_REVIEW_ROUTING_KEY;
     @Value("${spring.rabbitmq.exchange}")
     public String EXCHANGE;
 
+
     @CacheEvict(value = "books", key = "#film.book.id")
     @Transactional
     @Override
     public FilmDomain create(FilmDomain film) {
-        List<Author> authors = film.getAuthors();
-        film.setAuthors(new ArrayList<>());
+        bookService.read(film.getBook().getId());
         try {
             film = filmDomainMapper.filmToDomain(filmRepository.save(filmDomainMapper.domainToFilm(film)));
         } catch (DataIntegrityViolationException e) {
             throw new NameErrorException();
         }
-        FilmDomain finalFilm = film;
-        authors.forEach(author -> authorFilmRepository
-                .save(new AuthorFilm(author, filmDomainMapper.domainToFilm(finalFilm))));
-        film.setAuthors(authors);
         return film;
     }
 
@@ -82,17 +73,12 @@ public class FilmServiceImpl implements FilmService {
     @Transactional
     @Override
     public FilmDomain update(FilmDomain film) {
-        List<Author> authors = film.getAuthors();
-        film.setAuthors(new ArrayList<>());
-        FilmDomain finalFilm = film;
-        authors.forEach(author -> authorFilmRepository
-                .save(new AuthorFilm(author, filmDomainMapper.domainToFilm(finalFilm))));
+        bookService.read(film.getBook().getId());
         try {
             film = filmDomainMapper.filmToDomain(filmRepository.saveAndFlush(filmDomainMapper.domainToFilm(film)));
         } catch (DataIntegrityViolationException e) {
             throw new NameErrorException();
         }
-        film.setAuthors(authors);
         return film;
     }
 
@@ -106,7 +92,6 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public void delete(long id) {
         Film film = filmRepository.findById(id).orElseThrow(() -> {throw new FilmNotFoundException(id);});
-        authorFilmRepository.deleteAll(film.getAuthorFilm());
         filmRepository.delete(film);
         rabbitTemplate.convertAndSend(EXCHANGE, DELETE_FILM_REVIEW_ROUTING_KEY, id);
     }

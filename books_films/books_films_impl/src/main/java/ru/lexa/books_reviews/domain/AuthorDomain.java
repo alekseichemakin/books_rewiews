@@ -4,6 +4,7 @@ import lombok.Data;
 import ru.lexa.books_reviews.repository.entity.Book;
 import ru.lexa.books_reviews.repository.entity.Film;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 

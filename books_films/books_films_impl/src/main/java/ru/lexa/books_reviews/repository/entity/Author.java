@@ -1,12 +1,16 @@
 package ru.lexa.books_reviews.repository.entity;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -14,7 +18,10 @@ import java.util.stream.Collectors;
  * Сущность автора
  */
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Audited
 public class Author {
 	@Id
@@ -33,26 +40,14 @@ public class Author {
 	 * Книги написанные автором
 	 */
 	@NotAudited
-	@OneToMany(mappedBy = "author")
+	@OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+	@ToString.Exclude
 	private List<AuthorBook> books = new ArrayList<>();
-
-	/**
-	 * Фильмы экранизированные по книгам данного автора
-	 */
-	@NotAudited
-	@OneToMany(mappedBy = "author")
-	private List<AuthorFilm> films = new ArrayList<>();
 
 	public void addBook(Book book) {
 		AuthorBook authorBook = new AuthorBook(this, book);
 		books.add(authorBook);
 		book.getAuthorBook().add(authorBook);
-	}
-
-	public void addFilm(Film film) {
-		AuthorFilm authorFilm = new AuthorFilm(this, film);
-		films.add(authorFilm);
-		film.getAuthorFilm().add(authorFilm);
 	}
 
 	public void removeBook(Book book) {
@@ -74,10 +69,6 @@ public class Author {
 		return books.stream().map(AuthorBook::getBook).collect(Collectors.toList());
 	}
 
-	public List<Film> getFilms() {
-		return films.stream().map(AuthorFilm::getFilm).collect(Collectors.toList());
-	}
-
 	public void setBooks(List<Book> books) {
 		List<AuthorBook> authorBooks = new ArrayList<>();
 		books.forEach(book -> {
@@ -88,13 +79,16 @@ public class Author {
 		this.books = authorBooks;
 	}
 
-	public void setFilms(List<Film> films) {
-		List<AuthorFilm> authorFilms = new ArrayList<>();
-		films.forEach(film -> {
-			AuthorFilm authorFilm = new AuthorFilm(this, film);
-			authorFilms.add(authorFilm);
-			film.getAuthorFilm().add(authorFilm);
-		});
-		this.films = authorFilms;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		Author author = (Author) o;
+		return id != null && Objects.equals(id, author.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return getClass().hashCode();
 	}
 }

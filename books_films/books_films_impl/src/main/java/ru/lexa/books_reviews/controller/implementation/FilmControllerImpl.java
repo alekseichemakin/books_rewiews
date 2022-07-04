@@ -1,27 +1,19 @@
 package ru.lexa.books_reviews.controller.implementation;
 
 import controller.FilmController;
-import controller.dto.author.AuthorDTO;
 import controller.dto.book.BookResponseDTO;
 import controller.dto.film.FilmDTO;
 import controller.dto.film.FilmRequestDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
-import ru.lexa.books_reviews.controller.mapper.AuthorMapper;
 import ru.lexa.books_reviews.controller.mapper.BookMapper;
 import ru.lexa.books_reviews.controller.mapper.FilmMapper;
-import ru.lexa.books_reviews.domain.AuthorDomain;
 import ru.lexa.books_reviews.domain.BookDomain;
-import ru.lexa.books_reviews.domain.FilmDomain;
 import ru.lexa.books_reviews.repository.entity.Author;
-import ru.lexa.books_reviews.repository.entity.Book;
-import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
-import ru.lexa.books_reviews.repository.mapper.BookDomainMapper;
 import ru.lexa.books_reviews.service.BookService;
 import ru.lexa.books_reviews.service.FilmService;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -37,21 +29,11 @@ public class FilmControllerImpl implements FilmController {
 
 	private BookService bookService;
 
-	private BookDomainMapper bookDomainMapper;
-
-	private AuthorDomainMapper authorDomainMapper;
-
-	private AuthorMapper authorMapper;
-
 	private BookMapper bookMapper;
 
 	@Override
 	public FilmDTO createFilm(FilmRequestDTO dto) {
-		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
-		FilmDomain filmDomain = filmMapper.dtoToFilm(dto);
-		filmDomain.setBook(book);
-		filmDomain.setAuthors(book.getAuthors());
-		return filmMapper.filmToDto(filmService.create(filmDomain));
+		return filmMapper.filmToDto(filmService.create(filmMapper.dtoToFilm(dto)));
 	}
 
 	@Override
@@ -68,11 +50,7 @@ public class FilmControllerImpl implements FilmController {
 
 	@Override
 	public FilmDTO updateFilm(FilmDTO dto) {
-		Book book = bookDomainMapper.domainToBook(bookService.read(dto.getBookId()));
-		FilmDomain filmDomain = filmMapper.dtoToFilm(dto);
-		filmDomain.setBook(book);
-		filmDomain.setAuthors(book.getAuthors());
-		return filmMapper.filmToDto(filmService.update(filmDomain));
+		return filmMapper.filmToDto(filmService.update(filmMapper.dtoToFilm(dto)));
 	}
 
 	@Override
@@ -86,11 +64,5 @@ public class FilmControllerImpl implements FilmController {
 		BookResponseDTO bookResponseDTO = bookMapper.bookToDto(bookDomain);
 		bookResponseDTO.setAuthorIds(bookDomain.getAuthors().stream().map(Author::getId).collect(Collectors.toList()));
 		return bookResponseDTO;
-	}
-
-	@Override
-	public Collection<AuthorDTO> getAuthors(long id) {
-		List<AuthorDomain> authorDomains = filmService.read(id).getAuthors().stream().map(authorDomainMapper::authorToDomain).toList();
-		return authorDomains.stream().map(authorMapper::authorToDto).collect(Collectors.toList());
 	}
 }
