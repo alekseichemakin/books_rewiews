@@ -9,7 +9,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients
 @EnableDiscoveryClient
 @EnableCaching
 public class ReviewsApplication {

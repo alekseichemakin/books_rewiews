@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- * Сервис работающи с клиентом reviews
+ * Сервис работающий с клиентом reviews
  */
 public interface ReviewsService {
     /**

@@ -13,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.lexa.books_reviews.controller.dto.review.ReviewFilterDTO;
 import ru.lexa.books_reviews.reviews.domain.ReviewDomain;
 import ru.lexa.books_reviews.reviews.exception.ReviewNotFoundException;
-import ru.lexa.books_reviews.reviews.integration.BookClient;
-import ru.lexa.books_reviews.reviews.integration.FilmClient;
 import ru.lexa.books_reviews.reviews.repository.ReviewRepository;
 import ru.lexa.books_reviews.reviews.repository.entity.Review;
 import ru.lexa.books_reviews.reviews.repository.mapper.ReviewDomainMapper;
@@ -36,10 +34,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private final ReviewDomainMapper reviewDomainMapper;
 
-	private final BookClient bookClient;
-
-	private final FilmClient filmClient;
-
 	private final AmqpTemplate rabbitTemplate;
 
 	@Value("${spring.rabbitmq.exchange}")
@@ -52,11 +46,9 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public ReviewDomain create(ReviewDomain review) {
 		if (review.getBookId() != null) {
-			bookClient.readBook(review.getBookId());
 			rabbitTemplate.convertAndSend(EXCHANGE, CLEAR_BOOK_CACHE, review.getBookId());
-		} else if (review.getFilmId() != null) {
-			filmClient.readFilm(review.getFilmId());
 		}
+
 		return reviewDomainMapper.reviewToDomain(reviewRepository.save(reviewDomainMapper.domainToReview(review)));
 	}
 
@@ -101,10 +93,7 @@ public class ReviewServiceImpl implements ReviewService {
 	public ReviewDomain update(ReviewDomain review) {
 		ReviewDomain reviewDomain = read(review.getId());
 		if (review.getBookId() != null) {
-			bookClient.readBook(review.getBookId());
 			rabbitTemplate.convertAndSend(EXCHANGE, CLEAR_BOOK_CACHE, review.getBookId());
-		} else if (review.getFilmId() != null) {
-			filmClient.readFilm(review.getFilmId());
 		}
 		reviewDomain.setText(review.getText());
 		reviewDomain.setRating(review.getRating());

@@ -61,7 +61,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDomain create(BookDomain book, BookReviewRequestDTO reviewRequestDTO) {
         book.getAuthors().forEach(a -> authorService.read(a.getId()));
-
         try {
             book = bookDomainMapper.bookToDomain(bookRepository.save(bookDomainMapper.domainToBook(book)));
         } catch (DataIntegrityViolationException e) {
@@ -91,7 +90,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(id).orElseThrow(() -> {
             throw new BookNotFoundException(id);
         });
-        authorBookRepository.deleteAll(book.getAuthorBook());
+        authorBookRepository.deleteAll(book.getAuthors());
         bookRepository.delete(book);
         rabbitTemplate.convertAndSend(EXCHANGE, DELETE_BOOK_REVIEW_ROUTING_KEY, id);
     }
@@ -113,13 +112,14 @@ public class BookServiceImpl implements BookService {
                     throw new BookNotFoundException(finalBook.getId());
                 });
 
-        List<Long> authorIds = book.getAuthors().stream().map(Author::getId).toList();
-        updatableBook.getAuthors().forEach(author -> {
-            if (!authorIds.contains(author.getId())) {
-                updatableBook.deleteAuthor(author);
-            }
-        });
-        List<Long> updatableAuthorIds = updatableBook.getAuthors().stream().map(Author::getId).toList();
+        List<Long> authorIds = book.getAuthors().stream()   // updated authors list
+                .map(Author::getId)
+                .toList();
+        updatableBook.getAuthors().removeIf(authorBook -> !authorIds.contains(authorBook.getAuthor().getId()));
+
+        List<Long> updatableAuthorIds = updatableBook.getAuthors().stream()  // old authors list
+                .map(authorBook -> authorBook.getAuthor().getId())
+                .toList();
         book.getAuthors().forEach(author -> {
             if (!updatableAuthorIds.contains(author.getId())) {
                 updatableBook.addAuthor(author);
@@ -128,8 +128,6 @@ public class BookServiceImpl implements BookService {
 
         updatableBook.setDescription(book.getDescription());
         updatableBook.setName(book.getName());
-        updatableBook.getAuthors().forEach(author -> System.out.println(author.getId()));
-        updatableBook.getAuthorBook().forEach(authorBook -> System.out.println(authorBook.getAuthor().getId() + " " + authorBook.getBook().getId()));
 
         try {
             book = prepareBookToReturn(bookRepository.saveAndFlush(updatableBook));

@@ -11,6 +11,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.jpa.domain.Specification;
 import ru.lexa.books_reviews.domain.AuthorDomain;
+import ru.lexa.books_reviews.integration.service.ReviewsService;
 import ru.lexa.books_reviews.repository.AuthorRepository;
 import ru.lexa.books_reviews.repository.entity.Author;
 import ru.lexa.books_reviews.repository.mapper.AuthorDomainMapper;
@@ -47,6 +48,7 @@ public class AuthorServiceTest {
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(saveAuthor);
 		when(authorDomainMapper.domainToAuthor(Mockito.any(AuthorDomain.class))).thenReturn(new Author());
 		when(authorRepository.save(Mockito.any(Author.class))).thenAnswer(i -> i.getArguments()[0]);
+		when(authorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new Author()));
 
 		AuthorDomain author = authorService.create(saveAuthor);
 		assertEquals("test", author.getName());
@@ -82,6 +84,7 @@ public class AuthorServiceTest {
 		authorDomain.setBooks(new ArrayList<>());
 		when(authorRepository.findAll(Mockito.any(Specification.class))).thenReturn(authors);
 		when(authorDomainMapper.authorToDomain(Mockito.any(Author.class))).thenReturn(authorDomain);
+		when(authorRepository.findById(Mockito.anyLong())).thenReturn(Optional.of(new Author()));
 
 		List<AuthorDomain> authorsResponse = authorService.readAll(new AuthorFilterDTO());
 		assertEquals(3, authorsResponse.size());

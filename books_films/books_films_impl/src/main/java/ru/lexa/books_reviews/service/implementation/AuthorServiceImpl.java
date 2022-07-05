@@ -59,8 +59,9 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public AuthorDomain update(AuthorDomain author) {
-        author.setBooks(read(author.getId()).getBooks());
-        author.setFilms(read(author.getId()).getFilms());
+        AuthorDomain oldAuthor = read(author.getId());
+        author.setBooks(oldAuthor.getBooks());
+        author.setFilms(oldAuthor.getFilms());
         try {
             return prepareAuthorToReturn(authorRepository.save(authorDomainMapper.domainToAuthor(author)));
         } catch (DataIntegrityViolationException e) {
@@ -118,7 +119,7 @@ public class AuthorServiceImpl implements AuthorService {
         AuthorDomain authorDomain = authorDomainMapper.authorToDomain(author);
 		authorDomain.setAvgRating(getAverageRating(authorDomain.getId()));
         List<Film> films = new ArrayList<>();
-        author.getBooks().forEach(book -> films.addAll(book.getFilms()));
+        author.getBooks().forEach(book -> films.addAll(book.getBook().getFilms()));
         authorDomain.setFilms(films);
         return authorDomain;
     }

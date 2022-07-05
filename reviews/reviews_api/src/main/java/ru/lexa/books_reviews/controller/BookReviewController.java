@@ -1,6 +1,8 @@
 package ru.lexa.books_reviews.controller;
 
+import feign.Headers;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.lexa.books_reviews.controller.dto.review.BookReviewDTO;
@@ -21,7 +23,7 @@ public interface BookReviewController {
 
 	@ApiOperation(value = "Поиск отывов по параметрам.")
 	@GetMapping
-	Collection<BookReviewDTO> readAll(ReviewFilterDTO reviewFilterDTO);
+	Collection<BookReviewDTO> readAll(@SpringQueryMap ReviewFilterDTO reviewFilterDTO);
 
 	@ApiOperation(value = "Получить отзыв.")
 	@GetMapping("/{id}")

@@ -13,6 +13,9 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Реализация ReviewService
+ */
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewsService {
@@ -28,7 +31,7 @@ public class ReviewServiceImpl implements ReviewsService {
     @Override
     public Double getAuthorAverageRating(Author author) {
         return author.getBooks().stream()
-                .map(book -> getBookAverageRating(book.getId()))
+                .map(book -> getBookAverageRating(book.getBook().getId()))
                 .mapToDouble(Double::doubleValue)
                 .sum() / author.getBooks().size();
     }
